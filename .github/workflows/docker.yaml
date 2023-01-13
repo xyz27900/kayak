@@ -58,6 +58,17 @@ jobs:
           file: ./docker/upx/Dockerfile
           context: ./docker/upx
 
+      - name: Build "kayak/fontconfig:latest"
+        uses: docker/build-push-action@v3
+        with:
+          push: true
+          platforms: ${{ matrix.platforms }}
+          tags: localhost:5000/kayak/fontconfig:latest
+          file: ./docker/fontconfig/Dockerfile
+          context: ./docker/fontconfig
+          build-args: |
+            FONTCONFIG_VERSION=${{ env.FONTCONFIG_VERSION }}
+
       - name: Build "kayak/crdetector:latest"
         uses: docker/build-push-action@v3
         with:
@@ -79,17 +90,6 @@ jobs:
           context: ./docker/xset
           build-args: |
             UPX_IMAGE=localhost:5000/kayak/upx:latest
-
-      - name: Build "kayak/fontconfig:latest"
-        uses: docker/build-push-action@v3
-        with:
-          push: true
-          platforms: ${{ matrix.platforms }}
-          tags: localhost:5000/kayak/fontconfig:latest
-          file: ./docker/fontconfig/Dockerfile
-          context: ./docker/fontconfig
-          build-args: |
-            FONTCONFIG_VERSION=${{ env.FONTCONFIG_VERSION }}
 
       - name: Build "kayak/novnc:latest"
         uses: docker/build-push-action@v3
