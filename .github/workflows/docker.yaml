@@ -46,7 +46,7 @@ jobs:
           tags: localhost:5000/kayak/crdetector:latest
           file: ./docker/crdetector/Dockerfile
           context: ./docker/crdetector
-          build_args: |
+          build-args: |
             UPX_IMAGE=localhost:5000/kayak/upx:latest
 
       - name: Build "kayak/xset:latest"
@@ -57,5 +57,5 @@ jobs:
           tags: localhost:5000/kayak/xset:latest
           file: ./docker/xset/Dockerfile
           context: ./docker/xset
-          build_args: |
+          build-args: |
             UPX_IMAGE=localhost:5000/kayak/upx:latest
