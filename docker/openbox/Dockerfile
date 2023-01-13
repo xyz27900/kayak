@@ -11,10 +11,8 @@ ARG LIBXRANDR_VERSION
 ARG OPENBOX_VERSION
 ARG PANGO_VERSION
 
-RUN export SYSROOT=$(xx-info sysroot)
-
 COPY --from=tonistiigi/xx / /
-COPY --from=fontconfig /opt/fontconfig $SYSROOT
+COPY --from=fontconfig /opt/fontconfig /tmp/fontconfig-install
 COPY --from=upx /usr/bin/upx /usr/bin/upx
 
 ENV CFLAGS="-Os -fomit-frame-pointer" \
@@ -67,6 +65,8 @@ COPY xx-clang-wrapper /usr/bin/xx-clang-wrapper
 
 COPY meson-cross.sh /tmp/meson-cross.sh
 RUN /tmp/meson-cross.sh
+
+RUN cp -av /tmp/fontconfig-install/usr $(xx-info sysroot)
 
 COPY build-pango.sh /tmp/build-pango.sh
 RUN mkdir -p /tmp/pango && curl -# -L "https://download.gnome.org/sources/pango/$(echo $PANGO_VERSION | cut -d. -f1-2)/pango-${PANGO_VERSION}.tar.xz" | tar -xJ --strip 1 -C /tmp/pango
