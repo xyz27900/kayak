@@ -23,6 +23,7 @@ PLATFORM				= linux/arm64/v8
 CRDETECTOR_IMAGE		= kayak/crdetector
 FONTCONFIG_IMAGE		= kayak/fontconfig:latest
 NOVNC_IMAGE				= kayak/novnc:latest
+OPENBOX_IMAGE			= kayak/openbox:latest
 TIGERVNC_IMAGE			= kayak/tigervnc:latest
 UPX_IMAGE				= kayak/upx:latest
 
@@ -67,12 +68,13 @@ crdetector: upx
 		--file crdetector/Dockerfile crdetector
 
 .PHONY: display
-display: novnc tigervnc
+display: novnc openbox tigervnc
 	@docker buildx build \
 		--progress=plain \
 		--load \
 		--build-arg FONTCONFIG_IMAGE=$(FONTCONFIG_IMAGE) \
 		--build-arg NOVNC_IMAGE=$(NOVNC_IMAGE) \
+		--build-arg OPENBOX_IMAGE=$(OPENBOX_IMAGE) \
 		--build-arg TIGERVNC_IMAGE=$(TIGERVNC_IMAGE) \
 		--build-arg USER_ID=$(USER_ID) \
 		--build-arg GROUP_ID=$(GROUP_ID) \
