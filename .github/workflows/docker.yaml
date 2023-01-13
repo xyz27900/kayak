@@ -86,19 +86,6 @@ jobs:
           cache-from: type=gha,mode=max,scope=kayak/crdetector
           cache-to: type=gha,mode=max,scope=kayak/crdetector
 
-      - name: "[Local Registry] kayak/xset:latest"
-        uses: docker/build-push-action@v3
-        with:
-          push: true
-          platforms: ${{ matrix.platforms }}
-          tags: localhost:5000/kayak/xset:latest
-          file: ./docker/xset/Dockerfile
-          context: ./docker/xset
-          build-args: |
-            UPX_IMAGE=localhost:5000/kayak/upx:latest
-          cache-from: type=gha,mode=max,scope=kayak/xset
-          cache-to: type=gha,mode=max,scope=kayak/xset
-
       - name: "[Local Registry] kayak/novnc:latest"
         uses: docker/build-push-action@v3
         with:
