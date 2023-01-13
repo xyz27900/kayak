@@ -7,7 +7,7 @@ on:
 
 jobs:
   build-anvil:
-    uses: xyz27900/kayak/.github/workflows/build/build.docker.yaml@main
+    uses: xyz27900/kayak/.github/workflows/reusable.docker.yaml@main
     with:
       file: ./docker/anvil/Dockerfile
       tag: kayak/anvil:latest
