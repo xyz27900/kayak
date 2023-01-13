@@ -20,13 +20,11 @@ COPY --from=novnc /opt/noVNC /opt/noVNC
 COPY --from=openbox /fakeroot /
 COPY --from=tigervnc /fakeroot /
 COPY fakeroot /
-COPY init /init
 
 RUN apk add --no-cache \
     sudo \
     bash \
     procps \
-    # Has to be replaced with more lightweight alternative
     supervisor \
     xhost \
     xrdb \
@@ -53,4 +51,3 @@ USER $USER_NAME
 EXPOSE 5800
 
 CMD ["supervisord", "-c", "/etc/supervisord.conf"]
-#CMD ["/init/init.sh", "/init/01-xvnc.sh", "/init/02-novnc.sh", "/init/03-openbox.sh", "/init/04-configure.sh"]
