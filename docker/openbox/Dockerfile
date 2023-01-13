@@ -1,17 +1,21 @@
 ARG FONTCONFIG_IMAGE
 ARG UPX_IMAGE
+
 FROM ${FONTCONFIG_IMAGE} AS fontconfig
 FROM ${UPX_IMAGE} AS upx
 
-FROM --platform=$BUILDPLATFORM alpine:3.15 AS openbox
+FROM --platform=$BUILDPLATFORM alpine:3.15 AS builder
 ARG TARGETPLATFORM
 
 ARG LIBXRANDR_VERSION
 ARG OPENBOX_VERSION
 ARG PANGO_VERSION
 
+RUN export SYSROOT=$(xx-info sysroot)
+
 COPY --from=tonistiigi/xx / /
-COPY --from=fontconfig /opt/fontconfig /tmp/fontconfig-install
+COPY --from=fontconfig /opt/fontconfig $SYSROOT
+COPY --from=upx /usr/bin/upx /usr/bin/upx
 
 ENV CFLAGS="-Os -fomit-frame-pointer" \
     CXXFLAGS="$CFLAGS" \
@@ -26,7 +30,6 @@ RUN apk --no-cache add \
     clang \
     meson \
     pkgconfig \
-    patch \
     glib-dev
 
 RUN xx-apk --no-cache --no-scripts add \
@@ -82,6 +85,9 @@ RUN /tmp/build-openbox.sh
 RUN xx-verify --static /tmp/openbox-install/usr/bin/openbox
 RUN xx-verify --static /tmp/openbox-install/usr/bin/obxprop
 
-COPY --from=upx /usr/bin/upx /usr/bin/upx
 RUN upx /tmp/openbox-install/usr/bin/openbox
 RUN upx /tmp/openbox-install/usr/bin/obxprop
+
+FROM scratch
+COPY --from=builder /tmp/openbox-install/usr/bin/openbox /fakeroot/usr/bin/openbox
+COPY --from=builder /tmp/openbox-install/usr/bin/obxprop /fakeroot/usr/bin/obxprop
