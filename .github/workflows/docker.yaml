@@ -49,7 +49,7 @@ jobs:
         with:
           driver-opts: network=host
 
-      - name: Build "kayak/upx:latest" [Local Registry]
+      - name: "[Local Registry] kayak/upx:latest"
         uses: docker/build-push-action@v3
         with:
           push: true
@@ -60,7 +60,7 @@ jobs:
           cache-from: type=gha,mode=max,scope=kayak/upx
           cache-to: type=gha,mode=max,scope=kayak/upx
 
-      - name: Build "kayak/fontconfig:latest" [Local Registry]
+      - name: "[Local Registry] kayak/fontconfig:latest"
         uses: docker/build-push-action@v3
         with:
           push: true
@@ -73,7 +73,7 @@ jobs:
           cache-from: type=gha,mode=max,scope=kayak/fontconfig
           cache-to: type=gha,mode=max,scope=kayak/fontconfig
 
-      - name: Build "kayak/crdetector:latest" [Local Registry]
+      - name: "[Local Registry] kayak/crdetector:latest"
         uses: docker/build-push-action@v3
         with:
           push: true
@@ -86,7 +86,7 @@ jobs:
           cache-from: type=gha,mode=max,scope=kayak/crdetector
           cache-to: type=gha,mode=max,scope=kayak/crdetector
 
-      - name: Build "kayak/xset:latest" [Local Registry]
+      - name: "[Local Registry] kayak/xset:latest"
         uses: docker/build-push-action@v3
         with:
           push: true
@@ -99,7 +99,7 @@ jobs:
           cache-from: type=gha,mode=max,scope=kayak/xset
           cache-to: type=gha,mode=max,scope=kayak/xset
 
-      - name: Build "kayak/novnc:latest" [Local Registry]
+      - name: "[Local Registry] kayak/novnc:latest"
         uses: docker/build-push-action@v3
         with:
           push: true
@@ -112,7 +112,7 @@ jobs:
           cache-from: type=gha,mode=max,scope=kayak/novnc
           cache-to: type=gha,mode=max,scope=kayak/novnc
 
-      - name: Build "kayak/openbox:latest" [Local Registry]
+      - name: "[Local Registry] kayak/openbox:latest"
         uses: docker/build-push-action@v3
         with:
           push: true
@@ -129,7 +129,7 @@ jobs:
           cache-from: type=gha,mode=max,scope=kayak/openbox
           cache-to: type=gha,mode=max,scope=kayak/openbox
 
-      - name: Build "kayak/tigervnc:latest" [Local Registry]
+      - name: "[Local Registry] kayak/tigervnc:latest"
         uses: docker/build-push-action@v3
         with:
           push: true
@@ -151,7 +151,7 @@ jobs:
           cache-from: type=gha,mode=max,scope=kayak/tigervnc
           cache-to: type=gha,mode=max,scope=kayak/tigervnc
 
-      - name: Build "kayak/anvil:latest" [DockerHub Registry]
+      - name: "[DockerHub Registry] kayak/anvil:latest"
         uses: docker/build-push-action@v3
         with:
           platforms: ${{ matrix.platforms }}
@@ -161,7 +161,7 @@ jobs:
           cache-from: type=gha,mode=max,scope=kayak/anvil
           cache-to: type=gha,mode=max,scope=kayak/anvil
 
-      - name: Build "kayak/chromium:cypress" [DockerHub Registry]
+      - name: "[DockerHub Registry] kayak/chromium:cypress"
         uses: docker/build-push-action@v3
         with:
           platforms: ${{ matrix.platforms }}
@@ -174,7 +174,26 @@ jobs:
           cache-from: type=gha,mode=max,scope=kayak/chromium:cypress
           cache-to: type=gha,mode=max,scope=kayak/chromium:cypress
 
-      - name: Build "kayak/chromium:playwright" [DockerHub Registry]
+      - name: "[DockerHub Registry] kayak/display:latest"
+        uses: docker/build-push-action@v3
+        with:
+          platforms: ${{ matrix.platforms }}
+          tags: kayak/display:latest
+          file: ./docker/display/Dockerfile
+          context: ./docker/display
+          build-args: |
+            FONTCONFIG_IMAGE=localhost:5000/kayak/fontconfig:latest
+            NOVNC_IMAGE=localhost:5000/kayak/novnc:latest
+            OPENBOX_IMAGE=localhost:5000/kayak/openbox:latest
+            TIGERVNC_IMAGE=localhost:5000/kayak/tigervnc:latest
+            USER_ID=${{ env.USER_ID }}
+            GROUP_ID=${{ env.GROUP_ID }}
+            USER_NAME=${{ env.USER_NAME }}
+            GROUP_NAME=${{ env.GROUP_NAME }}
+          cache-from: type=gha,mode=max,scope=kayak/display
+          cache-to: type=gha,mode=max,scope=kayak/display
+
+      - name: "[DockerHub Registry] kayak/chromium:playwright"
         uses: docker/build-push-action@v3
         with:
           platforms: ${{ matrix.platforms }}
@@ -187,7 +206,7 @@ jobs:
           cache-from: type=gha,mode=max,scope=kayak/chromium:playwright
           cache-to: type=gha,mode=max,scope=kayak/chromium:playwright
 
-      - name: Build "kayak/ffmpeg:latest" [DockerHub Registry]
+      - name: "[DockerHub Registry] kayak/ffmpeg:latest"
         uses: docker/build-push-action@v3
         with:
           platforms: ${{ matrix.platforms }}

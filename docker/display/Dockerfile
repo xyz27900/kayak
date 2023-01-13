@@ -1,3 +1,13 @@
+ARG FONTCONFIG_IMAGE
+ARG NOVNC_IMAGE
+ARG OPENBOX_IMAGE
+ARG TIGERVNC_IMAGE
+
+FROM ${FONTCONFIG_IMAGE} AS fontconfig
+FROM ${NOVNC_IMAGE} AS novnc
+FROM ${OPENBOX_IMAGE} AS openbox
+FROM ${TIGERVNC_IMAGE} AS tigervnc
+
 FROM --platform=$BUILDPLATFORM alpine:3.15
 
 ARG USER_ID
@@ -5,10 +15,10 @@ ARG GROUP_ID
 ARG USER_NAME
 ARG GROUP_NAME
 
-COPY --from=kayak/fontconfig /opt/fontconfig/usr /usr
-COPY --from=kayak/novnc /opt/noVNC /opt/noVNC
-COPY --from=kayak/openbox /fakeroot /
-COPY --from=kayak/tigervnc /fakeroot /
+COPY --from=fontconfig /opt/fontconfig/usr /usr
+COPY --from=novnc /opt/noVNC /opt/noVNC
+COPY --from=openbox /fakeroot /
+COPY --from=tigervnc /fakeroot /
 COPY fakeroot /
 COPY init /init
 
