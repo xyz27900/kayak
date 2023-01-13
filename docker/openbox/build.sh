@@ -35,8 +35,8 @@ function log {
 # we have very few fonts installed.
 #
 
-log "Installing fontconfig..."
-cp -av /tmp/fontconfig-install/usr $(xx-info sysroot)
+#log "Installing fontconfig..."
+#cp -av /tmp/fontconfig-install/usr $(xx-info sysroot)
 
 #
 # Build Openbox.
