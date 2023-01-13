@@ -21,13 +21,13 @@ PANGO_URL=https://download.gnome.org/sources/pango/${PANGO_VERSION%.*}/pango-${P
 LIBXRANDR_URL=https://www.x.org/releases/individual/lib/libXrandr-${LIBXRANDR_VERSION}.tar.xz
 
 # Set same default compilation flags as abuild.
-export CFLAGS="-Os -fomit-frame-pointer"
-export CXXFLAGS="$CFLAGS"
-export CPPFLAGS="$CFLAGS"
-export LDFLAGS="-Wl,--as-needed --static -static -Wl,--strip-all"
-
-export CC=xx-clang-wrapper
-export CXX=xx-clang++
+#export CFLAGS="-Os -fomit-frame-pointer"
+#export CXXFLAGS="$CFLAGS"
+#export CPPFLAGS="$CFLAGS"
+#export LDFLAGS="-Wl,--as-needed --static -static -Wl,--strip-all"
+#
+#export CC=xx-clang-wrapper
+#export CXX=xx-clang++
 
 function log {
     echo ">>> $*"
@@ -36,45 +36,45 @@ function log {
 #
 # Install required packages.
 #
-log "Installing required Alpine packages..."
-apk --no-cache add \
-    curl \
-    build-base \
-    clang \
-    meson \
-    pkgconfig \
-    patch \
-    glib-dev \
-
-xx-apk --no-cache --no-scripts add \
-    g++ \
-    glib-dev \
-    glib-static \
-    fribidi-dev \
-    fribidi-static \
-    harfbuzz-dev \
-    harfbuzz-static \
-    cairo-dev \
-    cairo-static \
-    libxft-dev \
-    libxml2-dev \
-    libx11-dev \
-    libx11-static \
-    libxcb-static \
-    libxdmcp-dev \
-    libxau-dev \
-    freetype-static \
-    expat-static \
-    libpng-dev \
-    libpng-static \
-    zlib-static \
-    bzip2-static \
-    pcre-dev \
-    libxrender-dev \
-    graphite2-static \
-    libffi-dev \
-    xz-dev \
-    brotli-static \
+#log "Installing required Alpine packages..."
+#apk --no-cache add \
+#    curl \
+#    build-base \
+#    clang \
+#    meson \
+#    pkgconfig \
+#    patch \
+#    glib-dev \
+#
+#xx-apk --no-cache --no-scripts add \
+#    g++ \
+#    glib-dev \
+#    glib-static \
+#    fribidi-dev \
+#    fribidi-static \
+#    harfbuzz-dev \
+#    harfbuzz-static \
+#    cairo-dev \
+#    cairo-static \
+#    libxft-dev \
+#    libxml2-dev \
+#    libx11-dev \
+#    libx11-static \
+#    libxcb-static \
+#    libxdmcp-dev \
+#    libxau-dev \
+#    freetype-static \
+#    expat-static \
+#    libpng-dev \
+#    libpng-static \
+#    zlib-static \
+#    bzip2-static \
+#    pcre-dev \
+#    libxrender-dev \
+#    graphite2-static \
+#    libffi-dev \
+#    xz-dev \
+#    brotli-static \
 
 # Copy the xx-clang wrapper.  Openbox compilation uses libtool.  During the link
 # phase, libtool re-orders all arguments from LDFLAGS.  Thus, libraries are no
@@ -83,19 +83,19 @@ xx-apk --no-cache --no-scripts add \
 cp "$SCRIPT_DIR"/xx-clang-wrapper /usr/bin/
 
 # Create the meson cross compile file.
-echo "[binaries]
-pkgconfig = '$(xx-info)-pkg-config'
-
-[properties]
-sys_root = '$(xx-info sysroot)'
-pkg_config_libdir = '$(xx-info sysroot)/usr/lib/pkgconfig'
-
-[host_machine]
-system = 'linux'
-cpu_family = '$(xx-info arch)'
-cpu = '$(xx-info arch)'
-endian = 'little'
-" > /tmp/meson-cross.txt
+#echo "[binaries]
+#pkgconfig = '$(xx-info)-pkg-config'
+#
+#[properties]
+#sys_root = '$(xx-info sysroot)'
+#pkg_config_libdir = '$(xx-info sysroot)/usr/lib/pkgconfig'
+#
+#[host_machine]
+#system = 'linux'
+#cpu_family = '$(xx-info arch)'
+#cpu = '$(xx-info arch)'
+#endian = 'little'
+#" > /tmp/meson-cross.txt
 
 #
 # Build pango.
