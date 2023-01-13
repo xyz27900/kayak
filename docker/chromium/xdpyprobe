@@ -1,0 +1,13 @@
+#!/bin/sh
+set -e
+set -u
+
+ATTEMPTS=0
+
+while ! xset -display ${DISPLAY} q >/dev/null 2>&1; do
+    ATTEMPTS=$((ATTEMPTS + 1))
+    echo ">>> Waiting for X server to be ready... [${ATTEMPTS}]"
+    sleep 1
+done
+
+echo ">>> X server is ready!"

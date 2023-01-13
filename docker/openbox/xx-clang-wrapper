@@ -1,0 +1,27 @@
+#!/bin/sh
+
+if ! echo "$*" | grep -q "\-Wl,--start-group -Wl,--end-group" ; then
+    exec xx-clang "$@"
+fi
+
+args=
+libs=
+
+while test "$#" -gt 0; do
+    case "$1" in
+        -Wl,--start-group) ;;
+        -Wl,--end-group) ;;
+        -Wl,--export-dynamic) ;;
+        -l*|*.a)
+            libs="$libs $1"
+            ;;
+        *)
+            args="$args $1" ;;
+    esac
+    shift
+done
+
+args="$args -Wl,--start-group $libs -Wl,--end-group"
+
+echo "Invoking: xx-clang $args"
+exec xx-clang $args

@@ -1,0 +1,18 @@
+FROM --platform=$BUILDPLATFORM node:16-bullseye-slim AS cypress
+
+RUN npm install -g cypress
+
+FROM --platform=$BUILDPLATFORM node:16-bullseye-slim
+
+COPY --from=kayak/crdetector /fakeroot /
+COPY --from=kayak/xset /fakeroot /
+COPY --from=cypress /root/.cache/Cypress /root/.cache/Cypress
+COPY xdpyprobe /usr/bin/xdpyprobe
+COPY install-chromium.sh /install-chromium.sh
+COPY entrypoint.sh /entrypoint.sh
+
+RUN /install-chromium.sh
+
+ENV KAYAK_DOCKER=true
+
+ENTRYPOINT ["/entrypoint.sh"]

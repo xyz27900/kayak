@@ -1,0 +1,13 @@
+#!/bin/sh
+set -e
+set -u
+
+ATTEMPTS=0
+
+while ! curl -If "${CR_DETECTOR_URL}" > /dev/null 2>&1; do
+    ATTEMPTS=$((ATTEMPTS + 1))
+    echo ">>> Waiting for Chromium to be ready... [${ATTEMPTS}]"
+    sleep 1
+done
+
+echo ">>> Chromium is ready!"

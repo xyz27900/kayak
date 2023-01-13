@@ -1,0 +1,20 @@
+name: Docker
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-anvil:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Build "kayak/anvil:latest"
+        uses: xyz27900/kayak/.github/workflows/build/build.docker.yaml@main
+        with:
+          file: ./docker/anvil/Dockerfile
+          tag: kayak/anvil:latest
