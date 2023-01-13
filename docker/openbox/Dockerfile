@@ -65,8 +65,6 @@ COPY xx-clang-wrapper /usr/bin/xx-clang-wrapper
 COPY meson-cross.sh /tmp/meson-cross.sh
 RUN /tmp/meson-cross.sh
 
-COPY . /tmp/build
-
 COPY build-pango.sh /tmp/build-pango.sh
 RUN mkdir -p /tmp/pango && curl -# -L "https://download.gnome.org/sources/pango/$(echo $PANGO_VERSION | cut -d. -f1-2)/pango-${PANGO_VERSION}.tar.xz" | tar -xJ --strip 1 -C /tmp/pango
 RUN /tmp/build-pango.sh
@@ -75,14 +73,15 @@ COPY build-libxrandr.sh /tmp/build-libxrandr.sh
 RUN mkdir -p mkdir /tmp/libxrandr && curl -# -L "https://www.x.org/releases/individual/lib/libXrandr-${LIBXRANDR_VERSION}.tar.xz" | tar -xJ --strip 1 -C /tmp/libxrandr
 RUN /tmp/build-libxrandr.sh
 
+COPY build-openbox.sh /tmp/build-openbox.sh
 RUN mkdir -p /tmp/openbox \
     && curl -# -L "http://openbox.org/dist/openbox/openbox-${OPENBOX_VERSION}.tar.xz" | tar -xJ --strip 1 -C /tmp/openbox \
     && curl -# -L "https://raw.githubusercontent.com/gcc-mirror/gcc/master/config.sub" -o /tmp/openbox/config.sub
+RUN /tmp/build-openbox.sh
 
-RUN /tmp/build/build.sh
-RUN xx-verify --static \
-    /tmp/openbox-install/usr/bin/openbox \
-    /tmp/openbox-install/usr/bin/obxprop
+RUN xx-verify --static /tmp/openbox-install/usr/bin/openbox
+RUN xx-verify --static /tmp/openbox-install/usr/bin/obxprop
+
 COPY --from=upx /usr/bin/upx /usr/bin/upx
 RUN upx /tmp/openbox-install/usr/bin/openbox
 RUN upx /tmp/openbox-install/usr/bin/obxprop
