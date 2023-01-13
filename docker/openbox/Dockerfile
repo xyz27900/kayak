@@ -11,7 +11,7 @@ ARG OPENBOX_VERSION
 ARG PANGO_VERSION
 
 COPY --from=tonistiigi/xx / /
-COPY --from=fontconfig /opt/fontconfig/usr /usr
+COPY --from=fontconfig /opt/fontconfig /
 
 ENV CFLAGS="-Os -fomit-frame-pointer" \
     CXXFLAGS="$CFLAGS" \
