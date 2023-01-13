@@ -1,10 +1,11 @@
 ARG UPX_IMAGE=kayak/upx:latest
+FROM ${UPX_IMAGE} AS upx
 
 FROM --platform=$BUILDPLATFORM alpine:3.15 AS builder
 ARG TARGETPLATFORM
 
 COPY --from=tonistiigi/xx / /
-COPY --from=${UPX_IMAGE} /usr/bin/upx /usr/bin/upx
+COPY --from=upx /usr/bin/upx /usr/bin/upx
 
 ENV CFLAGS="-Os -fomit-frame-pointer" \
     CXXFLAGS="$CFLAGS" \
