@@ -3,7 +3,7 @@ ARG TARGETPLATFORM
 ARG UPX_IMAGE=kayak/upx:latest
 
 COPY --from=tonistiigi/xx / /
-COPY --from=$UPX_IMAGE /usr/bin/upx /usr/bin/upx
+COPY --from=${UPX_IMAGE} /usr/bin/upx /usr/bin/upx
 
 ENV CGO_ENABLED=1
 
