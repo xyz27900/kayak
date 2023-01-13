@@ -20,6 +20,9 @@ GROUP_NAME				= kayak
 
 PLATFORM				= linux/amd64
 
+FONTCONFIG_IMAGE		= kayak/fontconfig:latest
+UPX_IMAGE				= kayak/upx:latest
+
 all: anvil chromium display ffmpeg
 	@docker system prune -f
 
@@ -53,6 +56,7 @@ crdetector: upx
 	@docker buildx build \
 		--progress=plain \
 		--load \
+		--build-arg UPX_IMAGE=$(UPX_IMAGE) \
 		--platform $(PLATFORM) \
 		--tag kayak/crdetector:latest \
 		--file crdetector/Dockerfile crdetector
@@ -104,6 +108,8 @@ openbox: fontconfig upx
 	@docker buildx build \
 		--progress=plain \
 		--load \
+		--build-arg FONTCONFIG_IMAGE=$(FONTCONFIG_IMAGE) \
+		--build-arg UPX_IMAGE=$(UPX_IMAGE) \
 		--build-arg LIBXRANDR_VERSION=$(LIBXRANDR_VERSION) \
 		--build-arg OPENBOX_VERSION=$(OPENBOX_VERSION) \
 		--build-arg PANGO_VERSION=$(PANGO_VERSION) \
@@ -116,6 +122,7 @@ tigervnc: upx
 	@docker buildx build \
 		--progress=plain \
 		--load \
+		--build-arg UPX_IMAGE=$(UPX_IMAGE) \
 		--build-arg GNUTLS_VERSION=$(GNUTLS_VERSION) \
 		--build-arg LIBFONTENC_VERSION=$(LIBFONTENC_VERSION) \
 		--build-arg LIBTASN1_VERSION=$(LIBTASN1_VERSION) \
@@ -143,6 +150,7 @@ xset: upx
 	@docker buildx build \
 		--progress=plain \
 		--load \
+		--build-arg UPX_IMAGE=$(UPX_IMAGE) \
 		--platform $(PLATFORM) \
 		--tag kayak/xset:latest \
 		--file xset/Dockerfile xset

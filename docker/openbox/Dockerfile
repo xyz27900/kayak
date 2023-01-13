@@ -1,3 +1,9 @@
+ARG FONTCONFIG_IMAGE
+FROM ${FONTCONFIG_IMAGE} AS fontconfig
+
+ARG UPX_IMAGE
+FROM ${UPX_IMAGE} AS upx
+
 FROM --platform=$BUILDPLATFORM alpine:3.15 AS builder
 ARG TARGETPLATFORM
 
@@ -6,8 +12,8 @@ ARG OPENBOX_VERSION
 ARG PANGO_VERSION
 
 COPY --from=tonistiigi/xx / /
-COPY --from=kayak/fontconfig /opt/fontconfig/usr /usr
-COPY --from=kayak/upx /usr/bin/upx /usr/bin/upx
+COPY --from=fontconfig /opt/fontconfig/usr /usr
+COPY --from=upx /usr/bin/upx /usr/bin/upx
 
 ENV CFLAGS="-Os -fomit-frame-pointer" \
     CXXFLAGS="$CFLAGS" \

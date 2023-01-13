@@ -1,4 +1,4 @@
-ARG UPX_IMAGE=kayak/upx:latest
+ARG UPX_IMAGE
 FROM ${UPX_IMAGE} AS upx
 
 FROM --platform=$BUILDPLATFORM alpine:3.15 AS builder
