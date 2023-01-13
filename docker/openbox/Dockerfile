@@ -11,7 +11,7 @@ ARG OPENBOX_VERSION
 ARG PANGO_VERSION
 
 COPY --from=tonistiigi/xx / /
-COPY --from=fontconfig /opt/fontconfig/usr /usr
+COPY --from=fontconfig /opt/fontconfig /tmp/fontconfig-install
 
 ENV CFLAGS="-Os -fomit-frame-pointer" \
     CXXFLAGS="$CFLAGS" \
@@ -75,7 +75,9 @@ COPY build-libxrandr.sh /tmp/build-libxrandr.sh
 RUN mkdir -p mkdir /tmp/libxrandr && curl -# -L "https://www.x.org/releases/individual/lib/libXrandr-${LIBXRANDR_VERSION}.tar.xz" | tar -xJ --strip 1 -C /tmp/libxrandr
 RUN /tmp/build-libxrandr.sh
 
-RUN mkdir -p /tmp/openbox && curl -# -L "http://openbox.org/dist/openbox/openbox-${OPENBOX_VERSION}.tar.xz" | tar -xJ --strip 1 -C /tmp/openbox
+RUN mkdir -p /tmp/openbox \
+    && curl -# -L "http://openbox.org/dist/openbox/openbox-${OPENBOX_VERSION}.tar.xz" | tar -xJ --strip 1 -C /tmp/openbox \
+    && curl -# -L "https://raw.githubusercontent.com/gcc-mirror/gcc/master/config.sub" -o /tmp/openbox/config.sub
 
 RUN /tmp/build/build.sh
 RUN xx-verify --static \
