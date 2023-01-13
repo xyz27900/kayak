@@ -49,7 +49,7 @@ jobs:
         with:
           driver-opts: network=host
 
-      - name: Build "kayak/upx:latest"
+      - name: Build "kayak/upx:latest" [Local Registry]
         uses: docker/build-push-action@v3
         with:
           push: true
@@ -57,8 +57,10 @@ jobs:
           tags: localhost:5000/kayak/upx:latest
           file: ./docker/upx/Dockerfile
           context: ./docker/upx
+          cache-from: type=gha,mode=max,scope=kayak/upx
+          cache-to: type=gha,mode=max,scope=kayak/upx
 
-      - name: Build "kayak/fontconfig:latest"
+      - name: Build "kayak/fontconfig:latest" [Local Registry]
         uses: docker/build-push-action@v3
         with:
           push: true
@@ -68,8 +70,10 @@ jobs:
           context: ./docker/fontconfig
           build-args: |
             FONTCONFIG_VERSION=${{ env.FONTCONFIG_VERSION }}
+          cache-from: type=gha,mode=max,scope=kayak/fontconfig
+          cache-to: type=gha,mode=max,scope=kayak/fontconfig
 
-      - name: Build "kayak/crdetector:latest"
+      - name: Build "kayak/crdetector:latest" [Local Registry]
         uses: docker/build-push-action@v3
         with:
           push: true
@@ -79,8 +83,10 @@ jobs:
           context: ./docker/crdetector
           build-args: |
             UPX_IMAGE=localhost:5000/kayak/upx:latest
+          cache-from: type=gha,mode=max,scope=kayak/crdetector
+          cache-to: type=gha,mode=max,scope=kayak/crdetector
 
-      - name: Build "kayak/xset:latest"
+      - name: Build "kayak/xset:latest" [Local Registry]
         uses: docker/build-push-action@v3
         with:
           push: true
@@ -90,8 +96,10 @@ jobs:
           context: ./docker/xset
           build-args: |
             UPX_IMAGE=localhost:5000/kayak/upx:latest
+          cache-from: type=gha,mode=max,scope=kayak/xset
+          cache-to: type=gha,mode=max,scope=kayak/xset
 
-      - name: Build "kayak/novnc:latest"
+      - name: Build "kayak/novnc:latest" [Local Registry]
         uses: docker/build-push-action@v3
         with:
           push: true
@@ -101,8 +109,10 @@ jobs:
           context: ./docker/novnc
           build-args: |
             NOVNC_VERSION=${{ env.NOVNC_VERSION }}
+          cache-from: type=gha,mode=max,scope=kayak/novnc
+          cache-to: type=gha,mode=max,scope=kayak/novnc
 
-      - name: Build "kayak/openbox:latest"
+      - name: Build "kayak/openbox:latest" [Local Registry]
         uses: docker/build-push-action@v3
         with:
           push: true
@@ -116,8 +126,10 @@ jobs:
             LIBXRANDR_VERSION=${{ env.LIBXRANDR_VERSION }}
             OPENBOX_VERSION=${{ env.OPENBOX_VERSION }}
             PANGO_VERSION=${{ env.PANGO_VERSION }}
+          cache-from: type=gha,mode=max,scope=kayak/openbox
+          cache-to: type=gha,mode=max,scope=kayak/openbox
 
-      - name: Build "kayak/tigervnc:latest"
+      - name: Build "kayak/tigervnc:latest" [Local Registry]
         uses: docker/build-push-action@v3
         with:
           push: true
@@ -136,3 +148,51 @@ jobs:
             XKB_VERSION=${{ env.XKB_VERSION }}
             XKBCOMP_VERSION=${{ env.XKBCOMP_VERSION }}
             XSERVER_VERSION=${{ env.XSERVER_VERSION }}
+          cache-from: type=gha,mode=max,scope=kayak/tigervnc
+          cache-to: type=gha,mode=max,scope=kayak/tigervnc
+
+      - name: Build "kayak/anvil:latest" [DockerHub Registry]
+        uses: docker/build-push-action@v3
+        with:
+          platforms: ${{ matrix.platforms }}
+          tags: kayak/anvil:latest
+          file: ./docker/anvil/Dockerfile
+          context: ./docker/anvil
+          cache-from: type=gha,mode=max,scope=kayak/anvil
+          cache-to: type=gha,mode=max,scope=kayak/anvil
+
+      - name: Build "kayak/chromium:cypress" [DockerHub Registry]
+        uses: docker/build-push-action@v3
+        with:
+          platforms: ${{ matrix.platforms }}
+          tags: kayak/chromium:cypress
+          file: ./docker/chromium/Dockerfile.cypress
+          context: ./docker/chromium
+          build-args: |
+            CRDETECTOR_IMAGE=localhost:5000/kayak/crdetector:latest
+            XSET_IMAGE=localhost:5000/kayak/xset:latest
+          cache-from: type=gha,mode=max,scope=kayak/chromium:cypress
+          cache-to: type=gha,mode=max,scope=kayak/chromium:cypress
+
+      - name: Build "kayak/chromium:playwright" [DockerHub Registry]
+        uses: docker/build-push-action@v3
+        with:
+          platforms: ${{ matrix.platforms }}
+          tags: kayak/chromium:playwright
+          file: ./docker/chromium/Dockerfile.playwright
+          context: ./docker/chromium
+          build-args: |
+            CRDETECTOR_IMAGE=localhost:5000/kayak/crdetector:latest
+            XSET_IMAGE=localhost:5000/kayak/xset:latest
+          cache-from: type=gha,mode=max,scope=kayak/chromium:playwright
+          cache-to: type=gha,mode=max,scope=kayak/chromium:playwright
+
+      - name: Build "kayak/ffmpeg:latest" [DockerHub Registry]
+        uses: docker/build-push-action@v3
+        with:
+          platforms: ${{ matrix.platforms }}
+          tags: kayak/ffmpeg:latest
+          file: ./docker/ffmpeg/Dockerfile
+          context: ./docker/ffmpeg
+          cache-from: type=gha,mode=max,scope=kayak/ffmpeg
+          cache-to: type=gha,mode=max,scope=kayak/ffmpeg

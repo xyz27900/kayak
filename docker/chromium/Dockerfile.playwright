@@ -1,7 +1,13 @@
+ARG CRDETECTOR_IMAGE
+ARG XSET_IMAGE
+
+FROM ${CRDETECTOR_IMAGE} AS crdetector
+FROM ${XSET_IMAGE} AS xset
+
 FROM --platform=$BUILDPLATFORM node:16-bullseye-slim
 
-COPY --from=kayak/crdetector /fakeroot /
-COPY --from=kayak/xset /fakeroot /
+COPY --from=crdetector /fakeroot /
+COPY --from=xset /fakeroot /
 COPY xdpyprobe /usr/bin/xdpyprobe
 COPY install-chromium.sh /install-chromium.sh
 COPY entrypoint.sh /entrypoint.sh

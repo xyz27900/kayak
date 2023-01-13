@@ -20,8 +20,10 @@ GROUP_NAME				= kayak
 
 PLATFORM				= linux/amd64
 
+CRDETECTOR_IMAGE		= kayak/crdetector
 FONTCONFIG_IMAGE		= kayak/fontconfig:latest
 UPX_IMAGE				= kayak/upx:latest
+XSET_IMAGE				= kayak/xset:latest
 
 all: anvil chromium display ffmpeg
 	@docker system prune -f
@@ -40,6 +42,8 @@ chromium: crdetector xset
 	@docker buildx build \
 		--progress=plain \
 		--load \
+		--build-arg CRDETECTOR_IMAGE=$(CRDETECTOR_IMAGE) \
+		--build-arg XSET_IMAGE=$(XSET_IMAGE) \
 		--platform $(PLATFORM) \
 		--tag kayak/chromium:cypress \
 		--file chromium/Dockerfile.cypress chromium
@@ -47,6 +51,8 @@ chromium: crdetector xset
 	@docker buildx build \
 		--progress=plain \
 		--load \
+		--build-arg CRDETECTOR_IMAGE=$(CRDETECTOR_IMAGE) \
+		--build-arg XSET_IMAGE=$(XSET_IMAGE) \
 		--platform $(PLATFORM) \
 		--tag kayak/chromium:playwright \
 		--file chromium/Dockerfile.playwright chromium
