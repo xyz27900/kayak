@@ -80,7 +80,7 @@ function log {
 # phase, libtool re-orders all arguments from LDFLAGS.  Thus, libraries are no
 # longer between the -Wl,--start-group and -Wl,--end-group arguments.  The
 # wrapper detects this scenario and fixes arguments.
-cp "$SCRIPT_DIR"/xx-clang-wrapper /usr/bin/
+#cp "$SCRIPT_DIR"/xx-clang-wrapper /usr/bin/
 
 # Create the meson cross compile file.
 #echo "[binaries]
@@ -102,25 +102,25 @@ cp "$SCRIPT_DIR"/xx-clang-wrapper /usr/bin/
 # The static library is not provided by Alpine repository, so we need to build
 # it ourself.
 #
-mkdir /tmp/pango
-log "Downloading pango..."
-curl -# -L ${PANGO_URL} | tar -xJ --strip 1 -C /tmp/pango
-
-log "Configuring pango..."
-(
-    cd /tmp/pango && LDFLAGS= abuild-meson \
-        -Ddefault_library=static \
-        -Dintrospection=disabled \
-        -Dgtk_doc=false \
-        --cross-file /tmp/meson-cross.txt \
-        build \
-)
-
-log "Compiling pango..."
-meson compile -C /tmp/pango/build
-
-log "Installing pango..."
-DESTDIR=$(xx-info sysroot) meson install --no-rebuild -C /tmp/pango/build
+#mkdir /tmp/pango
+#log "Downloading pango..."
+#curl -# -L ${PANGO_URL} | tar -xJ --strip 1 -C /tmp/pango
+#
+#log "Configuring pango..."
+#(
+#    cd /tmp/pango && LDFLAGS= abuild-meson \
+#        -Ddefault_library=static \
+#        -Dintrospection=disabled \
+#        -Dgtk_doc=false \
+#        --cross-file /tmp/meson-cross.txt \
+#        build \
+#)
+#
+#log "Compiling pango..."
+#meson compile -C /tmp/pango/build
+#
+#log "Installing pango..."
+#DESTDIR=$(xx-info sysroot) meson install --no-rebuild -C /tmp/pango/build
 
 #
 # Build libXrandr.

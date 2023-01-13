@@ -5,6 +5,11 @@ FROM ${UPX_IMAGE} AS upx
 
 FROM --platform=$BUILDPLATFORM alpine:3.15 AS openbox
 ARG TARGETPLATFORM
+
+ARG LIBXRANDR_VERSION
+ARG OPENBOX_VERSION
+ARG PANGO_VERSION
+
 COPY --from=tonistiigi/xx / /
 COPY --from=fontconfig /opt/fontconfig /tmp/fontconfig-install
 
@@ -54,10 +59,17 @@ RUN xx-apk --no-cache --no-scripts add \
     xz-dev \
     brotli-static
 
+COPY xx-clang-wrapper /usr/bin/xx-clang-wrapper
+
 COPY meson-cross.sh /tmp/meson-cross.sh
 RUN /tmp/meson-cross.sh
 
 COPY . /tmp/build
+
+COPY build-pango.sh /tmp/build-pango.sh
+RUN mkdir -p /tmp/pango && curl -# -L "https://download.gnome.org/sources/pango/$(echo $PANGO_VERSION | cut -d. -f1-2)/pango-${PANGO_VERSION}.tar.xz" | tar -xJ --strip 1 -C /tmp/pango
+RUN /tmp/build-pango.sh
+
 RUN /tmp/build/build.sh
 RUN xx-verify --static \
     /tmp/openbox-install/usr/bin/openbox \
