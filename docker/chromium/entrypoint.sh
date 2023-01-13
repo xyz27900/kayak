@@ -2,5 +2,5 @@
 set -e
 set -u
 
-xdpyprobe
+xprobe
 (trap 'kill 0' SIGINT; crdetector & "$@")

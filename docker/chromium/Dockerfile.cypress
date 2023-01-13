@@ -1,8 +1,5 @@
 ARG CRDETECTOR_IMAGE
-ARG XSET_IMAGE
-
 FROM ${CRDETECTOR_IMAGE} AS crdetector
-FROM ${XSET_IMAGE} AS xset
 
 FROM --platform=$BUILDPLATFORM node:16-bullseye-slim AS cypress
 
@@ -11,11 +8,14 @@ RUN npm install -g cypress
 FROM --platform=$BUILDPLATFORM node:16-bullseye-slim
 
 COPY --from=crdetector /fakeroot /
-COPY --from=xset /fakeroot /
 COPY --from=cypress /root/.cache/Cypress /root/.cache/Cypress
-COPY xdpyprobe /usr/bin/xdpyprobe
+COPY xprobe /usr/bin/xprobe
 COPY install-chromium.sh /install-chromium.sh
 COPY entrypoint.sh /entrypoint.sh
+
+RUN apt update && apt install -y --no-install-recommends \
+    x11-xserver-utils \
+    && rm -rf /var/lib/apt/lists/*
 
 RUN /install-chromium.sh
 
