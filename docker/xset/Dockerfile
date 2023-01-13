@@ -1,6 +1,7 @@
+ARG UPX_IMAGE=kayak/upx:latest
+
 FROM --platform=$BUILDPLATFORM alpine:3.15 AS builder
 ARG TARGETPLATFORM
-ARG UPX_IMAGE=kayak/upx:latest
 
 COPY --from=tonistiigi/xx / /
 COPY --from=${UPX_IMAGE} /usr/bin/upx /usr/bin/upx
