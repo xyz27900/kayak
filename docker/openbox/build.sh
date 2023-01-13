@@ -20,133 +20,9 @@ OPENBOX_URL=http://openbox.org/dist/openbox/openbox-${OPENBOX_VERSION}.tar.xz
 PANGO_URL=https://download.gnome.org/sources/pango/${PANGO_VERSION%.*}/pango-${PANGO_VERSION}.tar.xz
 LIBXRANDR_URL=https://www.x.org/releases/individual/lib/libXrandr-${LIBXRANDR_VERSION}.tar.xz
 
-# Set same default compilation flags as abuild.
-#export CFLAGS="-Os -fomit-frame-pointer"
-#export CXXFLAGS="$CFLAGS"
-#export CPPFLAGS="$CFLAGS"
-#export LDFLAGS="-Wl,--as-needed --static -static -Wl,--strip-all"
-#
-#export CC=xx-clang-wrapper
-#export CXX=xx-clang++
-
 function log {
     echo ">>> $*"
 }
-
-#
-# Install required packages.
-#
-#log "Installing required Alpine packages..."
-#apk --no-cache add \
-#    curl \
-#    build-base \
-#    clang \
-#    meson \
-#    pkgconfig \
-#    patch \
-#    glib-dev \
-#
-#xx-apk --no-cache --no-scripts add \
-#    g++ \
-#    glib-dev \
-#    glib-static \
-#    fribidi-dev \
-#    fribidi-static \
-#    harfbuzz-dev \
-#    harfbuzz-static \
-#    cairo-dev \
-#    cairo-static \
-#    libxft-dev \
-#    libxml2-dev \
-#    libx11-dev \
-#    libx11-static \
-#    libxcb-static \
-#    libxdmcp-dev \
-#    libxau-dev \
-#    freetype-static \
-#    expat-static \
-#    libpng-dev \
-#    libpng-static \
-#    zlib-static \
-#    bzip2-static \
-#    pcre-dev \
-#    libxrender-dev \
-#    graphite2-static \
-#    libffi-dev \
-#    xz-dev \
-#    brotli-static \
-
-# Copy the xx-clang wrapper.  Openbox compilation uses libtool.  During the link
-# phase, libtool re-orders all arguments from LDFLAGS.  Thus, libraries are no
-# longer between the -Wl,--start-group and -Wl,--end-group arguments.  The
-# wrapper detects this scenario and fixes arguments.
-#cp "$SCRIPT_DIR"/xx-clang-wrapper /usr/bin/
-
-# Create the meson cross compile file.
-#echo "[binaries]
-#pkgconfig = '$(xx-info)-pkg-config'
-#
-#[properties]
-#sys_root = '$(xx-info sysroot)'
-#pkg_config_libdir = '$(xx-info sysroot)/usr/lib/pkgconfig'
-#
-#[host_machine]
-#system = 'linux'
-#cpu_family = '$(xx-info arch)'
-#cpu = '$(xx-info arch)'
-#endian = 'little'
-#" > /tmp/meson-cross.txt
-
-#
-# Build pango.
-# The static library is not provided by Alpine repository, so we need to build
-# it ourself.
-#
-#mkdir /tmp/pango
-#log "Downloading pango..."
-#curl -# -L ${PANGO_URL} | tar -xJ --strip 1 -C /tmp/pango
-#
-#log "Configuring pango..."
-#(
-#    cd /tmp/pango && LDFLAGS= abuild-meson \
-#        -Ddefault_library=static \
-#        -Dintrospection=disabled \
-#        -Dgtk_doc=false \
-#        --cross-file /tmp/meson-cross.txt \
-#        build \
-#)
-#
-#log "Compiling pango..."
-#meson compile -C /tmp/pango/build
-#
-#log "Installing pango..."
-#DESTDIR=$(xx-info sysroot) meson install --no-rebuild -C /tmp/pango/build
-
-#
-# Build libXrandr.
-# The static library is not provided by Alpine repository, so we need to build
-# it ourself.
-#
-mkdir /tmp/libxrandr
-log "Downloading libXrandr..."
-curl -# -L ${LIBXRANDR_URL} | tar -xJ --strip 1 -C /tmp/libxrandr
-
-log "Configuring libXrandr..."
-(
-    cd /tmp/libxrandr && LDFLAGS= ./configure \
-        --build=$(TARGETPLATFORM= xx-clang --print-target-triple) \
-        --host=$(xx-clang --print-target-triple) \
-        --prefix=/usr \
-        --disable-shared \
-        --enable-static \
-        --enable-malloc0returnsnull \
-)
-
-log "Compiling libXrandr..."
-make -C /tmp/libxrandr -j$(nproc)
-
-log "Installing libXrandr..."
-make DESTDIR=$(xx-info sysroot) -C /tmp/libxrandr install
 
 #
 # Build fontconfig.
@@ -165,9 +41,9 @@ cp -av /tmp/fontconfig-install/usr $(xx-info sysroot)
 #
 # Build Openbox.
 #
-mkdir /tmp/openbox
-log "Downloading Openbox..."
-curl -# -L ${OPENBOX_URL} | tar -xJ --strip 1 -C /tmp/openbox
+#mkdir /tmp/openbox
+#log "Downloading Openbox..."
+#curl -# -L ${OPENBOX_URL} | tar -xJ --strip 1 -C /tmp/openbox
 
 log "Patching Openbox..."
 patch -p1 -d /tmp/openbox < "$SCRIPT_DIR"/disable-x-locale.patch
