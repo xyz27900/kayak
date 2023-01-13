@@ -1,11 +1,9 @@
 ARG FONTCONFIG_IMAGE
 ARG NOVNC_IMAGE
-ARG OPENBOX_IMAGE
 ARG TIGERVNC_IMAGE
 
 FROM ${FONTCONFIG_IMAGE} AS fontconfig
 FROM ${NOVNC_IMAGE} AS novnc
-FROM ${OPENBOX_IMAGE} AS openbox
 FROM ${TIGERVNC_IMAGE} AS tigervnc
 
 FROM --platform=$BUILDPLATFORM alpine:3.15
@@ -15,20 +13,24 @@ ARG GROUP_ID
 ARG USER_NAME
 ARG GROUP_NAME
 
-COPY --from=fontconfig /opt/fontconfig/usr /usr
-COPY --from=novnc /opt/noVNC /opt/noVNC
-COPY --from=openbox /fakeroot /
-COPY --from=tigervnc /fakeroot /
-COPY fakeroot /
-
 RUN apk add --no-cache \
     sudo \
     bash \
     procps \
+    openbox \
     supervisor \
     xhost \
     xrdb \
     xterm
+
+RUN rm -rf /etc/xdg/openbox
+RUN rm -rf /usr/share/themes
+
+COPY --from=fontconfig /opt/fontconfig/usr /usr
+COPY --from=novnc /opt/noVNC /opt/noVNC
+#COPY --from=openbox /fakeroot /
+COPY --from=tigervnc /fakeroot /
+COPY fakeroot /
 
 ENV VNC_PORT=5900 \
     WEB_PORT=5800

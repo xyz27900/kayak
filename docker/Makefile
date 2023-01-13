@@ -6,7 +6,6 @@ LIBXFONT2_VERSION		= 2.0.4
 LIBXRANDR_VERSION		= 1.5.3
 LIBXSHMFENCE_VERSION	= 1.3
 NOVNC_VERSION			= 1.3.0
-OPENBOX_VERSION			= 3.6.1
 PANGO_VERSION			= 1.49.3
 TIGERVNC_VERSION		= 1.12.0
 XKB_VERSION 			= 2.32
@@ -18,10 +17,12 @@ GROUP_ID				= 1000
 USER_NAME				= kayak
 GROUP_NAME				= kayak
 
-PLATFORM				= linux/amd64
+PLATFORM				= linux/arm64/v8
 
 CRDETECTOR_IMAGE		= kayak/crdetector
 FONTCONFIG_IMAGE		= kayak/fontconfig:latest
+NOVNC_IMAGE				= kayak/novnc:latest
+TIGERVNC_IMAGE			= kayak/tigervnc:latest
 UPX_IMAGE				= kayak/upx:latest
 
 all: anvil chromium display ffmpeg
@@ -65,10 +66,13 @@ crdetector: upx
 		--file crdetector/Dockerfile crdetector
 
 .PHONY: display
-display: novnc openbox tigervnc
+display: novnc tigervnc
 	@docker buildx build \
 		--progress=plain \
 		--load \
+		--build-arg FONTCONFIG_IMAGE=$(FONTCONFIG_IMAGE) \
+		--build-arg NOVNC_IMAGE=$(NOVNC_IMAGE) \
+		--build-arg TIGERVNC_IMAGE=$(TIGERVNC_IMAGE) \
 		--build-arg USER_ID=$(USER_ID) \
 		--build-arg GROUP_ID=$(GROUP_ID) \
 		--build-arg USER_NAME=$(USER_NAME) \
@@ -105,20 +109,6 @@ novnc:
 		--platform $(PLATFORM) \
 		--tag kayak/novnc:latest \
 		--file novnc/Dockerfile novnc
-
-.PHONY: openbox
-openbox: fontconfig upx
-	@docker buildx build \
-		--progress=plain \
-		--load \
-		--build-arg FONTCONFIG_IMAGE=$(FONTCONFIG_IMAGE) \
-		--build-arg UPX_IMAGE=$(UPX_IMAGE) \
-		--build-arg LIBXRANDR_VERSION=$(LIBXRANDR_VERSION) \
-		--build-arg OPENBOX_VERSION=$(OPENBOX_VERSION) \
-		--build-arg PANGO_VERSION=$(PANGO_VERSION) \
-		--platform $(PLATFORM) \
-		--tag kayak/openbox:latest \
-		--file openbox/Dockerfile openbox
 
 .PHONY: tigervnc
 tigervnc: upx
