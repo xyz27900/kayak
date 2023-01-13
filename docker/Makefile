@@ -18,7 +18,7 @@ GROUP_ID				= 1000
 USER_NAME				= kayak
 GROUP_NAME				= kayak
 
-PLATFORM				= linux/arm64/v8
+PLATFORM				= linux/amd64
 
 all: anvil chromium display ffmpeg
 	@docker system prune -f

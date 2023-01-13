@@ -9,6 +9,12 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    services:
+      registry:
+        image: registry:2
+        ports:
+          - 5000:5000
+
     strategy:
       fail-fast: true
       matrix:
@@ -23,34 +29,33 @@ jobs:
         with:
           driver-opts: network=host
 
-      - name: Build "kayak/anvil:latest"
-        uses: docker/build-push-action@v3
-        with:
-          platforms: ${{ matrix.platforms }}
-          tags: ${{ inputs.tag }}
-          file: ./docker/anvil/Dockerfile
-          context: ./docker/anvil
-
       - name: Build "kayak/upx:latest"
         uses: docker/build-push-action@v3
         with:
+          push: true
           platforms: ${{ matrix.platforms }}
-          tags: ${{ inputs.tag }}
+          tags: localhost:5000/kayak/upx:latest
           file: ./docker/upx/Dockerfile
           context: ./docker/upx
 
       - name: Build "kayak/crdetector:latest"
         uses: docker/build-push-action@v3
         with:
+          push: true
           platforms: ${{ matrix.platforms }}
-          tags: ${{ inputs.tag }}
+          tags: localhost:5000/kayak/crdetector:latest
           file: ./docker/crdetector/Dockerfile
           context: ./docker/crdetector
+          build_args: |
+            UPX_IMAGE=localhost:5000/kayak/upx:latest
 
       - name: Build "kayak/xset:latest"
         uses: docker/build-push-action@v3
         with:
+          push: true
           platforms: ${{ matrix.platforms }}
-          tags: ${{ inputs.tag }}
+          tags: localhost:5000/kayak/xset:latest
           file: ./docker/xset/Dockerfile
           context: ./docker/xset
+          build_args: |
+            UPX_IMAGE=localhost:5000/kayak/upx:latest
