@@ -1,5 +1,3 @@
 packages:
-  - 'packages/*'
-  - 'examples/*'
+  - 'packages/eslint-config'
   - 'docs'
-  - 'scripts'
