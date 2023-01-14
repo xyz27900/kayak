@@ -23,11 +23,11 @@ env:
 on:
   push:
     branches:
-      - main
+      - test
 
 jobs:
   build:
-    name: Build Docker Images
+    name: Build Images
     runs-on: ubuntu-20.04
 
     services:
@@ -163,7 +163,6 @@ jobs:
           context: ./docker/chromium
           build-args: |
             CRDETECTOR_IMAGE=localhost:5000/kayak/crdetector:latest
-            XSET_IMAGE=localhost:5000/kayak/xset:latest
           cache-from: type=gha,mode=max,scope=kayak/chromium:cypress
           cache-to: type=gha,mode=max,scope=kayak/chromium:cypress
 
@@ -176,7 +175,6 @@ jobs:
           context: ./docker/chromium
           build-args: |
             CRDETECTOR_IMAGE=localhost:5000/kayak/crdetector:latest
-            XSET_IMAGE=localhost:5000/kayak/xset:latest
           cache-from: type=gha,mode=max,scope=kayak/chromium:playwright
           cache-to: type=gha,mode=max,scope=kayak/chromium:playwright
 

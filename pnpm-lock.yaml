@@ -13,6 +13,7 @@ importers:
       '@kayak/eslint-config': workspace:*
       '@types/markdown-it': ^12.2.3
       '@types/markdown-it-container': ^2.0.5
+      '@types/node': ^18.11.17
       eslint: ^8.30.0
       markdown-it: ^13.0.1
       markdown-it-container: ^3.0.0
@@ -22,11 +23,12 @@ importers:
       '@kayak/eslint-config': link:../packages/eslint-config
       '@types/markdown-it': 12.2.3
       '@types/markdown-it-container': 2.0.5
+      '@types/node': 18.11.18
       eslint: 8.31.0
       markdown-it: 13.0.1
       markdown-it-container: 3.0.0
       typescript: 4.9.4
-      vitepress: 1.0.0-alpha.33_2r467mdhb7mblpaox4bg7fatdi
+      vitepress: 1.0.0-alpha.33_j73j5xdbzpkigstapj6vkce2xy
 
   packages/eslint-config:
     specifiers:
@@ -515,6 +517,10 @@ packages:
     resolution: {integrity: sha512-eC4U9MlIcu2q0KQmXszyn5Akca/0jrQmwDRgpAMJai7qBWq4amIQhZyNau4VYGtCeALvW1/NtjzJJ567aZxfKA==}
     dev: true
 
+  /@types/node/18.11.18:
+    resolution: {integrity: sha512-DHQpWGjyQKSHj3ebjFI/wRKcqQcdR+MoFBygntYOZytCqNfkd2ZC4ARDJ2DQqhjH5p85Nnd3jhUJIXrszFX/JA==}
+    dev: true
+
   /@types/semver/7.3.13:
     resolution: {integrity: sha512-21cFJr9z3g5dW8B0CVI9g2O9beqaThGQ6ZFBqHfwhzLDKUxaqTIy3vnfah/UPkfOiF2pLq+tGz+W8RyCskuslw==}
     dev: true
@@ -659,7 +665,7 @@ packages:
       vite: ^4.0.0
       vue: ^3.2.25
     dependencies:
-      vite: 4.0.4
+      vite: 4.0.4_@types+node@18.11.18
       vue: 3.2.45
     dev: true
 
@@ -2233,7 +2239,7 @@ packages:
     dependencies:
       punycode: 2.2.0
 
-  /vite/4.0.4:
+  /vite/4.0.4_@types+node@18.11.18:
     resolution: {integrity: sha512-xevPU7M8FU0i/80DMR+YhgrzR5KS2ORy1B4xcX/cXLsvnUWvfHuqMmVU6N0YiJ4JWGRJJsLCgjEzKjG9/GKoSw==}
     engines: {node: ^14.18.0 || >=16.0.0}
     hasBin: true
@@ -2258,6 +2264,7 @@ packages:
       terser:
         optional: true
     dependencies:
+      '@types/node': 18.11.18
       esbuild: 0.16.17
       postcss: 8.4.21
       resolve: 1.22.1
@@ -2266,7 +2273,7 @@ packages:
       fsevents: 2.3.2
     dev: true
 
-  /vitepress/1.0.0-alpha.33_2r467mdhb7mblpaox4bg7fatdi:
+  /vitepress/1.0.0-alpha.33_j73j5xdbzpkigstapj6vkce2xy:
     resolution: {integrity: sha512-EhMDqWLllYr5mXqAz4GCQ1o/bu5umQ6C2d8voiSaTHMkYCxsGc31ETykflM6NOhGx6yccwXygrYIIeN1l6BUEA==}
     hasBin: true
     dependencies:
@@ -2277,7 +2284,7 @@ packages:
       '@vueuse/core': 9.10.0_vue@3.2.45
       body-scroll-lock: 4.0.0-beta.0
       shiki: 0.12.1
-      vite: 4.0.4
+      vite: 4.0.4_@types+node@18.11.18
       vue: 3.2.45
     transitivePeerDependencies:
       - '@algolia/client-search'
