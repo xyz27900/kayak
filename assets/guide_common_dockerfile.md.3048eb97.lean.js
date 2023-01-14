@@ -1,1 +1,0 @@
-import{_ as s,c as a,o as n,a as e}from"./app.3d6b22f6.js";const F=JSON.parse('{"title":"Dockerfile","description":"","frontmatter":{},"headers":[],"relativePath":"guide/common/dockerfile.md"}'),o={name:"guide/common/dockerfile.md"},p=e("",9),l=[p];function c(t,r,i,d,y,D){return n(),a("div",null,l)}const m=s(o,[["render",c]]);export{F as __pageData,m as default};

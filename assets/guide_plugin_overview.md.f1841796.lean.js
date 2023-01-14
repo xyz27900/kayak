@@ -1,1 +1,0 @@
-import{_ as e,c as t,o,a}from"./app.3d6b22f6.js";const c=JSON.parse('{"title":"Plugin Flow","description":"","frontmatter":{},"headers":[],"relativePath":"guide/plugin/overview.md"}'),i={name:"guide/plugin/overview.md"},n=a("",5),r=[n];function s(l,u,h,p,g,d){return o(),t("div",null,r)}const f=e(i,[["render",s]]);export{c as __pageData,f as default};

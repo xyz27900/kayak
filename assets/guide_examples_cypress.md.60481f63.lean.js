@@ -1,1 +1,0 @@
-import{_ as e,c as s,o as r,a}from"./app.3d6b22f6.js";const u=JSON.parse('{"title":"Cypress Examples","description":"","frontmatter":{},"headers":[],"relativePath":"guide/examples/cypress.md"}'),t={name:"guide/examples/cypress.md"},p=a("",2),o=[p];function n(i,l,c,_,h,m){return r(),s("div",null,o)}const g=e(t,[["render",n]]);export{u as __pageData,g as default};
