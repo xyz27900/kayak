@@ -48,13 +48,13 @@ jobs:
           pnpm install
 
       - name: Lint docs
-        working-directory: ./docs
         run: |
+          cd ./docs
           pnpm run lint
 
       - name: Build docs
-        working-directory: ./docs
         run: |
+          cd ./docs
           pnpm run build
 
       - name: Archive build artifacts
