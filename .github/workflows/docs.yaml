@@ -25,6 +25,10 @@ jobs:
           version: 7
           run_install: false
 
+      - name: Set auto-install-peers=true
+        run: |
+          pnpm config set auto-install-peers true
+
       # - name: Get pnpm store direcroty
       #   id: pnpm-store
       #   shell: bash
