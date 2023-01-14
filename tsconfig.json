@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "CommonJS",
+    "moduleResolution": "Node",
+    "useDefineForClassFields": true,
+    "strict": true,
+    "strictNullChecks": true,
+    "noImplicitAny": true,
+    "noImplicitReturns": true,
+    "strictFunctionTypes": true,
+    "useUnknownInCatchVariables": false,
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "lib": [
+      "ES5",
+      "DOM"
+    ],
+    "skipLibCheck": true
+  }
+}
