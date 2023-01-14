@@ -1,6 +1,6 @@
 import MarkdownIt from 'markdown-it';
-import container from 'markdown-it-container';
 import Token from 'markdown-it/lib/token.js';
+import container from 'markdown-it-container';
 
 export const imagePlugin = (md: MarkdownIt): void => {
   md.renderer.rules.image = (tokens: Token[], idx: number): string => {

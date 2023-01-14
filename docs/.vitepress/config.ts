@@ -1,7 +1,7 @@
+import process from 'process';
 import { DefaultTheme, defineConfig, HeadConfig } from 'vitepress';
 import { version } from '../package.json';
 import { imageGroupPlugin, imagePlugin } from './plugins';
-import process from "process";
 
 const isProd = process.env.NODE_ENV === 'production';
 
