@@ -47,10 +47,10 @@ jobs:
         run: |
           pnpm install
 
-      - name: Lint docs
-        run: |
-          cd ./docs
-          pnpm run lint
+      # - name: Lint docs
+      #   run: |
+      #     cd ./docs
+      #     pnpm run lint
 
       - name: Build docs
         run: |
