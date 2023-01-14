@@ -51,6 +51,9 @@ jobs:
       #   run: |
       #     cd ./docs
       #     pnpm run lint
+      - name: LS
+        run: |
+          ls -la
 
       - name: Build docs
         run: |
