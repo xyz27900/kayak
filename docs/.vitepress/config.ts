@@ -1,7 +1,6 @@
 import process from 'process';
 import { DefaultTheme, defineConfig, HeadConfig } from 'vitepress';
 import { version } from '../package.json';
-import { imageGroupPlugin, imagePlugin } from './plugins';
 
 const isProd = process.env.NODE_ENV === 'production';
 
@@ -91,6 +90,10 @@ const sidebar: DefaultTheme.Sidebar = {
         {
           text: 'What is Kayak?',
           link: '/guide/'
+        },
+        {
+          text: 'Tutorial',
+          link: '/guide/tutorial'
         }
       ]
     },
@@ -186,12 +189,7 @@ export default defineConfig({
   description,
   head,
   markdown: {
-    theme: 'github-dark',
-    config: (md) => {
-      md
-        .use(imagePlugin)
-        .use(imageGroupPlugin);
-    }
+    theme: 'github-dark'
   },
   themeConfig: {
     nav,

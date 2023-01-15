@@ -1,10 +1,5 @@
 # What is Kayak?
 
-::: image-group
-![](/images/midjourney-kayak-1.png)
-![](/images/midjourney-kayak-2.png)
-:::
-
 ## Overview
 
 **Kayak** is a tool that allows you to write end-to-end tests for your web3 applications in a way you've never written them before.
