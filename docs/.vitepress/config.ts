@@ -226,6 +226,9 @@ export default defineConfig({
   vite: {
     server: {
       port: 3005
+    },
+    define: {
+      __BASE__: JSON.stringify(process.env.CI ? '/kayak/' : '/')
     }
   }
 });

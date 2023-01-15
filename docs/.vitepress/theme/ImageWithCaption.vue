@@ -4,7 +4,7 @@
       margin: '16px 0'
     }"
   >
-    <img :src="src" :alt="alt">
+    <img :src="srcWithBase" :alt="alt">
     <figcaption
       :style="{
         marginTop: '4px',
@@ -19,7 +19,9 @@
 </template>
 
 <script setup>
-defineProps({
+import { computed } from 'vue';
+
+const props = defineProps({
   src: {
     type: String,
     required: true
@@ -28,5 +30,11 @@ defineProps({
     type: String,
     required: true
   }
+})
+
+const srcWithBase = computed(() => {
+  const base = __BASE__.replace(/\/$/, '')
+  const src = props.src.replace(/^\//, '')
+  return `${base}/${src}`
 })
 </script>
