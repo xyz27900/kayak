@@ -1,1 +1,0 @@
-import{_ as a,c as e,o as t,a as r}from"./app.867a90ae.js";const d=JSON.parse('{"title":"Playwright Examples","description":"","frontmatter":{},"headers":[],"relativePath":"guide/examples/playwright.md"}'),s={name:"guide/examples/playwright.md"},i=r("",2),l=[i];function o(p,h,n,g,_,c){return t(),e("div",null,l)}const u=a(s,[["render",o]]);export{d as __pageData,u as default};
