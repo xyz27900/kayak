@@ -60,3 +60,11 @@ it('Test Metamask connection', () => {
 })
 ```
 :::
+
+## Similar projects
+
+[Synpress](https://github.com/Synthetixio/synpress) is a similar project that allows you to run end-to-end tests with **Cypress** and **Metamask** as well.
+It uses several similar approaches, so we recommend you to have a look at it.
+
+[Docker BaseImage GUI](https://github.com/jlesage/docker-baseimage-gui) is an awesome and extremely tiny X graphical **Docker** image.
+**Kayak** uses some techniques and build scripts from this project to build its own **Docker** image.

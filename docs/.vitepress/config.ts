@@ -5,7 +5,7 @@ import { imageGroupPlugin, imagePlugin } from './plugins';
 
 const isProd = process.env.NODE_ENV === 'production';
 
-const url = isProd ? 'https://kayak.netlify.app' : 'http://localhost:3005';
+const url = isProd ? 'https://xyz27900.github.io/kayak' : 'http://localhost:3005';
 const title = 'Kayak';
 const description = 'A tool for cooking e2e tests for web3';
 const image = `${url}/banner.png`;
@@ -24,7 +24,7 @@ const head: HeadConfig[] = [
   ['link', {
     rel: 'icon',
     type: 'image/svg+xml',
-    href: '/logo.svg'
+    href: `${url}/logo.svg`
   }],
 
   ['meta', {
@@ -224,10 +224,10 @@ export default defineConfig({
     //   },
     // },
   },
+  base: process.env.CI ? '/kayak/' : '/',
   vite: {
     server: {
       port: 3005
     }
-  },
-  base: process.env.CI ? '/kayak/' : '/'
+  }
 });

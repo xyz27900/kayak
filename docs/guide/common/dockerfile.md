@@ -46,7 +46,7 @@ You can modify it to your needs.
 The `kayak/chromium` image has two tags: `cypress` and `playwright` — depending on the framework you use.
 
 ::: tip
-Actually, you can run `playwright` tests in the `cypress` image, but vice versa is not possible.
+Tehnically, you can run `playwright` tests in the `cypress` image, but vice versa is not possible.
 :::
 
 By default, `Dockerfile` uses a two-stage build to reduce building time.
