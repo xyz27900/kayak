@@ -268,7 +268,7 @@ npm install -D concurrently
 Everything is ready, so we can easily launch the tests:
 
 ```shell
-Everything is ready, so we can easily launch the tests:
+npm run test
 ```
 
 This action will create and run several Docker containers, and we can observe the test execution process directly in a browser window just by opening [http://127.0.0.1:5800/vnc.html?autoconnect=true](http://127.0.0.1:5800/vnc.html?autoconnect=true).
