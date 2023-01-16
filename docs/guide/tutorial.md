@@ -286,7 +286,7 @@ After the tests are finished, we can open the recorded video located in the `cyp
 
 <docs-frame>
   <docs-video
-    src="/videos/tutorial-test-output.mp4"
+    src="/videos/tutorial-test-output-2.mp4"
     type="video/mp4"
   />
 </docs-frame>
