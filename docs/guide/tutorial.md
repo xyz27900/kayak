@@ -14,22 +14,22 @@ npx kayak init --cypress
 
 Go through several steps in the initialization wizard:
 
-<image-with-caption
+<docs-image
   src="/images/tutorial/1-choose-language.png"
   alt="Choose a language"
 />
 
-<image-with-caption
+<docs-image
   src="/images/tutorial/2-determine-seed-phrase.png"
   alt="Determine the seed phrase"
 />
 
-<image-with-caption
+<docs-image
   src="/images/tutorial/3-determine-password.png"
   alt="Determine the password"
 />
 
-<image-with-caption
+<docs-image
   src="/images/tutorial/4-result.png"
   alt="Result"
 />
@@ -113,10 +113,11 @@ Create the `src` directory and put into it a file `index.html` with the followin
 
     /* Functions */
     const connectWallet = async () => {
-    const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' })
+      const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' })
       connectedAccount.textContent = accounts[0]
       signMessageBtn.disabled = false
       sendTransactionBtn.disabled = false
+      localStorage.setItem('isConnected', 'true')
     }
 
     const signMessage = async () => {
@@ -137,9 +138,10 @@ Create the `src` directory and put into it a file `index.html` with the followin
           {
             from: connectedAccount.textContent,
             to: '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
-            value: '0x29a2241af62c0000',
-            gasPrice: '0x09184e72a000',
-            gas: '0x2710'
+            value: '0x0',
+            gasLimit: '0x5028',
+            maxFeePerGas: '0x2540be400',
+            maxPriorityFeePerGas: '0x3b9aca00'
           }
         ]
       })
@@ -180,7 +182,7 @@ It will launch a static server with our file on port `3000`.
 If we look at the content of the file called `kayak.config.ts`, we may notice the `testDir` property — it is a relative path to the directory containing your tests, so let's create this one.
 
 ```shell
-mkdir cypress/tests
+mkdir -p cypress/tests
 ```
 
 Write our first Cypress test:
@@ -188,6 +190,10 @@ Write our first Cypress test:
 ```typescript
 // cypress/tests/example.cy.ts
 describe('Example Test Suite', () => {
+  beforeEach(() => {
+    cy.visit('http://localhost:3000')
+  })
+
   it('Connect a wallet', () => {
     cy.get('[data-testid="connect-wallet-btn"]').click()
     cy.metamaskApproveConnection()
@@ -196,6 +202,7 @@ describe('Example Test Suite', () => {
   })
 
   it('Sign a message', () => {
+    cy.get('[data-testid="connect-wallet-btn"]').click()
     cy.get('[data-testid="sign-message-btn"]').click()
     cy.metamaskApproveSignature()
     cy.get('[data-testid="signed-message"')
@@ -203,6 +210,7 @@ describe('Example Test Suite', () => {
   })
 
   it('Send a transaction', () => {
+    cy.get('[data-testid="connect-wallet-btn"]').click()
     cy.get('[data-testid="send-transaction-btn"]').click()
     cy.metamaskApproveTransaction()
     cy.get('[data-testid="sent-transaction"')
@@ -213,7 +221,8 @@ describe('Example Test Suite', () => {
 
 Now we're almost ready to go! But…
 
-Metamask uses the Ethereum Mainnet network by default, and it's not the best idea to best idea to run the tests operating the real funds. Fortunately, Kayak is being shipped with Anvil — a local Ethereum testnet node, so all we need to do is to delete the current local testnet and replace it with Anvil's one.
+Metamask uses the Ethereum Mainnet network by default, and it's not the best idea to run the tests operating the real funds.
+Fortunately, Kayak is being shipped with [Anvil](https://book.getfoundry.sh/anvil/) — a local Ethereum testnet node, so all we need to do is to delete the current local testnet and replace it with Anvil's one.
 
 ```typescript
 it('Sign a message', () => {
@@ -250,7 +259,7 @@ This is a default command for running the tests — therefore, we should add thi
 We will use the [start-server-and-test package](https://www.npmjs.com/package/start-server-and-test) to solve this task:
 
 ```shell
-npm install -D concurrently
+npm install -D start-server-and-test
 ```
 
 ```json
@@ -272,3 +281,12 @@ npm run test
 ```
 
 This action will create and run several Docker containers, and we can observe the test execution process directly in a browser window just by opening [http://127.0.0.1:5800/vnc.html?autoconnect=true](http://127.0.0.1:5800/vnc.html?autoconnect=true).
+
+After the tests are finished, we can open the recorded video located in the `cypress/videos` directory to replay the execution process — it is useful for debugging.
+
+<docs-frame>
+  <docs-video
+    src="/videos/tutorial-test-output.mp4"
+    type="video/mp4"
+  />
+</docs-frame>

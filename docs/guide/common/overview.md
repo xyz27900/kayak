@@ -11,6 +11,8 @@ The **Display** container is a sort of bus — **Test Runner** opens a browser o
 
 During the test execution, you can observe what’s going on in your browser by opening the page accessible at `127.0.0.1:5800/vnc.html`.
 
+Also, you don't need to worry about the local blockchain network, because there is a container with a local testnet running alongside described above. You can read more about it in the [Docker Compose section](/guide/common/docker-compose#local-testnet-node).
+
 To automatically setup **Kayak**, just run the following command:
 
 ## Setup
