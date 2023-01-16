@@ -3,6 +3,7 @@
     preload="auto"
     playsinline
     controls
+    muted
   >
     <source
       :src="srcWithBase"
