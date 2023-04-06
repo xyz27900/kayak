@@ -75,13 +75,13 @@ jobs:
 
       - name: "Copy workspace files to /tmp"
         run: |
-          mkdir -p /tmp
-          cp -r packages /tmp/packages
-          find . -name 'node_modules' -not -path './node_modules/*' -type d -prune -exec cp -r {} /tmp/{} \;
+          mkdir -p /tmp/workspace
+          cp -r packages /tmp/workspace/packages
+          find . -name 'node_modules' -not -path './node_modules/*' -type d -prune -exec cp -r {} /tmp/workspace/{} \;
 
       - name: "Compress workspace files"
         run: |
-          tar -czf kayak-workspace.tar.gz /tmp
+          tar -czf kayak-workspace.tar.gz -C /tmp/workspace .
 
       - name: "Upload workspace artifact"
         uses: actions/upload-artifact@v3
