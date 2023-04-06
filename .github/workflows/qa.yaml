@@ -13,13 +13,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
+      - name: "Checkout"
         uses: actions/checkout@v3
 
-      - name: Set up Docker Buildx
+      - name: "Set up Docker Buildx"
         uses: docker/setup-buildx-action@v2
 
-      - name: Build workspace Docker image
+      - name: "Build workspace Docker image"
         uses: docker/build-push-action@v4
         with:
           context: .
@@ -27,32 +27,32 @@ jobs:
           tags: localhost:5000/kayak/workspace:latest
           cache-from: type=gha,mode=max,scope=kayak/workspace
           cache-to: type=gha,mode=max,scope=kayak/workspace
-          outputs: type=docker,dest=/tmp/workspace.tar
+          outputs: type=docker,dest=/tmp/kayak-workspace.tar
 
-      - name: Upload workspace image
+      - name: "Upload workspace Docker image"
         uses: actions/upload-artifact@v3
         with:
           name: kayak-workspace
           path: /tmp/kayak-workspace.tar
 
-  qa:
+  lint:
     runs-on: ubuntu-latest
     needs: build-workspace
 
     steps:
-      - name: Checkout
+      - name: "Checkout"
         uses: actions/checkout@v3
 
-      - name: Set up Docker Buildx
+      - name: "Set up Docker Buildx"
         uses: docker/setup-buildx-action@v2
 
-      - name: Download artifact
+      - name: "Download workspace Docker image"
         uses: actions/download-artifact@v3
         with:
           name: kayak-workspace
           path: /tmp
 
-      - name: Load workspace image
+      - name: "Load workspace Docker image"
         run: |
           docker load --input /tmp/kayak-workspace.tar
 
@@ -71,3 +71,28 @@ jobs:
       - name: "Lint examples"
         run: |
           docker run --rm kayak/workspace:latest sh -c "cd examples && make lint"
+
+  test:
+    runs-on: ubuntu-latest
+    needs: build-workspace
+
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v3
+
+      - name: "Set up Docker Buildx"
+        uses: docker/setup-buildx-action@v2
+
+      - name: "Download workspace Docker image"
+        uses: actions/download-artifact@v3
+        with:
+          name: kayak-workspace
+          path: /tmp
+
+      - name: "Load workspace Docker image"
+        run: |
+          docker load --input /tmp/kayak-workspace.tar
+
+      - name: "Test packages"
+        run: |
+          docker run --rm kayak/workspace:latest sh -c "cd packages && make test"
