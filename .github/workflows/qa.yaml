@@ -66,13 +66,41 @@ jobs:
         run: |
           docker run --rm kayak/workspace:latest sh -c "cd docs && pnpm lint"
 
-      - name: "Lint packages"
+      - name: "Lint packages/cli"
         run: |
-          docker run --rm kayak/workspace:latest sh -c "cd packages && make lint"
+          docker run --rm --workdir /app/packages/cli kayak/workspace:latest pnpm lint
 
-      - name: "Lint examples"
+      - name: "Lint packages/core"
         run: |
-          docker run --rm kayak/workspace:latest sh -c "cd examples && make lint"
+          docker run --rm --workdir /app/packages/core kayak/workspace:latest pnpm lint
+
+      - name: "Lint packages/cypress"
+        run: |
+          docker run --rm --workdir /app/packages/cypress kayak/workspace:latest pnpm lint
+
+      - name: "Lint packages/metamask"
+        run: |
+          docker run --rm --workdir /app/packages/metamask kayak/workspace:latest pnpm lint
+
+      - name: "Lint packages/playwright"
+        run: |
+          docker run --rm --workdir /app/packages/playwright kayak/workspace:latest pnpm lint
+
+      - name: "Lint examples/cypress"
+        run: |
+          docker run --rm --workdir /app/examples/cypress kayak/workspace:latest pnpm lint
+
+      - name: "Lint examples/cypress-plugin"
+        run: |
+          docker run --rm --workdir /app/examples/cypress-plugin kayak/workspace:latest pnpm lint
+
+      - name: "Lint examples/playwright"
+        run: |
+          docker run --rm --workdir /app/examples/playwright kayak/workspace:latest pnpm lint
+
+      - name: "Lint examples/playwright-plugin"
+        run: |
+          docker run --rm --workdir /app/examples/playwright-plugin kayak/workspace:latest pnpm lint
 
   test:
     name: "🧪 Test"
@@ -96,9 +124,9 @@ jobs:
         run: |
           docker load --input /tmp/kayak-workspace.tar
 
-      - name: "Test packages"
+      - name: "Test packages/cli"
         run: |
-          docker run --rm kayak/workspace:latest sh -c "cd packages && make test"
+          docker run --rm --workdir /app/packages/cli kayak/workspace:latest pnpm test
 
   cleanup:
     name: "🧹 Cleanup"
