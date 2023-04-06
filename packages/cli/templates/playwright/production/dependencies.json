@@ -1,0 +1,5 @@
+{
+  "@kayak/cli": "^0.0.1",
+  "@kayak/playwright": "^0.0.1",
+  "@playwright/test": "^1.29.0"
+}

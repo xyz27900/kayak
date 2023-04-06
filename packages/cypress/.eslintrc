@@ -1,0 +1,19 @@
+{
+  "extends": "@kayak/eslint-config",
+  "settings": {
+    "import/resolver": {
+      "typescript": {
+        "project": "./tsconfig.json"
+      }
+    }
+  },
+  "overrides": [
+    {
+      "files": ["src/codegen/templates/**/*.js"],
+      "rules": {
+        "quotes": ["error", "double"],
+        "semi": ["error", "always"]
+      }
+    }
+  ]
+}

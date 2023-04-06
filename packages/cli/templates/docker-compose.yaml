@@ -1,0 +1,59 @@
+version: "3.9"
+
+services:
+  display:
+    image: kayak/display
+    container_name: display
+    environment:
+      DISPLAY: :0.0
+      DISPLAY_WIDTH: 1280
+      DISPLAY_HEIGHT: 720
+    ports:
+      - "5800:5800"
+    networks:
+      - kayak-network
+
+  ffmpeg:
+    image: kayak/ffmpeg
+    container_name: ffmpeg
+    depends_on:
+      - display
+    restart: on-failure
+    environment:
+      DISPLAY: display:0.0
+      DISPLAY_WIDTH: 1280
+      DISPLAY_HEIGHT: 720
+      VIDEO_FILENAME: output.mp4
+      CR_DETECTOR_URL: application:5000
+    volumes:
+      - $KAYAK_VIDEOS_DIR:/videos
+    networks:
+      - kayak-network
+
+  anvil:
+    image: kayak/anvil
+    container_name: anvil
+    environment:
+      ANVIL_FORK_URL: https://rpc.ankr.com/eth_goerli
+      SEED_PHRASE: $SEED_PHRASE
+      CHAIN_ID: 1337
+    networks:
+      - kayak-network
+
+  application:
+    build:
+      context: ..
+      dockerfile: ./.kayak/Dockerfile
+      network: host
+    container_name: kayak-application
+    depends_on:
+      - display
+    environment:
+      DISPLAY: display:0.0
+    env_file:
+      - ../.env.kayak
+    networks:
+      - kayak-network
+
+networks:
+  kayak-network:

@@ -39,3 +39,11 @@ jobs:
       - name: Lint scripts
         working-directory: scripts
         run: pnpm lint
+
+      - name: Build packages
+        working-directory: packages
+        run: make build
+
+      - name: Lint packages
+        working-directory: packages
+        run: make lint
