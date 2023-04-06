@@ -4,10 +4,10 @@
   "scripts": {
     "prepare": "husky install"
   },
-  "engines": {
-    "node": ">=16"
-  },
   "devDependencies": {
     "husky": "^8.0.2"
+  },
+  "engines": {
+    "node": ">=16"
   }
 }

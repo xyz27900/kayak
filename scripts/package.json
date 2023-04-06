@@ -7,13 +7,13 @@
     "lint": "eslint --no-fix --ext .js ."
   },
   "dependencies": {
-    "commander": "^9.4.1",
+    "commander": "^10.0.0",
     "fast-glob": "^3.2.12",
     "semver": "^7.3.8",
-    "yaml": "^2.2.0"
+    "yaml": "^2.2.1"
   },
   "devDependencies": {
     "@kayak/eslint-config": "workspace:*",
-    "eslint": "^8.30.0"
+    "eslint": "^8.37.0"
   }
 }

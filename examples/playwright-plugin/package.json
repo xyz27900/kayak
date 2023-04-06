@@ -13,11 +13,11 @@
     "@kayak/cli": "workspace:*",
     "@kayak/eslint-config": "workspace:*",
     "@kayak/playwright": "workspace:*",
-    "@playwright/test": "^1.29.0",
+    "@playwright/test": "^1.32.2",
     "env-cmd": "^10.1.0",
-    "eslint": "^8.30.0",
-    "serve": "^14.1.2",
-    "start-server-and-test": "^1.15.2",
-    "typescript": "^4.9.4"
+    "eslint": "^8.37.0",
+    "serve": "^14.2.0",
+    "start-server-and-test": "^2.0.0",
+    "typescript": "^5.0.3"
   }
 }
