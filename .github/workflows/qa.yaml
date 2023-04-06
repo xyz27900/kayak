@@ -60,7 +60,7 @@ jobs:
 
       - name: "Lint Scripts"
         run: |
-          docker run --rm kayak/workspace:latest sh -c "cd scripts && pnpm lint"
+          docker run --rm kayak/workspace:latest sh -c "cd scripts && pnpm lint
 
       - name: "Lint Docs"
         run: |
@@ -134,6 +134,7 @@ jobs:
     needs:
       - lint
       - test
+    if: always()
 
     steps:
       - name: "Delete artifacts"
