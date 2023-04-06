@@ -117,10 +117,9 @@ jobs:
 
       - name: "Decompress workspace files replacing existing files in current directory"
         run: |
-          ls -la
-          echo "-------"
+          ls -la scripts
           tar -xzf /tmp/kayak-workspace.tar.gz -C . --overwrite --strip-components 1
-          ls -la
+          ls -la scripts
 
       - name: "Lint Scripts"
         working-directory: scripts
