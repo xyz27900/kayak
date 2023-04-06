@@ -8,13 +8,29 @@ on:
     branches:
       - main
 
-services:
-  registry:
-    image: registry:2
-    ports:
-      - 5000:5000
-
 jobs:
+  build-workspace:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Setup QEMU
+      uses: docker/setup-qemu-action@v2
+
+    - name: Setup Docker Buildx
+      uses: docker/setup-buildx-action@v2
+      with:
+        driver-opts: network=host
+
+    - name: "Build workspace Docker image"
+      uses: docker/build-push-action@v4
+      with:
+        push: true
+        tags: localhost:5000/kayak/workspace:latest
+        file: ./Dockerfile
+        context: .
+        cache-from: type=gha,mode=max,scope=kayak/workspace
+        cache-to: type=gha,mode=max,scope=kayak/workspace
+
   qa:
     runs-on: ubuntu-latest
 
@@ -22,23 +38,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Setup QEMU
-        uses: docker/setup-qemu-action@v2
-
-      - name: Setup Docker Buildx
-        uses: docker/setup-buildx-action@v2
-        with:
-          driver-opts: network=host
-
-      - name: "Build workspace Docker image"
-        uses: docker/build-push-action@v4
-        with:
-          push: true
-          tags: localhost:5000/kayak/workspace:latest
-          file: ./Dockerfile
-          context: .
-          cache-from: type=gha,mode=max,scope=kayak/workspace
-          cache-to: type=gha,mode=max,scope=kayak/workspace
+      - name: Pull workspace image
+        run: |
+          docker pull localhost:5000/kayak/workspace:latest
 
       - name: "Lint Scripts"
         run: |
