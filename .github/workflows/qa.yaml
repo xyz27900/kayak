@@ -1,4 +1,4 @@
-name: Quality Assurance
+name: "Quality Assurance"
 
 on:
   push:
@@ -10,6 +10,7 @@ on:
 
 jobs:
   build-workspace:
+    name: "🛠️ Build workspace Docker image"
     runs-on: ubuntu-latest
 
     steps:
@@ -24,7 +25,7 @@ jobs:
         with:
           context: .
           file: ./Dockerfile
-          tags: localhost:5000/kayak/workspace:latest
+          tags: kayak/workspace:latest
           cache-from: type=gha,mode=max,scope=kayak/workspace
           cache-to: type=gha,mode=max,scope=kayak/workspace
           outputs: type=docker,dest=/tmp/kayak-workspace.tar
@@ -36,6 +37,7 @@ jobs:
           path: /tmp/kayak-workspace.tar
 
   lint:
+    name: "👀 Lint"
     runs-on: ubuntu-latest
     needs: build-workspace
 
@@ -73,6 +75,7 @@ jobs:
           docker run --rm kayak/workspace:latest sh -c "cd examples && make lint"
 
   test:
+    name: "🧪 Test"
     runs-on: ubuntu-latest
     needs: build-workspace
 
@@ -96,3 +99,16 @@ jobs:
       - name: "Test packages"
         run: |
           docker run --rm kayak/workspace:latest sh -c "cd packages && make test"
+
+  cleanup:
+    name: "🧹 Cleanup"
+    runs-on: ubuntu-latest
+    needs:
+      - lint
+      - test
+
+    steps:
+      - name: "Delete artifacts"
+        uses: geekyeggo/delete-artifact@v2
+        with:
+          name: kayak-workspace
