@@ -81,7 +81,7 @@ jobs:
 
       - name: "Compress workspace files"
         run: |
-          tar -czf kayak-workspace.tar.gz -C /tmp .
+          tar -czf kayak-workspace.tar.gz /tmp
 
       - name: "Upload workspace artifact"
         uses: actions/upload-artifact@v3
