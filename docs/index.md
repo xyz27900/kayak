@@ -19,7 +19,7 @@ hero:
 features:
   - icon: 🦊
     title: MetaMask support
-    details: Using Kayak you are able to do everything you can with Metamask as a "manual" user.
+    details: Using Kayak you are able to do everything you can with MetaMask as a "manual" user.
   - icon: 🤯
     title: Headed and headless modes
     details: Kayak allows you to execute tests in headless and headed modes.

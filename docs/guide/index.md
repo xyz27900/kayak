@@ -10,7 +10,7 @@
 
 ### :fox_face: MetaMask support
 
-Using **Kayak**, you are able to do everything you can with Metamask as a "manual" user.
+Using **Kayak**, you are able to do everything you can with MetaMask as a "manual" user.
 
 ### :exploding_head: Headed and headless modes
 
@@ -45,10 +45,10 @@ export default defineConfig({
 
 ::: code-group
 ```typescript [tests/uniswap.spec.ts]
-it('Test Metamask connection', () => {
+it('Test MetaMask connection', () => {
   cy.open('https://app.uniswap.org/#/swap')
   cy.get('[data-test-id="navbar-connect-wallet"]').click()
-  cy.get('[data-test-id="wallet-modal-option"]').contains('Metamask').click()
+  cy.get('[data-test-id="wallet-modal-option"]').contains('MetaMask').click()
 
   cy.metamaskApproveConnection()
   cy.get('[data-test-id="web3-status-connected"]').should('be.visible')
@@ -58,7 +58,7 @@ it('Test Metamask connection', () => {
 
 ## Similar projects
 
-[Synpress](https://github.com/Synthetixio/synpress) is a similar project that allows you to run end-to-end tests with **Cypress** and **Metamask** as well.
+[Synpress](https://github.com/Synthetixio/synpress) is a similar project that allows you to run end-to-end tests with **Cypress** and **MetaMask** as well.
 It uses several similar approaches, so we recommend you to have a look at it.
 
 [Docker BaseImage GUI](https://github.com/jlesage/docker-baseimage-gui) is an awesome and extremely tiny X graphical **Docker** image.

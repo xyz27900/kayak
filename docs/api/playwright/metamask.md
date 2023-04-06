@@ -1,4 +1,4 @@
-# Playwright and Metamask
+# Playwright and MetaMask
 
 The `@kayak/playwright` module provides an exported object `metamask` that contains a set of methods.
 
@@ -108,7 +108,7 @@ await metamask.signature.reject();
 
 ## network.add
 
-Adds a new network to Metamask.
+Adds a new network to MetaMask.
 
 ### Usage
 
@@ -136,7 +136,7 @@ await metamask.network.add({
 
 ## network.delete
 
-Deletes a network by a given name from Metamask.
+Deletes a network by a given name from MetaMask.
 
 ### Usage
 
@@ -206,7 +206,7 @@ await metamask.network.toggleTestNetsVisibility(true);
 
 ## account.add
 
-Adds a new account to Metamask.
+Adds a new account to MetaMask.
 
 ### Usage
 
@@ -221,14 +221,14 @@ await metamask.account.add('My Account');
 | `accountName` | `string` | Name of the account to add. |
 
 ::: tip
-After adding an account, Metamask is automatically switched to the new account.
+After adding an account, MetaMask is automatically switched to the new account.
 To get new account data, you need to call [`metamask.account.getData`](#account-getdata).
 :::
 
 
 ## account.import
 
-Imports an account to Metamask.
+Imports an account to MetaMask.
 
 ### Usage
 
@@ -244,7 +244,7 @@ await metamask.account.import(privateKey);
 | `privateKey` | `string` | Private key of the account to import. |
 
 ::: tip
-After importing an account, Metamask is automatically switched to the new account.
+After importing an account, MetaMask is automatically switched to the new account.
 To get new account data, you need to call [`metamask.account.getData`](#account-getdata).
 :::
 

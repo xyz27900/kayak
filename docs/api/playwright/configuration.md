@@ -9,7 +9,7 @@ For better IDE support, you can use the `defineConfig` function from the `@kayak
 const { defineConfig } = require('@kayak/playwright')
 
 module.exports = defineConfig({
-  // ... your configuation
+  // ... your configuration
 })
 ```
 
@@ -17,7 +17,7 @@ module.exports = defineConfig({
 import { defineConfig } from '@kayak/playwright'
 
 export default defineConfig({
-  // ... your configuation
+  // ... your configuration
 })
 ```
 :::

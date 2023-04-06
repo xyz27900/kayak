@@ -1,0 +1,10 @@
+.idea
+.vscode
+.DS_Store
+.tmp
+.npmrc
+cache
+dist
+reports
+node_modules
+.env

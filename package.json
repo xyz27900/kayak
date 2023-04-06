@@ -1,0 +1,13 @@
+{
+  "name": "kayak-monorepo",
+  "version": "0.0.0",
+  "scripts": {
+    "prepare": "husky install"
+  },
+  "engines": {
+    "node": ">=16"
+  },
+  "devDependencies": {
+    "husky": "^8.0.2"
+  }
+}

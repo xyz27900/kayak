@@ -12,23 +12,23 @@ npm install -D @kayak/cypress
 
 ::: code-group
 ```javascript [cypress.config.js]
-const { configureMetamask } = require('@kayak/cypress')
+const { configureMetaMask } = require('@kayak/cypress')
 
 module.exports = {
   setupNodeEvents(on, config) {
-      configureMetamask(on)
+      configureMetaMask(on)
       // ... other plugins
   }
 }
 ```
 
 ```typescript [cypress.config.ts]
-import { configureMetamask } from '@kayak/cypress'
+import { configureMetaMask } from '@kayak/cypress'
 import { defineConfig } from 'cypress'
 
 export default defineConfig({
   setupNodeEvents(on, config) {
-      configureMetamask(on)
+      configureMetaMask(on)
       // ... other plugins
   }
 })
@@ -67,10 +67,10 @@ Also, you need to set the following environment variables:
 
 | Name                            | Description                                                                      |
 |---------------------------------|----------------------------------------------------------------------------------|
-| `CYPRESS_REMOTE_DEBUGGING_PORT` | Port for remote debugging. It is necessary to configure **Metamask**.            |
-| `TMP_DIR`                       | Path to the temporary directory where **Metamask** extension will be downloaded. |
-| `SEED_PHRASE`                   | Seed phrase for **Metamask**.                                                    |
-| `PASSWORD`                      | Password for **Metamask**.                                                       |
+| `CYPRESS_REMOTE_DEBUGGING_PORT` | Port for remote debugging. It is necessary to configure **MetaMask**.            |
+| `TMP_DIR`                       | Path to the temporary directory where **MetaMask** extension will be downloaded. |
+| `SEED_PHRASE`                   | Seed phrase for **MetaMask**.                                                    |
+| `PASSWORD`                      | Password for **MetaMask**.                                                       |
 
 ::: warning
 Please note that it is not enough to put these variables in the `.env` file in the root of your project.

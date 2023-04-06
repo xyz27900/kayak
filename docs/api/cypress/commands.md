@@ -1,6 +1,6 @@
 # Cypress Commands
 
-Adhering to the [Cypress Chains of Commands model](https://docs.cypress.io/guides/core-concepts/introduction-to-cypress#Chains-of-Commands), **Kayak** provides a set of commands that can be used to interact with Metamask.
+Adhering to the [Cypress Chains of Commands model](https://docs.cypress.io/guides/core-concepts/introduction-to-cypress#Chains-of-Commands), **Kayak** provides a set of commands that can be used to interact with MetaMask.
 
 
 
@@ -131,7 +131,7 @@ cy.metamaskRejectSignature().should('be.true')
 
 ## metamaskAddNetwork
 
-Adds a new network to Metamask.
+Adds a new network to MetaMask.
 
 ### Usage
 
@@ -164,7 +164,7 @@ cy.metamaskAddNetwork({
 
 ## metamaskDeleteNetwork
 
-Deletes a network by a given name from Metamask.
+Deletes a network by a given name from MetaMask.
 
 ### Usage
 
@@ -261,7 +261,7 @@ cy.metamaskHideTestNets().should('be.true')
 
 ## metamaskAddAccount
 
-Adds a new account to Metamask.
+Adds a new account to MetaMask.
 
 ### Usage
 
@@ -281,7 +281,7 @@ cy.metamaskAddAccount('My Account').should('be.true')
 - `.metamaskAddAccount()` is a query, and it is safe to chain further commands.
 
 ::: tip
-After adding an account, Metamask is automatically switched to the new account.
+After adding an account, MetaMask is automatically switched to the new account.
 To get new account data, you need to call [`cy.metamaskGetAccountData`](#metamaskgetaccountdata).
 :::
 
@@ -289,7 +289,7 @@ To get new account data, you need to call [`cy.metamaskGetAccountData`](#metamas
 
 ## metamaskImportAccount
 
-Imports an account to Metamask.
+Imports an account to MetaMask.
 
 ### Usage
 
@@ -310,7 +310,7 @@ cy.metamaskImportAccount(privateKey).should('be.true')
 - `.metamaskImportAccount()` is a query, and it is safe to chain further commands.
 
 ::: tip
-After importing an account, Metamask is automatically switched to the new account.
+After importing an account, MetaMask is automatically switched to the new account.
 To get new account data, you need to call [`cy.metamaskGetAccountData`](#metamaskgetaccountdata).
 :::
 

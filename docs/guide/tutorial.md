@@ -51,11 +51,11 @@ We can notice the script called `"kayak"`:
   }
 }
 ```
-This is a main entrypoint for testing.
+This is the main entry point for testing.
 
 ## 2. Create example dApp
 
-Now we’re going to create a simple dApp — it will be a page with three buttons:
+Now, we're going to create a simple dApp. — it will be a page with three buttons:
 
 1. Connect a wallet
 2. Sign a message
@@ -158,7 +158,7 @@ Create the `src` directory and put into it a file `index.html` with the followin
 </html>
 ```
 
-After that we install the [serve package](https://www.npmjs.com/package/serve):
+After that, install the [serve package](https://www.npmjs.com/package/serve):
 
 ```shell
 npm install -D serve
@@ -175,11 +175,11 @@ And add a `serve` command to the `scripts` section in the `package.json` file:
 }
 ```
 
-It will launch a static server with our file on port `3000`.
+This will launch a static server on port `3000`.
 
 ## 3. Write the tests
 
-If we look at the content of the file called `kayak.config.ts`, we may notice the `testDir` property — it is a relative path to the directory containing your tests, so let's create this one.
+Looking at the content of the file `kayak.config.ts`, you may notice the `testDir` property — it is a relative path to the directory containing your tests, so let's create it.
 
 ```shell
 mkdir -p cypress/tests
@@ -221,7 +221,7 @@ describe('Example Test Suite', () => {
 
 Now we're almost ready to go! But…
 
-Metamask uses the Ethereum Mainnet network by default, and it's not the best idea to run the tests operating the real funds.
+MetaMask uses the Ethereum Mainnet network by default, and it's not the best idea to run the tests operating real funds.
 Fortunately, Kayak is being shipped with [Anvil](https://book.getfoundry.sh/anvil/) — a local Ethereum testnet node, so all we need to do is to delete the current local testnet and replace it with Anvil's one.
 
 ```typescript
@@ -244,7 +244,7 @@ it('Send a transaction', () => {
 })
 ```
 
-Finally, our app is ready to be tested.
+Finally, the app is ready for testing.
 
 Let's have a look at the `Dockerfile` located in the `.kayak` directory.
 
@@ -274,7 +274,7 @@ npm install -D start-server-and-test
 
 ## 4. Run the tests
 
-Everything is ready, so we can easily launch the tests:
+Now that everything is ready, you can easily launch the tests:
 
 ```shell
 npm run test

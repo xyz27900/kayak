@@ -1,0 +1,19 @@
+{
+  "name": "@kayak/scripts",
+  "version": "0.0.0",
+  "license": "MIT",
+  "author": "Evgeniy Kozlov",
+  "scripts": {
+    "lint": "eslint --no-fix --ext .js ."
+  },
+  "dependencies": {
+    "commander": "^9.4.1",
+    "fast-glob": "^3.2.12",
+    "semver": "^7.3.8",
+    "yaml": "^2.2.0"
+  },
+  "devDependencies": {
+    "@kayak/eslint-config": "workspace:*",
+    "eslint": "^8.30.0"
+  }
+}

@@ -55,12 +55,12 @@ Here is an example of such a test:
 const { test } = require('@playwright/test')
 const { test: kayakTest } = require('@kayak/playwright')
 
-test('Test without Metamask', async ({ page }) => {
+test('Test without MetaMask', async ({ page }) => {
   await page.goto('https://example.com')
   // ... other actions
 })
 
-kayakTest('Test with Metamask', async ({ page, metamask }) => {
+kayakTest('Test with MetaMask', async ({ page, metamask }) => {
   await page.goto('https://example.com')
   await metamask.addAccount('test account')
   // ... other actions
@@ -71,12 +71,12 @@ kayakTest('Test with Metamask', async ({ page, metamask }) => {
 import { test } from '@playwright/test'
 import { test as kayakTest } from '@kayak/playwright'
 
-test('Test without Metamask', async ({ page }) => {
+test('Test without MetaMask', async ({ page }) => {
   await page.goto('https://example.com')
   // ... other actions
 })
 
-kayakTest('Test with Metamask', async ({ page, metamask }) => {
+kayakTest('Test with MetaMask', async ({ page, metamask }) => {
   await page.goto('https://example.com')
   await metamask.addAccount('test account')
   // ... other actions
@@ -88,9 +88,9 @@ Also, you need to set the following environment variables:
 
 | Name                            | Description                                                                      |
 |---------------------------------|----------------------------------------------------------------------------------|
-| `TMP_DIR`                       | Path to the temporary directory where **Metamask** extension will be downloaded. |
-| `SEED_PHRASE`                   | Seed phrase for **Metamask**.                                                    |
-| `PASSWORD`                      | Password for **Metamask**.                                                       |
+| `TMP_DIR`                       | Path to the temporary directory where **MetaMask** extension will be downloaded. |
+| `SEED_PHRASE`                   | Seed phrase for **MetaMask**.                                                    |
+| `PASSWORD`                      | Password for **MetaMask**.                                                       |
 
 ::: warning
 Please note that it is not enough to put these variables in the `.env` file in the root of your project.

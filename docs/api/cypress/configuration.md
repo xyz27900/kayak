@@ -1,6 +1,6 @@
 # Cypress Configuration
 
-Configuration in an object which has to be exported from `kayak.config.js` or `kayak.config.ts` file — depending on the language you use.
+Configuration is an object which has to be exported from `kayak.config.js` or `kayak.config.ts` file — depending on the language you use.
 
 For better IDE support, you can use the `defineConfig` function from the `@kayak/cypress` package.
 
@@ -9,7 +9,7 @@ For better IDE support, you can use the `defineConfig` function from the `@kayak
 const { defineConfig } = require('@kayak/cypress')
 
 module.exports = defineConfig({
-  // ... your configuation
+  // ... your configuration
 })
 ```
 
@@ -17,7 +17,7 @@ module.exports = defineConfig({
 import { defineConfig } from '@kayak/cypress'
 
 export default defineConfig({
-  // ... your configuation
+  // ... your configuration
 })
 ```
 :::

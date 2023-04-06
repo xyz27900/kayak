@@ -1,0 +1,6 @@
+{
+  "extends": "@kayak/eslint-config",
+  "rules": {
+    "no-console": "off"
+  }
+}

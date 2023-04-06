@@ -89,5 +89,5 @@ You need to specify the `SEED_PHRASE` and `CHAIN_ID` variables — they are bein
 | `VIDEO_FILENAME`  | The name of the video file that will be saved in the `videosDir` directory.                                        |
 | `CR_DETECTOR_URL` | The URL of the `chrome-detector`. It is running in the `application` container.                                    |
 | `ANVIL_FORK_URL`  | The URL of the Ethereum network to be forked.                                                                      |
-| `SEED_PHRASE`     | The seed phrase of the account that is used for testing. To use the test node account in Metamask, leave it as is. |
+| `SEED_PHRASE`     | The seed phrase of the account that is used for testing. To use the test node account in MetaMask, leave it as is. |
 | `CHAIN_ID`        | The ID of the network in your local node.                                                                          |

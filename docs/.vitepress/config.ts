@@ -176,7 +176,7 @@ const sidebar: DefaultTheme.Sidebar = {
           link: '/api/playwright/configuration'
         },
         {
-          text: 'Metamask Interactions',
+          text: 'MetaMask Interactions',
           link: '/api/playwright/metamask'
         }
       ]
