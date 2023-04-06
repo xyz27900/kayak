@@ -1,0 +1,22 @@
+{
+  "name": "@kayak/example-cypress",
+  "version": "0.0.0",
+  "license": "MIT",
+  "author": "Evgeniy Kozlov",
+  "scripts": {
+    "kayak": "kayak test --cypress",
+    "lint": "eslint --no-fix --ext .js,.ts .",
+    "serve": "serve --single --no-request-logging -p 3000 ./src",
+    "test": "start-server-and-test serve http://localhost:3000 kayak"
+  },
+  "devDependencies": {
+    "@kayak/cli": "workspace:*",
+    "@kayak/cypress": "workspace:*",
+    "@kayak/eslint-config": "workspace:*",
+    "cypress": "^12.2.0",
+    "eslint": "^8.30.0",
+    "serve": "^14.1.2",
+    "start-server-and-test": "^1.15.2",
+    "typescript": "^4.9.4"
+  }
+}

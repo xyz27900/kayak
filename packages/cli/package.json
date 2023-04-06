@@ -1,0 +1,49 @@
+{
+  "name": "@kayak/cli",
+  "version": "0.0.0",
+  "keywords": [
+    "kayak",
+    "cypress",
+    "playwright",
+    "web3",
+    "dapp",
+    "metamask",
+    "testing",
+    "e2e"
+  ],
+  "license": "MIT",
+  "author": "Evgeniy Kozlov",
+  "main": "./dist/index.js",
+  "bin": {
+    "kayak": "./dist/index.js"
+  },
+  "files": [
+    "dist",
+    "templates"
+  ],
+  "scripts": {
+    "build": "rm -rf dist && tsc && tsc-alias",
+    "lint": "eslint --no-fix --ext .js,.ts ./src",
+    "test": "jest --coverage",
+    "watch": "concurrently \"tsc -w\" \"tsc-alias -w\""
+  },
+  "dependencies": {
+    "@kayak/core": "workspace:*",
+    "commander": "^9.4.1",
+    "dotenv": "^16.0.3",
+    "prompts": "^2.4.2",
+    "yaml": "^2.2.1"
+  },
+  "devDependencies": {
+    "@kayak/eslint-config": "workspace:*",
+    "@types/jest": "^29.2.5",
+    "@types/node": "^18.11.17",
+    "@types/prompts": "^2.4.2",
+    "eslint": "^8.30.0",
+    "jest": "^29.3.1",
+    "memfs": "^3.4.13",
+    "ts-jest": "^29.0.3",
+    "tsc-alias": "^1.8.2",
+    "typescript": "^4.9.4"
+  }
+}

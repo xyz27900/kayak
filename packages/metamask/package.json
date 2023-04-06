@@ -1,0 +1,36 @@
+{
+  "name": "@kayak/metamask",
+  "version": "0.0.0",
+  "license": "MIT",
+  "author": "Evgeniy Kozlov",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "rm -rf dist && tsc -d && tsc-alias",
+    "lint": "eslint --no-fix --ext .js,.ts ./src",
+    "watch": "concurrently \"tsc -w\" \"tsc-alias -w\""
+  },
+  "dependencies": {
+    "@kayak/core": "workspace:*"
+  },
+  "devDependencies": {
+    "@kayak/eslint-config": "workspace:*",
+    "@types/node": "^18.11.17",
+    "eslint": "^8.30.0",
+    "tsc-alias": "^1.8.2",
+    "typescript": "^4.9.4"
+  },
+  "peerDependencies": {
+    "@playwright/test": "^1.29.0"
+  }
+}
