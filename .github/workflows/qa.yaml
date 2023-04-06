@@ -8,42 +8,50 @@ on:
     branches:
       - main
 
+services:
+  registry:
+    image: registry:2
+    ports:
+      - 5000:5000
+
 jobs:
-  lint:
+  qa:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [16]
 
     steps:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - uses: pnpm/action-setup@v2
+      - name: Setup QEMU
+        uses: docker/setup-qemu-action@v2
+
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v2
         with:
-          version: 8
+          driver-opts: network=host
 
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
+      - name: "Build workspace Docker image"
+        uses: docker/build-push-action@v4
         with:
-          node-version: ${{ matrix.node-version }}
-          cache: 'pnpm'
+          push: true
+          tags: localhost:5000/kayak/workspace:latest
+          file: ./Dockerfile
+          context: .
+          cache-from: type=gha,mode=max,scope=kayak/workspace
+          cache-to: type=gha,mode=max,scope=kayak/workspace
 
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+      - name: "Lint Scripts"
+        run: |
+          docker run --rm localhost:5000/kayak/workspace:latest sh -c "cd scripts && pnpm lint
 
-      - name: Lint docs
-        working-directory: docs
-        run: pnpm lint
+      - name: "Lint Docs"
+        run: |
+          docker run --rm localhost:5000/kayak/workspace:latest sh -c "cd docs && pnpm lint"
 
-      - name: Lint scripts
-        working-directory: scripts
-        run: pnpm lint
+      - name: "Lint packages"
+        run: |
+          docker run --rm localhost:5000/kayak/workspace:latest sh -c "cd packages && make lint"
 
-      - name: Build packages
-        working-directory: packages
-        run: make build
-
-      - name: Lint packages
-        working-directory: packages
-        run: make lint
+      - name: "Lint examples"
+        run: |
+          docker run --rm localhost:5000/kayak/workspace:latest sh -c "cd examples && make lint"
