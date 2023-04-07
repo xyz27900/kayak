@@ -75,7 +75,7 @@ jobs:
           path: kayak-workspace-${{ matrix.node-version }}.tar.gz
 
   lint:
-    uses: ./.github/workflows/qa/lint.workflow.yaml@main
+    uses: ./.github/workflows/qa/lint.workflow.yaml
     with:
       node-version: 18
       pnpm-version: ${{ env.PNPM_VERSION }}
