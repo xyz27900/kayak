@@ -1,13 +1,18 @@
 name: Release
 
 on:
-  push:
+  workflow_run:
+    workflows:
+      - "Quality Assurance"
+    types:
+      - completed
     tags:
-      - 'v*'
+      - "v*"
 
 jobs:
   build-npm:
     name: "🛠️ Build NPM packages"
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -63,7 +68,6 @@ jobs:
 
       - name: "Compress NPM packages files"
         run: |
-          cd /tmp
           tar -czf npm-packages.tar.gz -C /tmp/packages .
 
       - name: "Upload NPM packages artifact"
@@ -133,9 +137,8 @@ jobs:
 
   cleanup:
     name: "🧹 Cleanup"
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
-#    needs: publish-npm
-    if: always()
 
     steps:
       - name: "Delete artifacts"
