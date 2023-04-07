@@ -118,10 +118,6 @@ jobs:
       - name: "Decompress workspace files"
         run: |
           tar -xzf /tmp/kayak-workspace.tar.gz -C . --overwrite
-          echo "ls -la node_modules"
-          ls -la node_modules
-          echo "ls -la scripts/node_modules"
-          ls -la scripts/node_modules
 
       - name: "Lint Scripts"
         working-directory: scripts
@@ -204,9 +200,9 @@ jobs:
           name: kayak-workspace
           path: /tmp
 
-      - name: "Decompress workspace files replacing existing files in current directory"
+      - name: "Decompress workspace files"
         run: |
-          tar -xzf /tmp/kayak-workspace.tar.gz -C . --overwrite --strip-components 1
+          tar -xzf /tmp/kayak-workspace.tar.gz -C . --overwrite
 
       - name: "Test packages/cli"
         working-directory: packages/cli
