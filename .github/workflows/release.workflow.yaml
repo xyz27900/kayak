@@ -1,16 +1,13 @@
 name: Release
 
 on:
-  workflow_run:
-    workflows:
-      - "Quality Assurance"
-    types:
-      - completed
+  push:
+    tags:
+      - "v*"
 
 jobs:
   build-npm:
     name: "🛠️ Build NPM packages"
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     strategy:
       matrix:
