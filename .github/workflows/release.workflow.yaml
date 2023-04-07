@@ -1,0 +1,144 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build-npm:
+    name: "🛠️ Build NPM packages"
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [16]
+
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v3
+
+      - name: "Setup pnpm"
+        uses: .github/actions/setup-pnpm
+        with:
+          node-version: ${{ matrix.node-version }}
+          pnpm-version: 8
+          cache: true
+
+      - name: "Install dependencies"
+        run: pnpm install --frozen-lockfile
+
+      - name: "Build packages/core"
+        working-directory: packages/core
+        run: |
+          pnpm build
+
+      - name: "Build packages/metamask"
+        working-directory: packages/metamask
+        run: |
+          pnpm build
+
+      - name: "Build packages/cypress"
+        working-directory: packages/cypress
+        run: |
+          pnpm build
+
+      - name: "Build packages/playwright"
+        working-directory: packages/playwright
+        run: |
+          pnpm build
+
+      - name: "Build packages/cli"
+        working-directory: packages/cli
+        run: |
+          pnpm build
+
+      - name: "Remove node_modules"
+        run: |
+          find . -name 'node_modules' -type d -prune -exec rm -rf '{}' +
+
+      - name: "Copy NPM packages files to /tmp/packages"
+        run: |
+          mkdir -p /tmp/packages
+          cp -r ./packages /tmp/packages
+
+      - name: "Compress NPM packages files"
+        run: |
+          cd /tmp
+          tar -czf npm-packages.tar.gz -C /tmp/packages .
+
+      - name: "Upload NPM packages artifact"
+        uses: actions/upload-artifact@v3
+        with:
+          name: npm-packages
+          path: npm-packages.tar.gz
+
+#  publish-npm:
+#    name: "📦 Publish NPM packages"
+#    runs-on: ubuntu-latest
+#    needs: build-npm
+#    strategy:
+#      matrix:
+#        node-version: [16]
+#
+#    steps:
+#      - name: "Install Node.js ${{ matrix.node-version }}"
+#        uses: actions/setup-node@v3
+#        with:
+#          node-version: ${{ matrix.node-version }}
+#
+#      - name: "Download NPM packages artifact"
+#        uses: actions/download-artifact@v3
+#        with:
+#          name: npm-packages
+#          path: /tmp
+#
+#      - name: "Decompress NPM packages files"
+#        run: |
+#          tar -xzf /tmp/npm-packages.tar.gz -C .
+#
+#      - name: "Publish packages/core"
+#        working-directory: packages/core
+#        run: |
+#          pnpm publish
+#        env:
+#          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+#
+#      - name: "Publish packages/metamask"
+#        working-directory: packages/metamask
+#        run: |
+#          pnpm publish
+#        env:
+#          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+#
+#      - name: "Publish packages/cypress"
+#        working-directory: packages/cypress
+#        run: |
+#          pnpm publish
+#        env:
+#          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+#
+#      - name: "Publish packages/playwright"
+#        working-directory: packages/playwright
+#        run: |
+#          pnpm publish
+#        env:
+#          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+#
+#      - name: "Publish packages/cli"
+#        working-directory: packages/cli
+#        run: |
+#          pnpm publish
+#        env:
+#          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+  cleanup:
+    name: "🧹 Cleanup"
+    runs-on: ubuntu-latest
+    needs: publish-npm
+    if: always()
+
+    steps:
+      - name: "Delete artifacts"
+        uses: geekyeggo/delete-artifact@v2
+        with:
+          name: npm-packages
