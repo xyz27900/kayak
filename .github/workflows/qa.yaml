@@ -20,16 +20,11 @@ jobs:
       - name: "Checkout"
         uses: actions/checkout@v3
 
-      - name: "Install Node.js ${{ matrix.node-version }}"
-        uses: actions/setup-node@v3
+      - name: "Setup pnpm"
+        uses: ./.github/workflows/setup-pnpm
         with:
           node-version: ${{ matrix.node-version }}
-
-      - name: "Install pnpm"
-        uses: pnpm/action-setup@v2
-        with:
-          version: 8
-          run_install: false
+          pnpm-version: 8
 
       - name: "Get pnpm store directory"
         id: pnpm-cache
@@ -73,7 +68,7 @@ jobs:
         run: |
           pnpm build
 
-      - name: "Copy workspace files to /tmp"
+      - name: "Copy workspace files to /tmp/workspace"
         run: |
           mkdir -p /tmp/workspace
           cp -r ./packages /tmp/workspace/packages
@@ -93,21 +88,19 @@ jobs:
     name: "👀 Lint"
     runs-on: ubuntu-latest
     needs: build-workspace
+    strategy:
+      matrix:
+        node-version: [16]
 
     steps:
       - name: "Checkout"
         uses: actions/checkout@v3
 
-      - name: "Install Node.js ${{ matrix.node-version }}"
-        uses: actions/setup-node@v3
+      - name: "Setup pnpm"
+        uses: ./.github/workflows/setup-pnpm
         with:
           node-version: ${{ matrix.node-version }}
-
-      - name: "Install pnpm"
-        uses: pnpm/action-setup@v2
-        with:
-          version: 8
-          run_install: false
+          pnpm-version: 8
 
       - name: "Download workspace artifact"
         uses: actions/download-artifact@v3
@@ -178,21 +171,19 @@ jobs:
     name: "🧪 Test"
     runs-on: ubuntu-latest
     needs: build-workspace
+    strategy:
+      matrix:
+        node-version: [16]
 
     steps:
       - name: "Checkout"
         uses: actions/checkout@v3
 
-      - name: "Install Node.js ${{ matrix.node-version }}"
-        uses: actions/setup-node@v3
+      - name: "Setup pnpm"
+        uses: ./.github/workflows/setup-pnpm
         with:
           node-version: ${{ matrix.node-version }}
-
-      - name: "Install pnpm"
-        uses: pnpm/action-setup@v2
-        with:
-          version: 8
-          run_install: false
+          pnpm-version: 8
 
       - name: "Download workspace artifact"
         uses: actions/download-artifact@v3

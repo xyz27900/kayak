@@ -1,0 +1,26 @@
+on:
+  workflow_call:
+    inputs:
+      node-version:
+        description: 'Node.js version'
+        required: true
+        type: number
+      pnpm-version:
+        description: 'pnpm version'
+        required: true
+        type: number
+
+jobs:
+  runs-on: ubuntu-latest
+
+  steps:
+    - name: "Install Node.js ${{ inputs.node-version }}"
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ inputs.node-version }}
+
+    - name: "Install pnpm"
+      uses: pnpm/action-setup@v2
+      with:
+        version: ${{ inputs.pnpm-version }}
+        run_install: false
