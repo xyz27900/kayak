@@ -1,8 +1,5 @@
 name: "Release new version"
 
-env:
-  YQ_VERSION: 4.32.2
-
 on:
   push:
     tags:
@@ -14,16 +11,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: "Install yq"
-        run: |
-          yq --version
-
       - name: "Check if QA workflow for current commit succeeded"
         run: |
           curl -s -H "Authorization: Bearer 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" \
             "https://api.github.com/repos/${{ github.repository }}/actions/workflows/qa.workflow.yaml/runs?head_sha=${{ github.sha }}" | \
             yq '.workflow_runs[] | select(.status == "completed" and .conclusion == "success") | .html_url' | \
-            read -r url && echo "QA workflow succeeded: $url" || exit 1
+            read -r url && echo "QA workflow succeeded: $url"
 
   build-npm:
     name: "🛠️ Build NPM packages"
