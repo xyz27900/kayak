@@ -63,7 +63,7 @@ jobs:
 
       - name: "Compress workspace files"
         run: |
-          tar -czf kayak-workspace-{{ matrix.node-version }}.tar.gz -C /tmp/workspace .
+          tar -czf "kayak-workspace-{{ matrix.node-version }}.tar.gz" -C /tmp/workspace .
 
       - name: "Upload workspace artifact"
         uses: actions/upload-artifact@v3
@@ -98,7 +98,7 @@ jobs:
 
       - name: "Decompress workspace files"
         run: |
-          tar -xzf /tmp/kayak-workspace-{{ matrix.node-version }}.tar.gz -C . --overwrite
+          tar -xzf "/tmp/kayak-workspace-{{ matrix.node-version }}.tar.gz" -C . --overwrite
 
       - name: "Lint Scripts"
         working-directory: scripts
@@ -182,7 +182,7 @@ jobs:
 
       - name: "Decompress workspace files"
         run: |
-          tar -xzf /tmp/kayak-workspace.tar.gz -C . --overwrite
+          tar -xzf "/tmp/kayak-workspace-{{ matrix.node-version }}.tar.gz" -C . --overwrite
 
       - name: "Test packages/cli"
         working-directory: packages/cli
