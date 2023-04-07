@@ -13,8 +13,7 @@ jobs:
     steps:
       - name: "Check"
         run: |
-          which curl || echo "curl is not installed" && exit 1
-          which yq || echo "yq is not installed" && exit 1
+          yq --version
 
       - name: "Check if QA workflow for current commit succeeded"
         run: |
