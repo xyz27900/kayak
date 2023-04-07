@@ -14,25 +14,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: "Setup yq cache"
-        uses: actions/cache@v2
-        with:
-          path: /tmp/yq_linux_amd64
-          key: yq-${{ env.YQ_VERSION }}
-          restore-keys: yq-
-
-      - name: "Download yq"
-        run: |
-          if [ ! "$(which yq)" ]; then
-            curl -sL "https://github.com/mikefarah/yq/releases/download/v123/yq_linux_amd64.tar.gz" | tar -xz -C /tmp
-          else
-            echo "yq is already installed"
-          fi
-
       - name: "Install yq"
         run: |
-          sudo mv /tmp/yq_linux_amd64 /usr/local/bin/yq
-          sudo chmod +x /usr/local/bin/yq
           yq --version
 
       - name: "Check if QA workflow for current commit succeeded"
