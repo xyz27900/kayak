@@ -1,0 +1,92 @@
+name: "Lint"
+
+on:
+  workflow_call:
+    inputs:
+      node-version:
+        description: "Node.js version"
+        required: true
+        type: number
+      pnpm-version:
+        description: "pnpm version"
+        required: true
+        type: string
+
+jobs:
+  lint:
+    name: "👀 Lint"
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v3
+
+      - name: "Setup pnpm"
+        uses: ./.github/actions/setup-pnpm
+        with:
+          node-version: ${{ inputs.node-version }}
+          pnpm-version: ${{ inputs.pnpm-version }}
+
+      - name: "Download workspace artifact"
+        uses: actions/download-artifact@v3
+        with:
+          name: workspace-${{ inputs.node-version }}
+          path: /tmp
+
+      - name: "Decompress workspace files"
+        run: |
+          tar -xzf /tmp/workspace-${{ matrix.node-version }}.tar.gz -C . --overwrite
+
+      - name: "Lint Scripts"
+        working-directory: scripts
+        run: |
+          pnpm lint
+
+      - name: "Lint Docs"
+        working-directory: docs
+        run: |
+          pnpm lint
+
+      - name: "Lint packages/cli"
+        working-directory: packages/cli
+        run: |
+          pnpm lint
+
+      - name: "Lint packages/core"
+        working-directory: packages/core
+        run: |
+          pnpm lint
+
+      - name: "Lint packages/cypress"
+        working-directory: packages/cypress
+        run: |
+          pnpm lint
+
+      - name: "Lint packages/metamask"
+        working-directory: packages/metamask
+        run: |
+          pnpm lint
+
+      - name: "Lint packages/playwright"
+        working-directory: packages/playwright
+        run: |
+          pnpm lint
+
+      - name: "Lint examples/cypress"
+        working-directory: examples/cypress
+        run: |
+          pnpm lint
+
+      - name: "Lint examples/cypress-plugin"
+        working-directory: examples/cypress-plugin
+        run: |
+          pnpm lint
+
+      - name: "Lint examples/playwright"
+        working-directory: examples/playwright
+        run: |
+          pnpm lint
+
+      - name: "Lint examples/playwright-plugin"
+        working-directory: examples/playwright-plugin
+        run: |
+          pnpm lint
