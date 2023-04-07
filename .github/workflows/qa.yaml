@@ -117,7 +117,7 @@ jobs:
 
       - name: "Decompress workspace files"
         run: |
-          tar -xzf /tmp/kayak-workspace.tar.gz -C . --overwrite
+          tar -xzf /tmp/kayak-workspace.tar.gz -C . --overwrite --strip-components 1
           echo "ls -la node_modules"
           ls -la node_modules
           echo "ls -la scripts/node_modules"
