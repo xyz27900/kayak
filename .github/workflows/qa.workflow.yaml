@@ -74,7 +74,8 @@ jobs:
   lint:
     name: "👀 Lint"
     runs-on: ubuntu-latest
-    needs: build-workspace
+    needs:
+      - build-workspace
     strategy:
       matrix:
         node-version: [16]
@@ -157,7 +158,8 @@ jobs:
   test:
     name: "🧪 Test"
     runs-on: ubuntu-latest
-    needs: build-workspace
+    needs:
+      - build-workspace
     strategy:
       matrix:
         node-version: [16]
