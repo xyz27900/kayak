@@ -11,6 +11,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: "Check"
+        run: |
+          which curl || echo "curl is not installed" && exit 1
+          which yq || echo "yq is not installed" && exit 1
+
       - name: "Check if QA workflow for current commit succeeded"
         run: |
           curl -s -H "Authorization: Bearer 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" \
