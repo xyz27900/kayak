@@ -63,13 +63,13 @@ jobs:
 
       - name: "Compress workspace files"
         run: |
-          tar -czf kayak-workspace.tar.gz -C /tmp/workspace .
+          tar -czf kayak-workspace-{{ matrix.node-version }}.tar.gz -C /tmp/workspace .
 
       - name: "Upload workspace artifact"
         uses: actions/upload-artifact@v3
         with:
-          name: kayak-workspace
-          path: kayak-workspace.tar.gz
+          name: kayak-workspace-{{ matrix.node-version }}
+          path: kayak-workspace-{{ matrix.node-version }}.tar.gz
 
   lint:
     name: "👀 Lint"
@@ -93,12 +93,12 @@ jobs:
       - name: "Download workspace artifact"
         uses: actions/download-artifact@v3
         with:
-          name: kayak-workspace
+          name: kayak-workspace-{{ matrix.node-version }}
           path: /tmp
 
       - name: "Decompress workspace files"
         run: |
-          tar -xzf /tmp/kayak-workspace.tar.gz -C . --overwrite
+          tar -xzf /tmp/kayak-workspace-{{ matrix.node-version }}.tar.gz -C . --overwrite
 
       - name: "Lint Scripts"
         working-directory: scripts
@@ -177,7 +177,7 @@ jobs:
       - name: "Download workspace artifact"
         uses: actions/download-artifact@v3
         with:
-          name: kayak-workspace
+          name: kayak-workspace-{{ matrix.node-version }}
           path: /tmp
 
       - name: "Decompress workspace files"
@@ -201,4 +201,4 @@ jobs:
       - name: "Delete artifacts"
         uses: geekyeggo/delete-artifact@v2
         with:
-          name: kayak-workspace
+          name: kayak-workspace-*

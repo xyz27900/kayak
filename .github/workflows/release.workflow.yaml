@@ -14,11 +14,9 @@ jobs:
       - name: "Check if QA workflow for current commit succeeded"
         run: |
           curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-            "https://api.github.com/repos/${{ github.repository }}/actions/workflows/qa.workflow.yaml/runs?head_sha=${{ github.sha }}"
-
-      - name: "Exit 1"
-        run: |
-          exit 1
+            "https://api.github.com/repos/${{ github.repository }}/actions/workflows/qa.workflow.yaml/runs?head_sha=${{ github.sha }}" | \
+            yq '.workflow_runs[] | select(.status == "completed" and .conclusion == "success") | .html_url' | \
+            read -r url && echo "QA workflow succeeded: $url"
 
   build-npm:
     name: "🛠️ Build NPM packages"
