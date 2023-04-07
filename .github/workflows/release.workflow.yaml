@@ -6,8 +6,6 @@ on:
       - "Quality Assurance"
     types:
       - completed
-    tags:
-      - "v*"
 
 jobs:
   build-npm:
