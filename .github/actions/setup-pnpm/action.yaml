@@ -36,7 +36,7 @@ runs:
 
     - name: "Setup pnpm cache"
       uses: actions/cache@v3
-      if: inputs.cache
+      if: inputs.cache == 'true'
       with:
         path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
         key: ${{ runner.os }}-node-${{ inputs.node-version }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
