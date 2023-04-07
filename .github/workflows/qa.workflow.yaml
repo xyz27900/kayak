@@ -1,5 +1,8 @@
 name: "Quality Assurance"
 
+env:
+  PNPM_VERSION: 8
+
 on:
   push:
     branches:
@@ -14,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [16]
+        node-version: [18, 19]
 
     steps:
       - name: "Checkout"
@@ -24,7 +27,7 @@ jobs:
         uses: ./.github/actions/setup-pnpm
         with:
           node-version: ${{ matrix.node-version }}
-          pnpm-version: 8
+          pnpm-version: ${{ env.PNPM_VERSION }}
           cache: true
 
       - name: "Install dependencies"
@@ -78,7 +81,7 @@ jobs:
       - build-workspace
     strategy:
       matrix:
-        node-version: [16]
+        node-version: [18, 19]
 
     steps:
       - name: "Checkout"
@@ -88,7 +91,7 @@ jobs:
         uses: ./.github/actions/setup-pnpm
         with:
           node-version: ${{ matrix.node-version }}
-          pnpm-version: 8
+          pnpm-version: ${{ env.PNPM_VERSION }}
 
       - name: "Download workspace artifact"
         uses: actions/download-artifact@v3
@@ -162,7 +165,7 @@ jobs:
       - build-workspace
     strategy:
       matrix:
-        node-version: [16]
+        node-version: [18, 19]
 
     steps:
       - name: "Checkout"
@@ -172,7 +175,7 @@ jobs:
         uses: ./.github/actions/setup-pnpm
         with:
           node-version: ${{ matrix.node-version }}
-          pnpm-version: 8
+          pnpm-version: ${{ env.PNPM_VERSION }}
 
       - name: "Download workspace artifact"
         uses: actions/download-artifact@v3

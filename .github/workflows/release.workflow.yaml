@@ -1,5 +1,9 @@
 name: "Release new version"
 
+env:
+  LTS_NODE_VERSION: 18
+  PNPM_VERSION: 8
+
 on:
   push:
     tags:
@@ -31,8 +35,8 @@ jobs:
       - name: "Setup pnpm"
         uses: ./.github/actions/setup-pnpm
         with:
-          node-version: 16
-          pnpm-version: 8
+          node-version: ${{ env.LTS_NODE_VERSION }}
+          pnpm-version: ${{ env.PNPM_VERSION }}
           cache: true
 
       - name: "Install dependencies"
