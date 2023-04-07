@@ -1,7 +1,7 @@
 name: "Release new version"
 
 env:
-  LTS_NODE_VERSION: 18
+  NODE_VERSION: 18
   PNPM_VERSION: 8
 
 on:
@@ -20,7 +20,7 @@ jobs:
           curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
             "https://api.github.com/repos/${{ github.repository }}/actions/workflows/qa.workflow.yaml/runs?head_sha=${{ github.sha }}" | \
             yq '.workflow_runs[] | select(.status == "completed" and .conclusion == "success") | .html_url' | \
-            read -r url && echo "QA workflow succeeded: $url"
+            xargs -I {} echo "QA workflow succeeded: {}"
 
   build-npm:
     name: "🛠️ Build NPM packages"
@@ -35,7 +35,7 @@ jobs:
       - name: "Setup pnpm"
         uses: ./.github/actions/setup-pnpm
         with:
-          node-version: ${{ env.LTS_NODE_VERSION }}
+          node-version: ${{ env.NODE_VERSION }}
           pnpm-version: ${{ env.PNPM_VERSION }}
           cache: true
 
