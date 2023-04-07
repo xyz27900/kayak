@@ -11,16 +11,18 @@ on:
         type: number
 
 jobs:
-  runs-on: ubuntu-latest
+  setup-pnpm:
+    name: "⚙️ Setup pnpm"
+    runs-on: ubuntu-latest
 
-  steps:
-    - name: "Install Node.js ${{ inputs.node-version }}"
-      uses: actions/setup-node@v3
-      with:
-        node-version: ${{ inputs.node-version }}
+    steps:
+      - name: "Install Node.js ${{ inputs.node-version }}"
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ inputs.node-version }}
 
-    - name: "Install pnpm"
-      uses: pnpm/action-setup@v2
-      with:
-        version: ${{ inputs.pnpm-version }}
-        run_install: false
+      - name: "Install pnpm"
+        uses: pnpm/action-setup@v2
+        with:
+          version: ${{ inputs.pnpm-version }}
+          run_install: false
