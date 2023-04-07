@@ -1,3 +1,5 @@
+name: "Setup pnpm"
+
 on:
   workflow_call:
     inputs:
