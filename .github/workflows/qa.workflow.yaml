@@ -80,18 +80,18 @@ jobs:
     needs:
       - build-workspace
     env:
-      PATHS:
-        - scripts
-        - docs
-        - packages/cli
-        - packages/core
-        - packages/cypress
-        - packages/metamask
-        - packages/playwright
-        - examples/cypress
-        - examples/cypress-plugin
-        - examples/playwright
-        - examples/playwright-plugin
+      PATHS: |
+        scripts
+        docs
+        packages/cli
+        packages/core
+        packages/cypress
+        packages/metamask
+        packages/playwright
+        examples/cypress
+        examples/cypress-plugin
+        examples/playwright
+        examples/playwright-plugin
 
     steps:
       - name: "Checkout"
@@ -112,6 +112,17 @@ jobs:
       - name: "Decompress workspace files"
         run: |
           tar -xzf /tmp/workspace-${{ matrix.node-version }}.tar.gz -C . --overwrite
+
+      - name: "Loop through paths"
+        run: |
+          initial_path=$(pwd)
+          for path in ${{ env.PATHS }}
+          do
+            echo "Linting $path"
+            cd "$path"
+            echo "$(pwd)"
+            cd "$initial_path"
+          done
 
       - name: "Lint Scripts"
         working-directory: scripts
