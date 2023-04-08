@@ -1,0 +1,72 @@
+name: "Lint"
+
+on:
+  workflow_call:
+    inputs:
+      node-version:
+        description: "Node.js version"
+        required: true
+        type: number
+      pnpm-version:
+        description: "pnpm version"
+        required: true
+        type: number
+
+jobs:
+  name: "Build workspace"
+  runs-on: ubuntu-latest
+
+  steps:
+    - name: "Checkout"
+      uses: actions/checkout@v3
+
+    - name: "Setup pnpm"
+      uses: ./.github/actions/setup-pnpm
+      with:
+        node-version: ${{ inputs.node-version }}
+        pnpm-version: ${{ inputs.pnpm-version }}
+        cache: true
+
+    - name: "Install dependencies"
+      run: pnpm install --frozen-lockfile
+
+    - name: "Build packages/core"
+      working-directory: packages/core
+      run: |
+        pnpm build
+
+    - name: "Build packages/metamask"
+      working-directory: packages/metamask
+      run: |
+        pnpm build
+
+    - name: "Build packages/cypress"
+      working-directory: packages/cypress
+      run: |
+        pnpm build
+
+    - name: "Build packages/playwright"
+      working-directory: packages/playwright
+      run: |
+        pnpm build
+
+    - name: "Build packages/cli"
+      working-directory: packages/cli
+      run: |
+        pnpm build
+
+    - name: "Copy workspace files to /tmp/workspace"
+      run: |
+        mkdir -p /tmp/workspace
+        cp -r ./packages /tmp/workspace/packages
+        find . -name 'node_modules' -not -path './node_modules/*' -type d -prune -exec sh -c 'mkdir -p /tmp/workspace/${0#./}; cp -rT "$0" /tmp/workspace/${0#./}' {} \;
+
+    - name: "Compress workspace files"
+      run: |
+        tar -czf workspace-${{ inputs.node-version }}.tar.gz -C /tmp/workspace .
+
+    - name: "Upload workspace artifact"
+      uses: actions/upload-artifact@v3
+      with:
+        name: workspace-${{ inputs.node-version }}
+        path: workspace-${{ inputs.node-version }}.tar.gz
