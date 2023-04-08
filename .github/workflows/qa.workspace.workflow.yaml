@@ -14,7 +14,7 @@ on:
 
 jobs:
   build-workspace:
-    name: "Build workspace"
+    name: "Build workspace [Node.js ${{ inputs.node-version }}]"
     runs-on: ubuntu-latest
 
     steps:

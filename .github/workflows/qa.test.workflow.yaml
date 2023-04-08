@@ -1,4 +1,4 @@
-name: "Lint"
+name: "Test"
 
 on:
   workflow_call:
@@ -17,8 +17,8 @@ on:
         type: string
 
 jobs:
-  lint:
-    name: "Lint [Node.js ${{ inputs.node-version }}]"
+  test:
+    name: "Test [Node.js ${{ inputs.node-version }}]"
     runs-on: ubuntu-latest
 
     steps:
@@ -41,13 +41,13 @@ jobs:
         run: |
           tar -xzf /tmp/workspace-${{ inputs.node-version }}.tar.gz -C . --overwrite
 
-      - name: "Run linters"
+      - name: "Run tests"
         run: |
           initial_path="$(pwd)"
           paths=$(echo "${{ inputs.paths }}" | tr '\n' ' ')
           for path in $paths; do
-            echo "[Lint] $path"
+            echo "[Test] $path"
             cd "$initial_path/$path"
-            pnpm lint
+            pnpm test
             cd "$initial_path"
           done

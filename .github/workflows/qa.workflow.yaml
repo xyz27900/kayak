@@ -1,8 +1,5 @@
 name: "Quality Assurance"
 
-env:
-  PNPM_VERSION: 8
-
 on:
   push:
     branches:
@@ -53,37 +50,22 @@ jobs:
 
   test:
     name: "🧪 Test"
-    runs-on: ubuntu-latest
-    needs:
-      - build-workspace
+    uses: ./.github/workflows/qa.test.workflow.yaml
+
     strategy:
       matrix:
         node-version: [18, 19]
 
-    steps:
-      - name: "Checkout"
-        uses: actions/checkout@v3
+    with:
+      node-version: ${{ matrix.node-version }}
+      pnpm-version: 8
+      paths: |
+        packages/cli
 
-      - name: "Setup pnpm"
-        uses: ./.github/actions/setup-pnpm
-        with:
-          node-version: ${{ matrix.node-version }}
-          pnpm-version: ${{ env.PNPM_VERSION }}
+    needs:
+      - build-workspace
 
-      - name: "Download workspace artifact"
-        uses: actions/download-artifact@v3
-        with:
-          name: workspace-${{ matrix.node-version }}
-          path: /tmp
-
-      - name: "Decompress workspace files"
-        run: |
-          tar -xzf /tmp/workspace-${{ matrix.node-version }}.tar.gz -C . --overwrite
-
-      - name: "Test packages/cli"
-        working-directory: packages/cli
-        run: |
-          pnpm test
+  # ------ ****** ------ #
 
   cleanup:
     name: "🧹 Cleanup"
