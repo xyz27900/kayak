@@ -92,6 +92,9 @@ jobs:
         examples/cypress-plugin
         examples/playwright
         examples/playwright-plugin
+    strategy:
+      matrix:
+        node-version: [18, 19]
 
     steps:
       - name: "Checkout"
@@ -106,7 +109,7 @@ jobs:
       - name: "Download workspace artifact"
         uses: actions/download-artifact@v3
         with:
-          name: workspace-${{ inputs.node-version }}
+          name: workspace-${{ matrix.node-version }}
           path: /tmp
 
       - name: "Decompress workspace files"
