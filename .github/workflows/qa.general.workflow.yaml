@@ -1,0 +1,45 @@
+name: "Quality Assurance General"
+
+on:
+  workflow_call:
+    inputs:
+      node-version:
+        description: "Node.js version"
+        required: true
+        type: number
+
+jobs:
+  build-workspace:
+    name: "🛠️ Build workspace"
+    uses: ./.github/workflows/qa.workspace.workflow.yaml
+    with:
+      node-version: ${{ inputs.node-version }}
+      pnpm-version: 8
+
+  lint:
+    name: "👀 Lint"
+    uses: ./.github/workflows/qa.lint.workflow.yaml
+    with:
+      node-version: ${{ inputs.node-version }}
+      pnpm-version: 8
+      paths: |
+        scripts
+        docs
+        packages/cli
+        packages/core
+        packages/cypress
+        packages/metamask
+        packages/playwright
+    needs:
+      - build-workspace
+
+  test:
+    name: "🧪 Test"
+    uses: ./.github/workflows/qa.test.workflow.yaml
+    with:
+      node-version: ${{ inputs.node-version }}
+      pnpm-version: 8
+      paths: |
+        packages/cli
+    needs:
+      - build-workspace

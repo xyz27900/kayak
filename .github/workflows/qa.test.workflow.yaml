@@ -50,4 +50,5 @@ jobs:
             cd "$initial_path/$path"
             pnpm test
             cd "$initial_path"
+            echo "----------------"
           done

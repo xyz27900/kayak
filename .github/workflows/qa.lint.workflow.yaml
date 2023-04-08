@@ -50,4 +50,5 @@ jobs:
             cd "$initial_path/$path"
             pnpm lint
             cd "$initial_path"
+            echo "----------------"
           done
