@@ -76,7 +76,7 @@ jobs:
 
   lint:
     name: "👀 Lint"
-    uses: ./.github/workflows/qa/lint.workflow.yaml
+    uses: ./.github/workflows/lint.workflow.yaml
     needs:
       - build-workspace
     strategy:
