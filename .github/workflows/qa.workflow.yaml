@@ -85,9 +85,19 @@ jobs:
     with:
       node-version: ${{ matrix.node-version }}
       pnpm-version: 8
+      paths: |
+        scripts
+        docs
+        packages/cli
+        packages/core
+        packages/cypress
+        packages/metamask
+        packages/playwright
 
     needs:
       - build-workspace
+
+  # ------ ****** ------ #
 
   test:
     name: "🧪 Test"
