@@ -76,13 +76,16 @@ jobs:
 
   lint:
     name: "👀 Lint"
+    uses: ./.github/workflows/lint.workflow.yaml
+
     strategy:
       matrix:
         node-version: [18, 19]
-    uses: ./.github/workflows/lint.workflow.yaml
+
     with:
       node-version: ${{ matrix.node-version }}
-      pnpm-version: ${{ env.PNPM_VERSION }}
+      pnpm-version: 8
+
     needs:
       - build-workspace
 
