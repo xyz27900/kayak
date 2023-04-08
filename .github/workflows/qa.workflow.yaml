@@ -76,12 +76,15 @@ jobs:
 
   lint:
     name: "👀 Lint"
-    uses: ./.github/workflows/lint.workflow.yaml
-    needs:
-      - build-workspace
     strategy:
       matrix:
         node-version: [18, 19]
+    uses: ./.github/workflows/lint.workflow.yaml
+    with:
+      node-version: ${{ matrix.node-version }}
+      pnpm-version: ${{ env.PNPM_VERSION }}
+    needs:
+      - build-workspace
 
   test:
     name: "🧪 Test"
