@@ -89,37 +89,36 @@ jobs:
         packages/playwright
 
     steps:
-      steps:
-        - name: "Checkout"
-          uses: actions/checkout@v3
+      - name: "Checkout"
+        uses: actions/checkout@v3
 
-        - name: "Setup pnpm"
-          uses: ./.github/actions/setup-pnpm
-          with:
-            node-version: ${{ inputs.node-version }}
-            pnpm-version: ${{ inputs.pnpm-version }}
+      - name: "Setup pnpm"
+        uses: ./.github/actions/setup-pnpm
+        with:
+          node-version: ${{ inputs.node-version }}
+          pnpm-version: ${{ inputs.pnpm-version }}
 
-        - name: "Download workspace artifact"
-          uses: actions/download-artifact@v3
-          with:
-            name: workspace-${{ inputs.node-version }}
-            path: /tmp
+      - name: "Download workspace artifact"
+        uses: actions/download-artifact@v3
+        with:
+          name: workspace-${{ inputs.node-version }}
+          path: /tmp
 
-        - name: "Decompress workspace files"
-          run: |
-            tar -xzf /tmp/workspace-${{ inputs.node-version }}.tar.gz -C . --overwrite
+      - name: "Decompress workspace files"
+        run: |
+          tar -xzf /tmp/workspace-${{ inputs.node-version }}.tar.gz -C . --overwrite
 
-        - name: "Run linters"
-          run: |
-            initial_path="$(pwd)"
-            paths=$(echo "$PATHS" | tr '\n' ' ')
-            for path in $paths; do
-              echo "[Lint] $path"
-              cd "$initial_path/$path"
-              pnpm lint
-              cd "$initial_path"
-              echo "----------------"
-            done
+      - name: "Run linters"
+        run: |
+          initial_path="$(pwd)"
+          paths=$(echo "$PATHS" | tr '\n' ' ')
+          for path in $paths; do
+            echo "[Lint] $path"
+            cd "$initial_path/$path"
+            pnpm lint
+            cd "$initial_path"
+            echo "----------------"
+          done
 
   test:
     name: "🧪 Test [Node.js ${{ inputs.node-version }}]"
