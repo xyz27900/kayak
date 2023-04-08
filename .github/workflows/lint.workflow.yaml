@@ -40,8 +40,12 @@ jobs:
         run: |
           tar -xzf /tmp/workspace-${{ inputs.node-version }}.tar.gz -C . --overwrite
 
-      - run: |
-          echo "Linting paths: ${{ inputs.paths }}"
+      - name: "Normalize paths"
+        run: |
+          paths=$(echo "${{ inputs.paths }}" | tr '\n' ' ')
+          for path in $paths; do
+            echo "Linting $path"
+          done
 
       - name: "Lint Scripts"
         working-directory: scripts
