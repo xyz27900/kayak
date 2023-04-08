@@ -1,0 +1,26 @@
+name: "Execute in paths"
+description: "Execute a command in multiple paths"
+
+inputs:
+  paths:
+    description: "Paths to execute the command in"
+    required: true
+  command:
+    description: "Command to execute"
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: "Execute in paths"
+      shell: bash
+      run: |
+        initial_path="$(pwd)"
+        paths=$(echo "${{ inputs.paths }}" | tr '\n' ' ')
+        for path in $paths; do
+            echo "$path:${{ inputs.command }}"
+            cd "$initial_path/$path"
+            eval ${{ inputs.command }}
+            cd "$initial_path"
+            echo "----------------"
+        done

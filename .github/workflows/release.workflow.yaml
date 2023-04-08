@@ -28,6 +28,14 @@ jobs:
     needs:
       - check-qa-workflow
 
+    env:
+      PATHS: |
+        packages/core
+        packages/metamask
+        packages/cypress
+        packages/playwright
+        packages/cli
+
     steps:
       - name: "Checkout"
         uses: actions/checkout@v3
@@ -42,30 +50,11 @@ jobs:
       - name: "Install dependencies"
         run: pnpm install --frozen-lockfile
 
-      - name: "Build packages/core"
-        working-directory: packages/core
-        run: |
-          pnpm build
-
-      - name: "Build packages/metamask"
-        working-directory: packages/metamask
-        run: |
-          pnpm build
-
-      - name: "Build packages/cypress"
-        working-directory: packages/cypress
-        run: |
-          pnpm build
-
-      - name: "Build packages/playwright"
-        working-directory: packages/playwright
-        run: |
-          pnpm build
-
-      - name: "Build packages/cli"
-        working-directory: packages/cli
-        run: |
-          pnpm build
+      - name: "Build packages"
+        uses: ./.github/actions/execute-in-paths
+        with:
+          paths: ${{ env.PATHS }}
+          command: pnpm build
 
       - name: "Remove node_modules"
         run: |

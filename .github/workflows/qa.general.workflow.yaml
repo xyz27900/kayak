@@ -14,8 +14,16 @@ on:
 
 jobs:
   build-workspace:
-    name: "🛠️ Build workspace"
+    name: "🛠️ Build workspace [Node.js ${{ inputs.node-version }}]"
     runs-on: ubuntu-latest
+
+    env:
+      PATHS: |
+        packages/core
+        packages/metamask
+        packages/cypress
+        packages/playwright
+        packages/cli
 
     steps:
       - name: "Checkout"
@@ -31,30 +39,11 @@ jobs:
       - name: "Install dependencies"
         run: pnpm install --frozen-lockfile
 
-      - name: "Build packages/core"
-        working-directory: packages/core
-        run: |
-          pnpm build
-
-      - name: "Build packages/metamask"
-        working-directory: packages/metamask
-        run: |
-          pnpm build
-
-      - name: "Build packages/cypress"
-        working-directory: packages/cypress
-        run: |
-          pnpm build
-
-      - name: "Build packages/playwright"
-        working-directory: packages/playwright
-        run: |
-          pnpm build
-
-      - name: "Build packages/cli"
-        working-directory: packages/cli
-        run: |
-          pnpm build
+      - name: "Build packages"
+        uses: ./.github/actions/execute-in-paths
+        with:
+          paths: ${{ env.PATHS }}
+          command: pnpm build
 
       - name: "Copy workspace files to /tmp/workspace"
         run: |
@@ -109,16 +98,10 @@ jobs:
           tar -xzf /tmp/workspace-${{ inputs.node-version }}.tar.gz -C . --overwrite
 
       - name: "Run linters"
-        run: |
-          initial_path="$(pwd)"
-          paths=$(echo "$PATHS" | tr '\n' ' ')
-          for path in $paths; do
-            echo "[Lint] $path"
-            cd "$initial_path/$path"
-            pnpm lint
-            cd "$initial_path"
-            echo "----------------"
-          done
+        uses: ./.github/actions/execute-in-paths
+        with:
+          paths: ${{ env.PATHS }}
+          command: pnpm lint
 
   test:
     name: "🧪 Test [Node.js ${{ inputs.node-version }}]"
@@ -151,13 +134,7 @@ jobs:
           tar -xzf /tmp/workspace-${{ inputs.node-version }}.tar.gz -C . --overwrite
 
       - name: "Run tests"
-        run: |
-          initial_path="$(pwd)"
-          paths=$(echo "$PATHS" | tr '\n' ' ')
-          for path in $paths; do
-            echo "[Test] $path"
-            cd "$initial_path/$path"
-            pnpm test
-            cd "$initial_path"
-            echo "----------------"
-          done
+        uses: ./.github/actions/execute-in-paths
+        with:
+          paths: ${{ env.PATHS }}
+          command: pnpm test
