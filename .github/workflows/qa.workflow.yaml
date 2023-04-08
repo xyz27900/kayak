@@ -66,21 +66,107 @@ jobs:
 
       - name: "Compress workspace files"
         run: |
-          tar -czf kayak-workspace-${{ matrix.node-version }}.tar.gz -C /tmp/workspace .
+          tar -czf workspace-${{ matrix.node-version }}.tar.gz -C /tmp/workspace .
 
       - name: "Upload workspace artifact"
         uses: actions/upload-artifact@v3
         with:
-          name: kayak-workspace-${{ matrix.node-version }}
-          path: kayak-workspace-${{ matrix.node-version }}.tar.gz
+          name: workspace-${{ matrix.node-version }}
+          path: workspace-${{ matrix.node-version }}.tar.gz
 
   lint:
-    uses: ./.github/workflows/lint.workflow.yaml
-    with:
-      node-version: 18
-      pnpm-version: 8
+    name: "👀 Lint"
+    runs-on: ubuntu-latest
     needs:
       - build-workspace
+    env:
+      PATHS:
+        - scripts
+        - docs
+        - packages/cli
+        - packages/core
+        - packages/cypress
+        - packages/metamask
+        - packages/playwright
+        - examples/cypress
+        - examples/cypress-plugin
+        - examples/playwright
+        - examples/playwright-plugin
+
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v3
+
+      - name: "Setup pnpm"
+        uses: ./.github/actions/setup-pnpm
+        with:
+          node-version: 18
+          pnpm-version: ${{ env.PNPM_VERSION }}
+
+      - name: "Download workspace artifact"
+        uses: actions/download-artifact@v3
+        with:
+          name: workspace-${{ inputs.node-version }}
+          path: /tmp
+
+      - name: "Decompress workspace files"
+        run: |
+          tar -xzf /tmp/workspace-${{ matrix.node-version }}.tar.gz -C . --overwrite
+
+      - name: "Lint Scripts"
+        working-directory: scripts
+        run: |
+          pnpm lint
+
+      - name: "Lint Docs"
+        working-directory: docs
+        run: |
+          pnpm lint
+
+      - name: "Lint packages/cli"
+        working-directory: packages/cli
+        run: |
+          pnpm lint
+
+      - name: "Lint packages/core"
+        working-directory: packages/core
+        run: |
+          pnpm lint
+
+      - name: "Lint packages/cypress"
+        working-directory: packages/cypress
+        run: |
+          pnpm lint
+
+      - name: "Lint packages/metamask"
+        working-directory: packages/metamask
+        run: |
+          pnpm lint
+
+      - name: "Lint packages/playwright"
+        working-directory: packages/playwright
+        run: |
+          pnpm lint
+
+      - name: "Lint examples/cypress"
+        working-directory: examples/cypress
+        run: |
+          pnpm lint
+
+      - name: "Lint examples/cypress-plugin"
+        working-directory: examples/cypress-plugin
+        run: |
+          pnpm lint
+
+      - name: "Lint examples/playwright"
+        working-directory: examples/playwright
+        run: |
+          pnpm lint
+
+      - name: "Lint examples/playwright-plugin"
+        working-directory: examples/playwright-plugin
+        run: |
+          pnpm lint
 
   test:
     name: "🧪 Test"
@@ -104,12 +190,12 @@ jobs:
       - name: "Download workspace artifact"
         uses: actions/download-artifact@v3
         with:
-          name: kayak-workspace-${{ matrix.node-version }}
+          name: workspace-${{ matrix.node-version }}
           path: /tmp
 
       - name: "Decompress workspace files"
         run: |
-          tar -xzf /tmp/kayak-workspace-${{ matrix.node-version }}.tar.gz -C . --overwrite
+          tar -xzf /tmp/workspace-${{ matrix.node-version }}.tar.gz -C . --overwrite
 
       - name: "Test packages/cli"
         working-directory: packages/cli
@@ -128,4 +214,4 @@ jobs:
       - name: "Delete artifacts"
         uses: geekyeggo/delete-artifact@v2
         with:
-          name: kayak-workspace-*
+          name: workspace-*
