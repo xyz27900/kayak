@@ -276,27 +276,27 @@ jobs:
       - name: "Checkout"
         uses: actions/checkout@v3
 
-      - name: "Setup pnpm"
-        uses: ./.github/actions/setup-pnpm
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          pnpm-version: ${{ env.PNPM_VERSION }}
-          cache: true
-
-      - name: Install dependencies
-        run: |
-          pnpm install
-
-      - name: Build docs
-        working-directory: ./docs
-        run: |
-          pnpm run build
-
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./docs/.vitepress/dist
+#      - name: "Setup pnpm"
+#        uses: ./.github/actions/setup-pnpm
+#        with:
+#          node-version: ${{ env.NODE_VERSION }}
+#          pnpm-version: ${{ env.PNPM_VERSION }}
+#          cache: true
+#
+#      - name: Install dependencies
+#        run: |
+#          pnpm install
+#
+#      - name: Build docs
+#        working-directory: ./docs
+#        run: |
+#          pnpm run build
+#
+#      - name: Deploy to GitHub Pages
+#        uses: peaceiris/actions-gh-pages@v3
+#        with:
+#          github_token: ${{ secrets.GITHUB_TOKEN }}
+#          publish_dir: ./docs/.vitepress/dist
 
   create-release:
     name: "🚀 Create Release"
@@ -317,7 +317,8 @@ jobs:
       - name: "Create GitHub Release"
         uses: softprops/action-gh-release@v1
         with:
-          name: "Release ${{ github.ref }} \"${{ steps.generate_release_name.outputs.release_name }}\""
+          name: "Release ${{ github.ref_name }} \"${{ steps.generate_release_name.outputs.release_name }}\""
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: "Update release names file"
         run: |

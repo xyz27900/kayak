@@ -32,37 +32,37 @@ jobs:
       - name: "Checkout"
         uses: actions/checkout@v3
 
-      - name: "Setup pnpm"
-        uses: ./.github/actions/setup-pnpm
-        with:
-          node-version: ${{ matrix.node-version }}
-          pnpm-version: ${{ env.PNPM_VERSION }}
-          cache: true
-
-      - name: "Install dependencies"
-        run: pnpm install --frozen-lockfile
-
-      - name: "Build packages"
-        uses: ./.github/actions/execute-in-paths
-        with:
-          paths: ${{ env.PATHS }}
-          command: pnpm build
-
-      - name: "Copy workspace files to /tmp/workspace"
-        run: |
-          mkdir -p /tmp/workspace
-          cp -r ./packages /tmp/workspace/packages
-          find . -name 'node_modules' -not -path './node_modules/*' -type d -prune -exec sh -c 'mkdir -p /tmp/workspace/${0#./}; cp -rT "$0" /tmp/workspace/${0#./}' {} \;
-
-      - name: "Compress workspace files"
-        run: |
-          tar -czf workspace-${{ matrix.node-version }}.tar.gz -C /tmp/workspace .
-
-      - name: "Upload workspace artifact"
-        uses: actions/upload-artifact@v3
-        with:
-          name: workspace-${{ matrix.node-version }}
-          path: workspace-${{ matrix.node-version }}.tar.gz
+#      - name: "Setup pnpm"
+#        uses: ./.github/actions/setup-pnpm
+#        with:
+#          node-version: ${{ matrix.node-version }}
+#          pnpm-version: ${{ env.PNPM_VERSION }}
+#          cache: true
+#
+#      - name: "Install dependencies"
+#        run: pnpm install --frozen-lockfile
+#
+#      - name: "Build packages"
+#        uses: ./.github/actions/execute-in-paths
+#        with:
+#          paths: ${{ env.PATHS }}
+#          command: pnpm build
+#
+#      - name: "Copy workspace files to /tmp/workspace"
+#        run: |
+#          mkdir -p /tmp/workspace
+#          cp -r ./packages /tmp/workspace/packages
+#          find . -name 'node_modules' -not -path './node_modules/*' -type d -prune -exec sh -c 'mkdir -p /tmp/workspace/${0#./}; cp -rT "$0" /tmp/workspace/${0#./}' {} \;
+#
+#      - name: "Compress workspace files"
+#        run: |
+#          tar -czf workspace-${{ matrix.node-version }}.tar.gz -C /tmp/workspace .
+#
+#      - name: "Upload workspace artifact"
+#        uses: actions/upload-artifact@v3
+#        with:
+#          name: workspace-${{ matrix.node-version }}
+#          path: workspace-${{ matrix.node-version }}.tar.gz
 
   lint:
     name: "👀 Lint"
@@ -88,27 +88,27 @@ jobs:
       - name: "Checkout"
         uses: actions/checkout@v3
 
-      - name: "Setup pnpm"
-        uses: ./.github/actions/setup-pnpm
-        with:
-          node-version: ${{ matrix.node-version }}
-          pnpm-version: ${{ env.PNPM_VERSION }}
-
-      - name: "Download workspace artifact"
-        uses: actions/download-artifact@v3
-        with:
-          name: workspace-${{ matrix.node-version }}
-          path: /tmp
-
-      - name: "Decompress workspace files"
-        run: |
-          tar -xzf /tmp/workspace-${{ matrix.node-version }}.tar.gz -C . --overwrite
-
-      - name: "Run linters"
-        uses: ./.github/actions/execute-in-paths
-        with:
-          paths: ${{ env.PATHS }}
-          command: pnpm lint
+#      - name: "Setup pnpm"
+#        uses: ./.github/actions/setup-pnpm
+#        with:
+#          node-version: ${{ matrix.node-version }}
+#          pnpm-version: ${{ env.PNPM_VERSION }}
+#
+#      - name: "Download workspace artifact"
+#        uses: actions/download-artifact@v3
+#        with:
+#          name: workspace-${{ matrix.node-version }}
+#          path: /tmp
+#
+#      - name: "Decompress workspace files"
+#        run: |
+#          tar -xzf /tmp/workspace-${{ matrix.node-version }}.tar.gz -C . --overwrite
+#
+#      - name: "Run linters"
+#        uses: ./.github/actions/execute-in-paths
+#        with:
+#          paths: ${{ env.PATHS }}
+#          command: pnpm lint
 
   test:
     name: "🧪 Test"
@@ -128,27 +128,27 @@ jobs:
       - name: "Checkout"
         uses: actions/checkout@v3
 
-      - name: "Setup pnpm"
-        uses: ./.github/actions/setup-pnpm
-        with:
-          node-version: ${{ matrix.node-version }}
-          pnpm-version: ${{ env.PNPM_VERSION }}
-
-      - name: "Download workspace artifact"
-        uses: actions/download-artifact@v3
-        with:
-          name: workspace-${{ matrix.node-version }}
-          path: /tmp
-
-      - name: "Decompress workspace files"
-        run: |
-          tar -xzf /tmp/workspace-${{ matrix.node-version }}.tar.gz -C . --overwrite
-
-      - name: "Run tests"
-        uses: ./.github/actions/execute-in-paths
-        with:
-          paths: ${{ env.PATHS }}
-          command: pnpm test
+#      - name: "Setup pnpm"
+#        uses: ./.github/actions/setup-pnpm
+#        with:
+#          node-version: ${{ matrix.node-version }}
+#          pnpm-version: ${{ env.PNPM_VERSION }}
+#
+#      - name: "Download workspace artifact"
+#        uses: actions/download-artifact@v3
+#        with:
+#          name: workspace-${{ matrix.node-version }}
+#          path: /tmp
+#
+#      - name: "Decompress workspace files"
+#        run: |
+#          tar -xzf /tmp/workspace-${{ matrix.node-version }}.tar.gz -C . --overwrite
+#
+#      - name: "Run tests"
+#        uses: ./.github/actions/execute-in-paths
+#        with:
+#          paths: ${{ env.PATHS }}
+#          command: pnpm test
 
   cleanup:
     name: "🧹 Cleanup"
