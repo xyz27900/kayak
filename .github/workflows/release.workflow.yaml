@@ -313,7 +313,7 @@ jobs:
       - name: "Checkout"
         uses: actions/checkout@v3
         with:
-          ref: ${{ github.ref }}
+          fetch-depth: 0
 
       - name: "Generate release name"
         id: generate_release_name
