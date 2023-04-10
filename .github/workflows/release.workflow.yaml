@@ -328,4 +328,4 @@ jobs:
           git config --local user.email "${{ github.event.pusher.email }}"
           git config --local user.name "${{ github.event.pusher.name }}"
           git commit -m "Update release names" ./release/data/names.csv
-          git push origin HEAD:${{ github.ref_name }}
+          git push origin $(git branch --show-current)
