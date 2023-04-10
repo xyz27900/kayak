@@ -312,8 +312,6 @@ jobs:
     steps:
       - name: "Checkout"
         uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
 
       - name: "Generate release name"
         id: generate_release_name
@@ -322,6 +320,7 @@ jobs:
 
       - name: "Update release names file"
         run: |
+          git fetch --all --depth=1
           echo $(git branch --list --format='%(refname:short)')
           echo $(git branch --list --contains ${{ github.ref_name }} --format='%(refname:short)')
           echo $(git branch --list --contains ${{ github.ref_name }} --format='%(refname:short)' | grep -v "HEAD detached at")
