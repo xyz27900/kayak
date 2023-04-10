@@ -310,31 +310,8 @@ jobs:
 #      - release-docker
 
     steps:
-      - name: "Get Git version info"
-        run: |
-          git --version
-
-      - name: "Add safe directory"
-        run: |
-          git config --global --add safe.directory ${{ github.workspace }}
-
-      - name: "Initialize the repository"
-        run: |
-          git init ${{ github.workspace }}
-          git -C ${{ github.workspace }} remote add origin ${{ github.server_url }}/${{ github.repository }}
-
-      - name: "Fetch the repository"
-        run: |
-          git -C ${{ github.workspace }} fetch --all --depth=1
-
-      - name: "Checkout the repository"
-        run: |
-          git -C ${{ github.workspace }} checkout ${{ github.ref }}
-
-      - name: "Generate release name"
-        id: generate_release_name
-        run: |
-          echo "release_name=$(python ./release/main.py -f ./release/data/names.csv)" >> $GITHUB_OUTPUT
+      - name: "Checkout"
+        uses: actions/checkout@v3
 
       - name: "Update release names file"
         run: |
