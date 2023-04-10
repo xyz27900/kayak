@@ -319,7 +319,7 @@ jobs:
         run: |
           git_branch=$(git branch --list --remote --contains ${{ github.ref_name }} --format='%(refname:short)' | grep -v "HEAD detached at")
           git checkout ${git_branch#origin/}
-          git reset --hard "git_branch"
+          git reset --hard "$git_branch"
 
       - name: "Generate release title"
         id: generate-release-title
