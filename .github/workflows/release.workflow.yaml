@@ -311,29 +311,24 @@ jobs:
 
     steps:
       - name: "Get Git version info"
-        shell: bash
         run: |
           pwd
           git --version
 
       - name: "Add safe directory"
-        shell: bash
         run: |
           git config --global --add safe.directory ${{ github.workspace }}
 
       - name: "Initialize the repository"
-        shell: bash
         run: |
-          git init /home/runner/work/${{ github.repository }}
+          git init ${{ github.workspace }}
           git -C ${{ github.workspace }} remote add origin ${{ github.server_url }}/${{ github.repository }}
 
       - name: "Fetch the repository"
-        shell: bash
         run: |
           git -C ${{ github.workspace }} fetch --all --depth=1
 
       - name: "Checkout the repository"
-        shell: bash
         run: |
           git -C ${{ github.workspace }} checkout ${{ github.ref }}
 
