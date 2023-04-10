@@ -312,8 +312,6 @@ jobs:
     steps:
       - name: "Checkout"
         uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
 
       - name: "Generate release name"
         id: generate_release_name
@@ -327,6 +325,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: "Update release names file"
+        uses: actions/checkout@v3
         run: |
           git config --local user.email "${{ github.event.pusher.email }}"
           git config --local user.name "${{ github.event.pusher.name }}"
