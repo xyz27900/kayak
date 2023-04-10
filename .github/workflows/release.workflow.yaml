@@ -348,10 +348,14 @@ jobs:
 
       - name: "Update release names file"
         run: |
-          git config --global user.email "${{ github.event.pusher.email }}"
-          git config --global user.name "${{ github.event.pusher.name }}"
-          git commit -m "Update release names file" ./release/data/names.csv
-          git push origin HEAD
+          if ! git diff --quiet ./release/data/names.csv; then
+            git config --global user.email "${{ github.event.pusher.email }}"
+            git config --global user.name "${{ github.event.pusher.name }}"
+            git commit -m "Update release names file" ./release/data/names.csv
+            git push origin HEAD
+          else
+            echo "Release names file is not changed"
+          fi
 
       - name: "Create GitHub Release"
         uses: softprops/action-gh-release@v1
