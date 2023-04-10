@@ -319,8 +319,7 @@ jobs:
         run: |
           BRANCH=$(git branch --list --remote --contains ${{ github.ref_name }} --format='%(refname:short)' | grep -v "HEAD detached at")
           echo "BRANCH=$BRANCH"
-          echo "git checkout $BRANCH"
-          git checkout "$BRANCH"
+          git rebase $BRANCH
 
       - name: "Generate release name"
         id: generate_release_name
