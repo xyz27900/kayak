@@ -312,7 +312,6 @@ jobs:
     steps:
       - name: "Get Git version info"
         run: |
-          pwd
           git --version
 
       - name: "Add safe directory"
@@ -339,10 +338,7 @@ jobs:
 
       - name: "Update release names file"
         run: |
-          pwd
-          echo $(git branch --list --format='%(refname:short)')
-          echo $(git branch --list --contains ${{ github.ref_name }} --format='%(refname:short)')
-          echo $(git branch --list --contains ${{ github.ref_name }} --format='%(refname:short)' | grep -v "HEAD detached at")
+          echo $(git branch --list --remote --contains ${{ github.ref_name }} --format='%(refname:short)' | grep -v "HEAD detached at")
 #          git checkout $(git branch --list --contains ${{ github.ref_name }} --format='%(refname:short)' | grep -v "HEAD detached at")
 #          git status
 #          git config --local user.email "${{ github.event.pusher.email }}"
