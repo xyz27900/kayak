@@ -317,23 +317,33 @@ jobs:
 
       - name: "Checkout to the branch containing the tag"
         run: |
-          GIT_BRANCH=$(git branch --list --remote --contains ${{ github.ref_name }} --format='%(refname:short)' | grep -v "HEAD detached at")
-          git checkout ${GIT_BRANCH#origin/}
-          git reset --hard "$GIT_BRANCH"
+          git_branch=$(git branch --list --remote --contains ${{ github.ref_name }} --format='%(refname:short)' | grep -v "HEAD detached at")
+          git checkout ${git_branch#origin/}
+          git reset --hard "git_branch"
 
-      - name: "Generate release name"
-        id: generate_release_nam
+      - name: "Generate release title"
+        id: generate-release-title
         run: |
-          echo "release_name=$(python ./release/main.py -f ./release/data/names.csv)" >> $GITHUB_OUTPUT
+          latest_tags=$(git tag --sort=-committerdate --format='%(refname:short)' | head -n 2)
+          tag1_major=$(echo "$latest_tags" | head -n 1 | cut -d'.' -f1 | tr -d 'v')
+          tag2_major=$(echo "$latest_tags" | tail -n 1 | cut -d'.' -f1 | tr -d 'v')
+          tag_count=$(git tag --list | wc -l | tr -d ' ')
 
-      - name: "Check the release name"
-        run: |
-          RELEASE_NAME=${{ steps.generate_release_name.outputs.release_name }}
-          if [ -z "$RELEASE_NAME" ]; then
+          if [ "$tag1_major" -eq "$tag2_major" ] && [ "$tag_count" -gt 1 ]; then
+            echo "Major version has not been changed"
+            echo "RELEASE_TITLE=Release ${{ github.ref_name }}" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+
+          echo "Major version has been changed"
+          release_name=$(python ./release/main.py -f ./release/data/names.csv)
+
+          if [ -z "$release_name" ]; then
             echo "Release name is empty"
             exit 1
           else
-            echo "Release name: $RELEASE_NAME"
+            echo "Release name: $release_name"
+            echo "RELEASE_TITLE=Release ${{ github.ref_name }} \"$release_name\"" >> $GITHUB_OUTPUT
           fi
 
       - name: "Update release names file"
@@ -346,5 +356,5 @@ jobs:
       - name: "Create GitHub Release"
         uses: softprops/action-gh-release@v1
         with:
-          name: "Release ${{ github.ref_name }} \"${{ steps.generate_release_name.outputs.release_name }}\""
+          name: ${{ steps.generate-release-title.outputs.RELEASE_TITLE }}
           token: ${{ secrets.GITHUB_TOKEN }}
