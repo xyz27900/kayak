@@ -315,15 +315,18 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: "Checkout to the branch containing the tag"
+        run: |
+          git checkout $(git branch --list --remote --contains ${{ github.ref_name }} --format='%(refname:short)' | grep -v "HEAD detached at")
+
+      - name: "Generate release name"
+        id: generate_release_name
+        run: |
+          echo "release_name=$(python ./release/main.py -f ./release/data/names.csv)" >> $GITHUB_OUTPUT
+
       - name: "Update release names file"
         run: |
-          echo $(git branch --list --remote --contains ${{ github.ref_name }} --format='%(refname:short)' | grep -v "HEAD detached at")
-#          git checkout $(git branch --list --contains ${{ github.ref_name }} --format='%(refname:short)' | grep -v "HEAD detached at")
-#          git status
-#          git config --local user.email "${{ github.event.pusher.email }}"
-#          git config --local user.name "${{ github.event.pusher.name }}"
-#          git commit -m "Update release names" ./release/data/names.csv
-#          git push
+          git status
 
       - name: "Create GitHub Release"
         uses: softprops/action-gh-release@v1
