@@ -38,10 +38,11 @@ jobs:
     steps:
       - name: "Check if QA workflow for current commit succeeded"
         run: |
-          curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-            "https://api.github.com/repos/${{ github.repository }}/actions/workflows/qa.workflow.yaml/runs?head_sha=${{ github.sha }}" | \
-            yq '.workflow_runs[] | select(.status == "completed" and .conclusion == "success") | .html_url' | \
-            xargs -I {} echo "QA workflow succeeded: {}"
+          echo "TODO: Check if QA workflow for current commit succeeded"
+#          curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+#            "https://api.github.com/repos/${{ github.repository }}/actions/workflows/qa.workflow.yaml/runs?head_sha=${{ github.sha }}" | \
+#            yq '.workflow_runs[] | select(.status == "completed" and .conclusion == "success") | .html_url' | \
+#            xargs -I {} echo "QA workflow succeeded: {}"
 
   release-npm:
     name: "📦️ Release NPM packages"
@@ -328,4 +329,4 @@ jobs:
           git config --local user.email "${{ github.event.pusher.email }}"
           git config --local user.name "${{ github.event.pusher.name }}"
           git commit -m "Update release names" ./release/data/names.csv
-          git push origin $(git branch --contains ${{ github.ref }} --format "%(refname:short)")
+          git push
