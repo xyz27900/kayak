@@ -15,11 +15,6 @@ jobs:
   build-docker:
     name: "🐳 Build Docker images"
     uses: ./.github/workflows/docker.workflow.yaml
-
-    steps:
-      - name: "Test"
-        run: |
-          echo "Test"
 #  build-workspace:
 #    name: "🛠️ Build workspace"
 #    runs-on: ubuntu-latest

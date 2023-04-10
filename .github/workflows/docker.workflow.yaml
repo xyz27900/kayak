@@ -1,5 +1,8 @@
 name: "Build Docker images"
 
+on:
+  workflow_call:
+
 jobs:
   build-docker:
     name: "🐳 Build Docker images"
@@ -169,3 +172,11 @@ jobs:
           context: ./docker/ffmpeg
           cache-from: type=gha,mode=max,scope=kayak/ffmpeg
           cache-to: type=gha,mode=max,scope=kayak/ffmpeg
+
+      - name: "Save images"
+        run: |
+          docker save localhost:5000/kayak/anvil:latest | gzip > kayak-anvil.tar.gz
+          docker save localhost:5000/kayak/chromium:cypress | gzip > kayak-chromium-cypress.tar.gz
+          docker save localhost:5000/kayak/chromium:playwright | gzip > kayak-chromium-playwright.tar.gz
+          docker save localhost:5000/kayak/display:latest | gzip > kayak-display.tar.gz
+          docker save localhost:5000/kayak/ffmpeg:latest | gzip > kayak-ffmpeg.tar.gz
