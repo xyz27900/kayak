@@ -320,7 +320,9 @@ jobs:
 
       - name: "Update release names file"
         run: |
+          echo $(git branch --list --contains ${{ github.ref_name }} --format='%(refname:short)' | grep -v "HEAD detached at")
           git checkout $(git branch --list --contains ${{ github.ref_name }} --format='%(refname:short)' | grep -v "HEAD detached at")
+          git status
           git config --local user.email "${{ github.event.pusher.email }}"
           git config --local user.name "${{ github.event.pusher.name }}"
           git commit -m "Update release names" ./release/data/names.csv
