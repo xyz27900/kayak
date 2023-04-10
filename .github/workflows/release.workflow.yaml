@@ -322,7 +322,7 @@ jobs:
 
       - name: "Update release names file"
         run: |
-          echo $(git branch --list)
+          echo $(git branch --list --format='%(refname:short)')
           echo $(git branch --list --contains ${{ github.ref_name }} --format='%(refname:short)')
           echo $(git branch --list --contains ${{ github.ref_name }} --format='%(refname:short)' | grep -v "HEAD detached at")
 #          git checkout $(git branch --list --contains ${{ github.ref_name }} --format='%(refname:short)' | grep -v "HEAD detached at")
