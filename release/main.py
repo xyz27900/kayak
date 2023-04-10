@@ -24,7 +24,7 @@ chosen_name['used'] = 'True'
 
 with open(args.file, 'w', newline='') as file:
     fieldnames = ['name', 'used']
-    writer = csv.DictWriter(file, fieldnames=fieldnames)
+    writer = csv.DictWriter(file, fieldnames=fieldnames, lineterminator='\n')
     writer.writeheader()
     writer.writerows(names)
 
