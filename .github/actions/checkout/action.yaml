@@ -1,0 +1,42 @@
+name: "Checkout"
+description: "Checkout repository"
+
+inputs:
+  fetch-depth:
+    description: "The number of commits to fetch"
+    required: false
+    default: "1"
+
+runs:
+  using: composite
+  steps:
+    - name: "Get Git version info"
+      shell: bash
+      run: |
+        git --version
+
+    - name: "Add safe directory"
+      shell: bash
+      run: |
+        git config --global --add safe.directory /home/runner/work/${{ github.repository }}
+
+    - name: "Initialize the repository"
+      shell: bash
+      run: |
+        git init /home/runner/work/${{ github.repository }}
+        git -C /home/runner/work/${{ github.repository }} remote add origin ${{ github.server_url }}/${{ github.repository }}
+
+    - name: "Fetch the repository"
+      shell: bash
+      run: |
+        git -C /home/runner/work/${{ github.repository }} fetch --all --depth=${{ inputs.fetch-depth }}
+
+    - name: "Checkout the repository"
+      shell: bash
+      run: |
+        git -C /home/runner/work/${{ github.repository }} checkout ${{ github.ref }}
+
+    - name: "Change the working directory"
+      shell: bash
+      run: |
+        cd /home/runner/work/${{ github.repository }}

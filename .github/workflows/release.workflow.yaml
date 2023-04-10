@@ -311,13 +311,7 @@ jobs:
 
     steps:
       - name: "Checkout"
-        run: |
-          rm -rf /home/runner/work/${{ github.event.repository.name }}/${{ github.event.repository.name }}
-          git config --global --add safe.directory /home/runner/work/${{ github.event.repository.name }}/${{ github.event.repository.name }}
-          git init /home/runner/work/${{ github.event.repository.name }}/${{ github.event.repository.name }}
-          git remote add origin ${{ github.server_url }}/${{ github.repository }}
-          git fetch --all --depth=1
-          git checkout ${{ github.ref_name }}
+        uses: ./.github/actions/checkout
 
       - name: "Generate release name"
         id: generate_release_name
