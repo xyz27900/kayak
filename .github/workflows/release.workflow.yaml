@@ -322,7 +322,7 @@ jobs:
           git reset --hard "$GIT_BRANCH"
 
       - name: "Generate release name"
-        id: generate_release_name
+        id: generate_release_nam
         run: |
           echo "release_name=$(python ./release/main.py -f ./release/data/names.csv)" >> $GITHUB_OUTPUT
 
