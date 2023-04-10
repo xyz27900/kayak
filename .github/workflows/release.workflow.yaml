@@ -318,8 +318,9 @@ jobs:
       - name: "Checkout to the branch containing the tag"
         run: |
           BRANCH=$(git branch --list --remote --contains ${{ github.ref_name }} --format='%(refname:short)' | grep -v "HEAD detached at")
-          echo "BRANCH=$BRANCH"
-          git rebase $BRANCH
+          # Checkout to the branch containing the tag but locally (without the origin prefix)
+          git checkout ${BRANCH#origin/}
+          git reset --hard "$BRANCH"
 
       - name: "Generate release name"
         id: generate_release_name
