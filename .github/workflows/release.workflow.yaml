@@ -317,10 +317,9 @@ jobs:
 
       - name: "Checkout to the branch containing the tag"
         run: |
-          BRANCH=$(git branch --list --remote --contains ${{ github.ref_name }} --format='%(refname:short)' | grep -v "HEAD detached at")
-          # Checkout to the branch containing the tag but locally (without the origin prefix)
-          git checkout ${BRANCH#origin/}
-          git reset --hard "$BRANCH"
+          GIT_BRANCH=$(git branch --list --remote --contains ${{ github.ref_name }} --format='%(refname:short)' | grep -v "HEAD detached at")
+          git checkout ${GIT_BRANCH#origin/}
+          git reset --hard "GIT_BRANCH"
 
       - name: "Generate release name"
         id: generate_release_name
@@ -339,7 +338,10 @@ jobs:
 
       - name: "Update release names file"
         run: |
-          git status
+          git config --global user.email "${{ github.event.pusher.email }}"
+          git config --global user.name "${{ github.event.pusher.name }}"
+          git commit -m "Update release names file" ./release/data/names.csv
+          git push
 
       - name: "Create GitHub Release"
         uses: softprops/action-gh-release@v1
