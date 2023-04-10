@@ -318,16 +318,16 @@ jobs:
         run: |
           echo "release_name=$(python ./release/main.py -f ./release/data/names.csv)" >> $GITHUB_OUTPUT
 
-      - name: "Create GitHub Release"
-        uses: softprops/action-gh-release@v1
-        with:
-          name: "Release ${{ github.ref_name }} \"${{ steps.generate_release_name.outputs.release_name }}\""
-          token: ${{ secrets.GITHUB_TOKEN }}
-
+      - uses: actions/checkout@v3
       - name: "Update release names file"
-        uses: actions/checkout@v3
         run: |
           git config --local user.email "${{ github.event.pusher.email }}"
           git config --local user.name "${{ github.event.pusher.name }}"
           git commit -m "Update release names" ./release/data/names.csv
           git push
+
+      - name: "Create GitHub Release"
+        uses: softprops/action-gh-release@v1
+        with:
+          name: "Release ${{ github.ref_name }} \"${{ steps.generate_release_name.outputs.release_name }}\""
+          token: ${{ secrets.GITHUB_TOKEN }}
