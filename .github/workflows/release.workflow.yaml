@@ -312,7 +312,7 @@ jobs:
       - name: "Generate release name"
         id: generate_release_name
         run: |
-          echo "::set-output name=release_name::$(python ./release/main.py -f ./release/data/names.csv)"
+          echo "release_name=$(python ./release/main.py -f ./release/data/names.csv)" >> $GITHUB_OUTPUT
 
       - name: "Create GitHub Release"
         uses: softprops/action-gh-release@v1

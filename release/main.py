@@ -10,7 +10,7 @@ args = parser.parse_args()
 if not os.path.isabs(args.file):
     args.file = os.path.join(os.getcwd(), args.file)
 
-with open('names.csv', 'r') as file:
+with open(args.file, 'r') as file:
     reader = csv.DictReader(file)
     names = list(reader)
 
