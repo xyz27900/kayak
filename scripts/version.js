@@ -31,6 +31,7 @@ program
   .description('Bump prerelease version')
   .option('--pre-id <preId>', 'Pre-release identifier')
   .action((options) => {
+    /** @type {string} */
     const preId = options.preId ?? 'rc';
     const newVersion = semver.inc(version, 'prerelease', preId);
     saveVersion(newVersion);

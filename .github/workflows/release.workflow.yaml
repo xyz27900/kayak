@@ -40,8 +40,8 @@ jobs:
             yq '.workflow_runs[] | select(.status == "completed" and .conclusion == "success") | .html_url' | \
             xargs -I {} echo "QA workflow succeeded: {}"
 
-  build-npm:
-    name: "🛠️ Build NPM packages"
+  release-npm:
+    name: "📦️ Release NPM packages"
     runs-on: ubuntu-latest
     needs:
       - check-qa-workflow
@@ -73,56 +73,11 @@ jobs:
         with:
           paths: ${{ env.PATHS }}
           command: pnpm build
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      - name: "Remove node_modules"
-        run: |
-          find . -name 'node_modules' -type d -prune -exec rm -rf '{}' +
-
-      - name: "Copy NPM packages files to /tmp/packages"
-        run: |
-          mkdir -p /tmp/packages
-          cp -r ./packages /tmp/packages
-
-      - name: "Compress NPM packages files"
-        run: |
-          tar -czf npm-packages.tar.gz -C /tmp/packages .
-
-      - name: "Upload NPM packages artifact"
-        uses: actions/upload-artifact@v3
-        with:
-          name: npm-packages
-          path: npm-packages.tar.gz
-
-#  publish-npm:
-#    name: "📦 Publish NPM packages"
-#    runs-on: ubuntu-latest
-#    needs: build-npm
-#    strategy:
-#      matrix:
-#        node-version: [16]
-#
-#    steps:
-#      - name: "Setup pnpm"
-#        uses: ./.github/actions/setup-pnpm
-#        with:
-#          node-version: ${{ env.NODE_VERSION }}
-#          pnpm-version: ${{ env.PNPM_VERSION }}
-#          cache: true
-#
-#      - name: "Decompress NPM packages files"
-#        run: |
-#          tar -xzf /tmp/npm-packages.tar.gz -C .
-#
-#      - name: "Publish packages"
-#        uses: ./.github/actions/execute-in-paths
-#        with:
-#          paths: ${{ env.PATHS }}
-#          command: pnpm publish
-#        env:
-#          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-  build-docker:
-    name: "🛠️ Build Docker images"
+  release-docker:
+    name: "🚢️ Release Docker images"
     runs-on: ubuntu-latest
     needs:
       - check-qa-workflow
@@ -148,7 +103,7 @@ jobs:
           platforms: arm,arm64,ppc64le,mips64,s390x
 
       - name: "Build kayak/upx:latest"
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v4
         with:
           push: true
           platforms: ${{ matrix.platforms }}
@@ -159,7 +114,7 @@ jobs:
           cache-to: type=gha,mode=max,scope=kayak/upx
 
       - name: "Build kayak/fontconfig:latest"
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v4
         with:
           push: true
           platforms: ${{ matrix.platforms }}
@@ -172,7 +127,7 @@ jobs:
           cache-to: type=gha,mode=max,scope=kayak/fontconfig
 
       - name: "Build kayak/crdetector:latest"
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v4
         with:
           push: true
           platforms: ${{ matrix.platforms }}
@@ -185,7 +140,7 @@ jobs:
           cache-to: type=gha,mode=max,scope=kayak/crdetector
 
       - name: "Build kayak/novnc:latest"
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v4
         with:
           push: true
           platforms: ${{ matrix.platforms }}
@@ -198,7 +153,7 @@ jobs:
           cache-to: type=gha,mode=max,scope=kayak/novnc
 
       - name: "Build kayak/openbox:latest"
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v4
         with:
           push: true
           platforms: ${{ matrix.platforms }}
@@ -215,7 +170,7 @@ jobs:
           cache-to: type=gha,mode=max,scope=kayak/openbox
 
       - name: "Build kayak/tigervnc:latest"
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v4
         with:
           push: true
           platforms: ${{ matrix.platforms }}
@@ -236,23 +191,29 @@ jobs:
           cache-from: type=gha,mode=max,scope=kayak/tigervnc
           cache-to: type=gha,mode=max,scope=kayak/tigervnc
 
-      - name: "Build kayak/anvil:latest"
-        uses: docker/build-push-action@v3
+#      - name: "Login to Docker Hub"
+#        uses: docker/login-action@v2
+#        with:
+#          username: ${{ secrets.DOCKERHUB_USERNAME }}
+#          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: "Build kayak/anvil:latest [DockerHub]"
+        uses: docker/build-push-action@v4
         with:
-          push: true
+          push: false
           platforms: ${{ matrix.platforms }}
-          tags: localhost:5000/kayak/anvil:latest
+          tags: kayak/anvil:latest
           file: ./docker/anvil/Dockerfile
           context: ./docker/anvil
           cache-from: type=gha,mode=max,scope=kayak/anvil
           cache-to: type=gha,mode=max,scope=kayak/anvil
 
-      - name: "Build kayak/chromium:cypress"
-        uses: docker/build-push-action@v3
+      - name: "Build kayak/chromium:cypress [Docker Hub]"
+        uses: docker/build-push-action@v4
         with:
-          push: true
+          push: false
           platforms: ${{ matrix.platforms }}
-          tags: localhost:5000/kayak/chromium:cypress
+          tags: kayak/chromium:cypress
           file: ./docker/chromium/Dockerfile.cypress
           context: ./docker/chromium
           build-args: |
@@ -260,12 +221,12 @@ jobs:
           cache-from: type=gha,mode=max,scope=kayak/chromium:cypress
           cache-to: type=gha,mode=max,scope=kayak/chromium:cypress
 
-      - name: "Build kayak/chromium:playwright"
-        uses: docker/build-push-action@v3
+      - name: "Build kayak/chromium:playwright [Docker Hub]"
+        uses: docker/build-push-action@v4
         with:
-          push: true
+          push: false
           platforms: ${{ matrix.platforms }}
-          tags: localhost:5000/kayak/chromium:playwright
+          tags: kayak/chromium:playwright
           file: ./docker/chromium/Dockerfile.playwright
           context: ./docker/chromium
           build-args: |
@@ -273,12 +234,12 @@ jobs:
           cache-from: type=gha,mode=max,scope=kayak/chromium:playwright
           cache-to: type=gha,mode=max,scope=kayak/chromium:playwright
 
-      - name: "Build kayak/display:latest"
-        uses: docker/build-push-action@v3
+      - name: "Build kayak/display:latest [Docker Hub]"
+        uses: docker/build-push-action@v4
         with:
-          push: true
+          push: false
           platforms: ${{ matrix.platforms }}
-          tags: localhost:5000/kayak/display:latest
+          tags: kayak/display:latest
           file: ./docker/display/Dockerfile
           context: ./docker/display
           build-args: |
@@ -293,47 +254,74 @@ jobs:
           cache-from: type=gha,mode=max,scope=kayak/display
           cache-to: type=gha,mode=max,scope=kayak/display
 
-      - name: "Build kayak/ffmpeg:latest"
-        uses: docker/build-push-action@v3
+      - name: "Build kayak/ffmpeg:latest [Docker Hub]"
+        uses: docker/build-push-action@v4
         with:
-          push: true
+          push: false
           platforms: ${{ matrix.platforms }}
-          tags: localhost:5000/kayak/ffmpeg:latest
+          tags: kayak/ffmpeg:latest
           file: ./docker/ffmpeg/Dockerfile
           context: ./docker/ffmpeg
           cache-from: type=gha,mode=max,scope=kayak/ffmpeg
           cache-to: type=gha,mode=max,scope=kayak/ffmpeg
 
-      - name: "Compress Docker images"
-        run: |
-          docker save localhost:5000/kayak/anvil:latest | gzip > /tmp/images/kayak-anvil.tar.gz
-          docker save localhost:5000/kayak/chromium:cypress | gzip > /tmp/images/kayak-chromium-cypress.tar.gz
-          docker save localhost:5000/kayak/chromium:playwright | gzip > /tmp/images/kayak-chromium-playwright.tar.gz
-          docker save localhost:5000/kayak/display:latest | gzip > /tmp/images/kayak-display.tar.gz
-          docker save localhost:5000/kayak/ffmpeg:latest | gzip > /tmp/images/kayak-ffmpeg.tar.gz
-
-      - name: "Upload Docker images artifacts"
-        uses: actions/upload-artifact@v2
-        with:
-          name: docker-images
-          path: |
-            /tmp/images/kayak-anvil.tar.gz
-            /tmp/images/kayak-chromium-cypress.tar.gz
-            /tmp/images/kayak-chromium-playwright.tar.gz
-            /tmp/images/kayak-display.tar.gz
-            /tmp/images/kayak-ffmpeg.tar.gz
-
-  cleanup:
-    name: "🧹 Cleanup"
+  deploy-docs:
+    name: "📚 Deploy Docs"
     runs-on: ubuntu-latest
     needs:
-      - build-npm
-      - build-docker
+      - release-npm
+      - release-docker
 
     steps:
-      - name: "Delete artifacts"
-        uses: geekyeggo/delete-artifact@v2
+      - name: "Checkout"
+        uses: actions/checkout@v3
+
+      - name: "Setup pnpm"
+        uses: ./.github/actions/setup-pnpm
         with:
-          name: |
-            docker-images
-            npm-packages
+          node-version: ${{ env.NODE_VERSION }}
+          pnpm-version: ${{ env.PNPM_VERSION }}
+          cache: true
+
+      - name: Install dependencies
+        run: |
+          pnpm install
+
+      - name: Build docs
+        working-directory: ./docs
+        run: |
+          pnpm run build
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./docs/.vitepress/dist
+
+  create-release:
+    name: "🚀 Create Release"
+    runs-on: ubuntu-latest
+    needs:
+      - release-npm
+      - release-docker
+
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v3
+
+      - name: "Generate release name"
+        id: generate_release_name
+        run: |
+          echo "::set-output name=release_name::$(python ./release/main.py -f ./release/data/names.csv)"
+
+      - name: "Create GitHub Release"
+        uses: softprops/action-gh-release@v1
+        with:
+          name: "Release ${{ github.ref }} \"${{ steps.generate_release_name.outputs.release_name }}\""
+
+      - name: "Update release names file"
+        run: |
+          git config --local user.email ""
+          git config --local user.name ""
+          git commit -m "Update release names" ./release/data/names.csv"
+          git push
