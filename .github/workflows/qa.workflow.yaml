@@ -12,26 +12,34 @@ on:
       - main
 
 jobs:
-  build-workspace:
-    name: "🛠️ Build workspace"
-    runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        node-version: [ 18, 19 ]
-
-    env:
-      PATHS: |
-        packages/core
-        packages/metamask
-        packages/cypress
-        packages/playwright
-        packages/cli
+  build-docker:
+    name: "🐳 Build Docker images"
+    uses: ./.github/workflows/docker.workflow.yaml
 
     steps:
-      - name: "Checkout"
-        uses: actions/checkout@v3
-
+      - name: "Test"
+        run: |
+          echo "Test"
+#  build-workspace:
+#    name: "🛠️ Build workspace"
+#    runs-on: ubuntu-latest
+#
+#    strategy:
+#      matrix:
+#        node-version: [ 18, 19 ]
+#
+#    env:
+#      PATHS: |
+#        packages/core
+#        packages/metamask
+#        packages/cypress
+#        packages/playwright
+#        packages/cli
+#
+#    steps:
+#      - name: "Checkout"
+#        uses: actions/checkout@v3
+#
 #      - name: "Setup pnpm"
 #        uses: ./.github/actions/setup-pnpm
 #        with:
@@ -63,31 +71,31 @@ jobs:
 #        with:
 #          name: workspace-${{ matrix.node-version }}
 #          path: workspace-${{ matrix.node-version }}.tar.gz
-
-  lint:
-    name: "👀 Lint"
-    runs-on: ubuntu-latest
-    needs:
-      - build-workspace
-
-    strategy:
-      matrix:
-        node-version: [ 18, 19 ]
-
-    env:
-      PATHS: |
-        scripts
-        docs
-        packages/cli
-        packages/core
-        packages/cypress
-        packages/metamask
-        packages/playwright
-
-    steps:
-      - name: "Checkout"
-        uses: actions/checkout@v3
-
+#
+#  lint:
+#    name: "👀 Lint"
+#    runs-on: ubuntu-latest
+#    needs:
+#      - build-workspace
+#
+#    strategy:
+#      matrix:
+#        node-version: [ 18, 19 ]
+#
+#    env:
+#      PATHS: |
+#        scripts
+#        docs
+#        packages/cli
+#        packages/core
+#        packages/cypress
+#        packages/metamask
+#        packages/playwright
+#
+#    steps:
+#      - name: "Checkout"
+#        uses: actions/checkout@v3
+#
 #      - name: "Setup pnpm"
 #        uses: ./.github/actions/setup-pnpm
 #        with:
@@ -109,25 +117,25 @@ jobs:
 #        with:
 #          paths: ${{ env.PATHS }}
 #          command: pnpm lint
-
-  test:
-    name: "🧪 Test"
-    runs-on: ubuntu-latest
-    needs:
-      - build-workspace
-
-    strategy:
-      matrix:
-        node-version: [ 18, 19 ]
-
-    env:
-      PATHS: |
-        packages/cli
-
-    steps:
-      - name: "Checkout"
-        uses: actions/checkout@v3
-
+#
+#  unit-tests:
+#    name: "🧪 Unit tests"
+#    runs-on: ubuntu-latest
+#    needs:
+#      - build-workspace
+#
+#    strategy:
+#      matrix:
+#        node-version: [ 18, 19 ]
+#
+#    env:
+#      PATHS: |
+#        packages/cli
+#
+#    steps:
+#      - name: "Checkout"
+#        uses: actions/checkout@v3
+#
 #      - name: "Setup pnpm"
 #        uses: ./.github/actions/setup-pnpm
 #        with:
@@ -149,18 +157,54 @@ jobs:
 #        with:
 #          paths: ${{ env.PATHS }}
 #          command: pnpm test
-
-  cleanup:
-    name: "🧹 Cleanup"
-    runs-on: ubuntu-latest
-    if: always()
-    needs:
-      - build-workspace
-      - lint
-      - test
-
-    steps:
-      - name: "Delete artifacts"
-        uses: geekyeggo/delete-artifact@v2
-        with:
-          name: workspace-*
+#
+#  integration-tests:
+#    name: "🧪 Integration tests"
+#    runs-on: ubuntu-latest
+#    needs:
+#      - build-workspace
+#
+#    strategy:
+#      matrix:
+#        node-version: [ 18, 19 ]
+#
+#    steps:
+#      - name: "Checkout"
+#        uses: actions/checkout@v3
+#
+#      - name: "Setup pnpm"
+#        uses: ./.github/actions/setup-pnpm
+#        with:
+#          node-version: ${{ matrix.node-version }}
+#          pnpm-version: ${{ env.PNPM_VERSION }}
+#
+#      - name: "Download workspace artifact"
+#        uses: actions/download-artifact@v3
+#        with:
+#          name: workspace-${{ matrix.node-version }}
+#          path: /tmp
+#
+#      - name: "Decompress workspace files"
+#        run: |
+#          tar -xzf /tmp/workspace-${{ matrix.node-version }}.tar.gz -C . --overwrite
+#
+#      - name: "Run tests"
+#        uses: ./.github/actions/execute-in-paths
+#        with:
+#          paths: ${{ env.PATHS }}
+#          command: pnpm test
+#
+#  cleanup:
+#    name: "🧹 Cleanup"
+#    runs-on: ubuntu-latest
+#    if: always()
+#    needs:
+#      - build-workspace
+#      - lint
+#      - unit-tests
+#
+#    steps:
+#      - name: "Delete artifacts"
+#        uses: geekyeggo/delete-artifact@v2
+#        with:
+#          name: workspace-*

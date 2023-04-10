@@ -38,17 +38,43 @@ jobs:
     steps:
       - name: "Check if QA workflow for current commit succeeded"
         run: |
-          echo "TODO: Check if QA workflow for current commit succeeded"
-#          curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-#            "https://api.github.com/repos/${{ github.repository }}/actions/workflows/qa.workflow.yaml/runs?head_sha=${{ github.sha }}" | \
-#            yq '.workflow_runs[] | select(.status == "completed" and .conclusion == "success") | .html_url' | \
-#            xargs -I {} echo "QA workflow succeeded: {}"
+          curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            "https://api.github.com/repos/${{ github.repository }}/actions/workflows/qa.workflow.yaml/runs?head_sha=${{ github.sha }}" | \
+            yq '.workflow_runs[] | select(.status == "completed" and .conclusion == "success") | .html_url' | \
+            xargs -I {} echo "QA workflow succeeded: {}"
+
+  check-packages-versions:
+    name: "🔎 Check packages versions"
+    runs-on: ubuntu-latest
+    needs:
+      - check-qa-workflow
+
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v3
+
+      - name: "Check if package versions are correct"
+        run: |
+          github_ref="\"$(echo ${{ github.ref_name }} | tr -d 'v')\""
+          find packages -type f -name 'package.json' -not -path '*/node_modules/*' -not -path '/*cache/*' | \
+            while read -r file; do
+              version=$(yq -oj '.version' "$file")
+          
+              if [ "$version" != "$github_ref" ]; then
+                echo "Version in $file is not equal to tag: $version != $github_ref"
+                exit 1
+              elif [ -z "$previous_version" ]; then
+                previous_version="$version"
+              elif [ "$previous_version" != "$version" ]; then
+                echo "Version mismatch in $file: $version != $previous_version"
+                exit 1
+            done
 
   release-npm:
     name: "📦️ Release NPM packages"
     runs-on: ubuntu-latest
     needs:
-      - check-qa-workflow
+      - check-packages-versions
 
     env:
       PATHS: |
@@ -80,234 +106,217 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-#  release-docker:
-#    name: "🚢️ Release Docker images"
-#    runs-on: ubuntu-latest
-#    needs:
-#      - check-qa-workflow
-#
-#    services:
-#      registry:
-#        image: registry:2
-#        ports:
-#          - 5000:5000
-#
-#    strategy:
-#      fail-fast: true
-#      matrix:
-#        platforms: [ linux/amd64, linux/386, linux/arm/v6, linux/arm/v7, linux/arm64/v8 ]
-#
-#    steps:
-#      - name: "Checkout"
-#        uses: actions/checkout@v3
-#
-#      - name: "Setup Docker"
-#        uses: ./.github/actions/setup-docker
-#        with:
-#          platforms: arm,arm64,ppc64le,mips64,s390x
-#
-#      - name: "Build kayak/upx:latest"
-#        uses: docker/build-push-action@v4
-#        with:
-#          push: true
-#          platforms: ${{ matrix.platforms }}
-#          tags: localhost:5000/kayak/upx:latest
-#          file: ./docker/upx/Dockerfile
-#          context: ./docker/upx
-#          cache-from: type=gha,mode=max,scope=kayak/upx
-#          cache-to: type=gha,mode=max,scope=kayak/upx
-#
-#      - name: "Build kayak/fontconfig:latest"
-#        uses: docker/build-push-action@v4
-#        with:
-#          push: true
-#          platforms: ${{ matrix.platforms }}
-#          tags: localhost:5000/kayak/fontconfig:latest
-#          file: ./docker/fontconfig/Dockerfile
-#          context: ./docker/fontconfig
-#          build-args: |
-#            FONTCONFIG_VERSION=${{ env.FONTCONFIG_VERSION }}
-#          cache-from: type=gha,mode=max,scope=kayak/fontconfig
-#          cache-to: type=gha,mode=max,scope=kayak/fontconfig
-#
-#      - name: "Build kayak/crdetector:latest"
-#        uses: docker/build-push-action@v4
-#        with:
-#          push: true
-#          platforms: ${{ matrix.platforms }}
-#          tags: localhost:5000/kayak/crdetector:latest
-#          file: ./docker/crdetector/Dockerfile
-#          context: ./docker/crdetector
-#          build-args: |
-#            UPX_IMAGE=localhost:5000/kayak/upx:latest
-#          cache-from: type=gha,mode=max,scope=kayak/crdetector
-#          cache-to: type=gha,mode=max,scope=kayak/crdetector
-#
-#      - name: "Build kayak/novnc:latest"
-#        uses: docker/build-push-action@v4
-#        with:
-#          push: true
-#          platforms: ${{ matrix.platforms }}
-#          tags: localhost:5000/kayak/novnc:latest
-#          file: ./docker/novnc/Dockerfile
-#          context: ./docker/novnc
-#          build-args: |
-#            NOVNC_VERSION=${{ env.NOVNC_VERSION }}
-#          cache-from: type=gha,mode=max,scope=kayak/novnc
-#          cache-to: type=gha,mode=max,scope=kayak/novnc
-#
-#      - name: "Build kayak/openbox:latest"
-#        uses: docker/build-push-action@v4
-#        with:
-#          push: true
-#          platforms: ${{ matrix.platforms }}
-#          tags: localhost:5000/kayak/openbox:latest
-#          file: ./docker/openbox/Dockerfile
-#          context: ./docker/openbox
-#          build-args: |
-#            FONTCONFIG_IMAGE=localhost:5000/kayak/fontconfig:latest
-#            UPX_IMAGE=localhost:5000/kayak/upx:latest
-#            LIBXRANDR_VERSION=${{ env.LIBXRANDR_VERSION }}
-#            OPENBOX_VERSION=${{ env.OPENBOX_VERSION }}
-#            PANGO_VERSION=${{ env.PANGO_VERSION }}
-#          cache-from: type=gha,mode=max,scope=kayak/openbox
-#          cache-to: type=gha,mode=max,scope=kayak/openbox
-#
-#      - name: "Build kayak/tigervnc:latest"
-#        uses: docker/build-push-action@v4
-#        with:
-#          push: true
-#          platforms: ${{ matrix.platforms }}
-#          tags: localhost:5000/kayak/tigervnc:latest
-#          file: ./docker/tigervnc/Dockerfile
-#          context: ./docker/tigervnc
-#          build-args: |
-#            UPX_IMAGE=localhost:5000/kayak/upx:latest
-#            GNUTLS_VERSION=${{ env.GNUTLS_VERSION }}
-#            LIBFONTENC_VERSION=${{ env.LIBFONTENC_VERSION }}
-#            LIBTASN1_VERSION=${{ env.LIBTASN1_VERSION }}
-#            LIBXFONT2_VERSION=${{ env.LIBXFONT2_VERSION }}
-#            LIBXSHMFENCE_VERSION=${{ env.LIBXSHMFENCE_VERSION }}
-#            TIGERVNC_VERSION=${{ env.TIGERVNC_VERSION }}
-#            XKB_VERSION=${{ env.XKB_VERSION }}
-#            XKBCOMP_VERSION=${{ env.XKBCOMP_VERSION }}
-#            XSERVER_VERSION=${{ env.XSERVER_VERSION }}
-#          cache-from: type=gha,mode=max,scope=kayak/tigervnc
-#          cache-to: type=gha,mode=max,scope=kayak/tigervnc
+  release-docker:
+    name: "🚢️ Release Docker images"
+    runs-on: ubuntu-latest
+    needs:
+      - check-qa-workflow
 
-#      - name: "Login to Docker Hub"
-#        uses: docker/login-action@v2
-#        with:
-#          username: ${{ secrets.DOCKERHUB_USERNAME }}
-#          password: ${{ secrets.DOCKERHUB_TOKEN }}
-#
-#      - name: "Build kayak/anvil:latest [DockerHub]"
-#        uses: docker/build-push-action@v4
-#        with:
-#          push: false
-#          platforms: ${{ matrix.platforms }}
-#          tags: kayak/anvil:latest
-#          file: ./docker/anvil/Dockerfile
-#          context: ./docker/anvil
-#          cache-from: type=gha,mode=max,scope=kayak/anvil
-#          cache-to: type=gha,mode=max,scope=kayak/anvil
-#
-#      - name: "Build kayak/chromium:cypress [Docker Hub]"
-#        uses: docker/build-push-action@v4
-#        with:
-#          push: false
-#          platforms: ${{ matrix.platforms }}
-#          tags: kayak/chromium:cypress
-#          file: ./docker/chromium/Dockerfile.cypress
-#          context: ./docker/chromium
-#          build-args: |
-#            CRDETECTOR_IMAGE=localhost:5000/kayak/crdetector:latest
-#          cache-from: type=gha,mode=max,scope=kayak/chromium:cypress
-#          cache-to: type=gha,mode=max,scope=kayak/chromium:cypress
-#
-#      - name: "Build kayak/chromium:playwright [Docker Hub]"
-#        uses: docker/build-push-action@v4
-#        with:
-#          push: false
-#          platforms: ${{ matrix.platforms }}
-#          tags: kayak/chromium:playwright
-#          file: ./docker/chromium/Dockerfile.playwright
-#          context: ./docker/chromium
-#          build-args: |
-#            CRDETECTOR_IMAGE=localhost:5000/kayak/crdetector:latest
-#          cache-from: type=gha,mode=max,scope=kayak/chromium:playwright
-#          cache-to: type=gha,mode=max,scope=kayak/chromium:playwright
-#
-#      - name: "Build kayak/display:latest [Docker Hub]"
-#        uses: docker/build-push-action@v4
-#        with:
-#          push: false
-#          platforms: ${{ matrix.platforms }}
-#          tags: kayak/display:latest
-#          file: ./docker/display/Dockerfile
-#          context: ./docker/display
-#          build-args: |
-#            FONTCONFIG_IMAGE=localhost:5000/kayak/fontconfig:latest
-#            NOVNC_IMAGE=localhost:5000/kayak/novnc:latest
-#            OPENBOX_IMAGE=localhost:5000/kayak/openbox:latest
-#            TIGERVNC_IMAGE=localhost:5000/kayak/tigervnc:latest
-#            USER_ID=${{ env.USER_ID }}
-#            GROUP_ID=${{ env.GROUP_ID }}
-#            USER_NAME=${{ env.USER_NAME }}
-#            GROUP_NAME=${{ env.GROUP_NAME }}
-#          cache-from: type=gha,mode=max,scope=kayak/display
-#          cache-to: type=gha,mode=max,scope=kayak/display
-#
-#      - name: "Build kayak/ffmpeg:latest [Docker Hub]"
-#        uses: docker/build-push-action@v4
-#        with:
-#          push: false
-#          platforms: ${{ matrix.platforms }}
-#          tags: kayak/ffmpeg:latest
-#          file: ./docker/ffmpeg/Dockerfile
-#          context: ./docker/ffmpeg
-#          cache-from: type=gha,mode=max,scope=kayak/ffmpeg
-#          cache-to: type=gha,mode=max,scope=kayak/ffmpeg
+    services:
+      registry:
+        image: registry:2
+        ports:
+          - 5000:5000
+
+    strategy:
+      fail-fast: true
+      matrix:
+        platforms: [ linux/amd64, linux/386, linux/arm/v6, linux/arm/v7, linux/arm64/v8 ]
+
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v3
+
+      - name: "Setup Docker"
+        uses: ./.github/actions/setup-docker
+        with:
+          platforms: arm,arm64,ppc64le,mips64,s390x
+
+      - name: "Build kayak/upx:latest"
+        uses: docker/build-push-action@v4
+        with:
+          platforms: ${{ matrix.platforms }}
+          tags: localhost:5000/kayak/upx:latest
+          file: ./docker/upx/Dockerfile
+          context: ./docker/upx
+          cache-from: type=gha,mode=max,scope=kayak/upx
+          cache-to: type=gha,mode=max,scope=kayak/upx
+
+      - name: "Build kayak/fontconfig:latest"
+        uses: docker/build-push-action@v4
+        with:
+          platforms: ${{ matrix.platforms }}
+          tags: localhost:5000/kayak/fontconfig:latest
+          file: ./docker/fontconfig/Dockerfile
+          context: ./docker/fontconfig
+          build-args: |
+            FONTCONFIG_VERSION=${{ env.FONTCONFIG_VERSION }}
+          cache-from: type=gha,mode=max,scope=kayak/fontconfig
+          cache-to: type=gha,mode=max,scope=kayak/fontconfig
+
+      - name: "Build kayak/crdetector:latest"
+        uses: docker/build-push-action@v4
+        with:
+          platforms: ${{ matrix.platforms }}
+          tags: localhost:5000/kayak/crdetector:latest
+          file: ./docker/crdetector/Dockerfile
+          context: ./docker/crdetector
+          build-args: |
+            UPX_IMAGE=localhost:5000/kayak/upx:latest
+          cache-from: type=gha,mode=max,scope=kayak/crdetector
+          cache-to: type=gha,mode=max,scope=kayak/crdetector
+
+      - name: "Build kayak/novnc:latest"
+        uses: docker/build-push-action@v4
+        with:
+          platforms: ${{ matrix.platforms }}
+          tags: localhost:5000/kayak/novnc:latest
+          file: ./docker/novnc/Dockerfile
+          context: ./docker/novnc
+          build-args: |
+            NOVNC_VERSION=${{ env.NOVNC_VERSION }}
+          cache-from: type=gha,mode=max,scope=kayak/novnc
+          cache-to: type=gha,mode=max,scope=kayak/novnc
+
+      - name: "Build kayak/openbox:latest"
+        uses: docker/build-push-action@v4
+        with:
+          platforms: ${{ matrix.platforms }}
+          tags: localhost:5000/kayak/openbox:latest
+          file: ./docker/openbox/Dockerfile
+          context: ./docker/openbox
+          build-args: |
+            FONTCONFIG_IMAGE=localhost:5000/kayak/fontconfig:latest
+            UPX_IMAGE=localhost:5000/kayak/upx:latest
+            LIBXRANDR_VERSION=${{ env.LIBXRANDR_VERSION }}
+            OPENBOX_VERSION=${{ env.OPENBOX_VERSION }}
+            PANGO_VERSION=${{ env.PANGO_VERSION }}
+          cache-from: type=gha,mode=max,scope=kayak/openbox
+          cache-to: type=gha,mode=max,scope=kayak/openbox
+
+      - name: "Build kayak/tigervnc:latest"
+        uses: docker/build-push-action@v4
+        with:
+          platforms: ${{ matrix.platforms }}
+          tags: localhost:5000/kayak/tigervnc:latest
+          file: ./docker/tigervnc/Dockerfile
+          context: ./docker/tigervnc
+          build-args: |
+            UPX_IMAGE=localhost:5000/kayak/upx:latest
+            GNUTLS_VERSION=${{ env.GNUTLS_VERSION }}
+            LIBFONTENC_VERSION=${{ env.LIBFONTENC_VERSION }}
+            LIBTASN1_VERSION=${{ env.LIBTASN1_VERSION }}
+            LIBXFONT2_VERSION=${{ env.LIBXFONT2_VERSION }}
+            LIBXSHMFENCE_VERSION=${{ env.LIBXSHMFENCE_VERSION }}
+            TIGERVNC_VERSION=${{ env.TIGERVNC_VERSION }}
+            XKB_VERSION=${{ env.XKB_VERSION }}
+            XKBCOMP_VERSION=${{ env.XKBCOMP_VERSION }}
+            XSERVER_VERSION=${{ env.XSERVER_VERSION }}
+          cache-from: type=gha,mode=max,scope=kayak/tigervnc
+          cache-to: type=gha,mode=max,scope=kayak/tigervnc
+
+      - name: "Build kayak/anvil:latest"
+        uses: docker/build-push-action@v4
+        with:
+          platforms: ${{ matrix.platforms }}
+          tags: localhost:5000/kayak/anvil:latest
+          file: ./docker/anvil/Dockerfile
+          context: ./docker/anvil
+          cache-from: type=gha,mode=max,scope=kayak/anvil
+          cache-to: type=gha,mode=max,scope=kayak/anvil
+
+      - name: "Build kayak/chromium:cypress"
+        uses: docker/build-push-action@v4
+        with:
+          platforms: ${{ matrix.platforms }}
+          tags: localhost:5000/kayak/chromium:cypress
+          file: ./docker/chromium/Dockerfile.cypress
+          context: ./docker/chromium
+          build-args: |
+            CRDETECTOR_IMAGE=localhost:5000/kayak/crdetector:latest
+          cache-from: type=gha,mode=max,scope=kayak/chromium:cypress
+          cache-to: type=gha,mode=max,scope=kayak/chromium:cypress
+
+      - name: "Build kayak/chromium:playwright"
+        uses: docker/build-push-action@v4
+        with:
+          platforms: ${{ matrix.platforms }}
+          tags: localhost:5000/kayak/chromium:playwright
+          file: ./docker/chromium/Dockerfile.playwright
+          context: ./docker/chromium
+          build-args: |
+            CRDETECTOR_IMAGE=localhost:5000/kayak/crdetector:latest
+          cache-from: type=gha,mode=max,scope=kayak/chromium:playwright
+          cache-to: type=gha,mode=max,scope=kayak/chromium:playwright
+
+      - name: "Build kayak/display:latest"
+        uses: docker/build-push-action@v4
+        with:
+          platforms: ${{ matrix.platforms }}
+          tags: localhost:5000/kayak/display:latest
+          file: ./docker/display/Dockerfile
+          context: ./docker/display
+          build-args: |
+            FONTCONFIG_IMAGE=localhost:5000/kayak/fontconfig:latest
+            NOVNC_IMAGE=localhost:5000/kayak/novnc:latest
+            OPENBOX_IMAGE=localhost:5000/kayak/openbox:latest
+            TIGERVNC_IMAGE=localhost:5000/kayak/tigervnc:latest
+            USER_ID=${{ env.USER_ID }}
+            GROUP_ID=${{ env.GROUP_ID }}
+            USER_NAME=${{ env.USER_NAME }}
+            GROUP_NAME=${{ env.GROUP_NAME }}
+          cache-from: type=gha,mode=max,scope=kayak/display
+          cache-to: type=gha,mode=max,scope=kayak/display
+
+      - name: "Build kayak/ffmpeg:latest"
+        uses: docker/build-push-action@v4
+        with:
+          platforms: ${{ matrix.platforms }}
+          tags: localhost:5000/kayak/ffmpeg:latest
+          file: ./docker/ffmpeg/Dockerfile
+          context: ./docker/ffmpeg
+          cache-from: type=gha,mode=max,scope=kayak/ffmpeg
+          cache-to: type=gha,mode=max,scope=kayak/ffmpeg
 
   deploy-docs:
     name: "📚 Deploy Docs"
     runs-on: ubuntu-latest
     needs:
       - release-npm
-#      - release-docker
+      - release-docker
 
     steps:
       - name: "Checkout"
         uses: actions/checkout@v3
 
-#      - name: "Setup pnpm"
-#        uses: ./.github/actions/setup-pnpm
-#        with:
-#          node-version: ${{ env.NODE_VERSION }}
-#          pnpm-version: ${{ env.PNPM_VERSION }}
-#          cache: true
-#
-#      - name: Install dependencies
-#        run: |
-#          pnpm install
-#
-#      - name: Build docs
-#        working-directory: ./docs
-#        run: |
-#          pnpm run build
-#
-#      - name: Deploy to GitHub Pages
-#        uses: peaceiris/actions-gh-pages@v3
-#        with:
-#          github_token: ${{ secrets.GITHUB_TOKEN }}
-#          publish_dir: ./docs/.vitepress/dist
+      - name: "Setup pnpm"
+        uses: ./.github/actions/setup-pnpm
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          pnpm-version: ${{ env.PNPM_VERSION }}
+          cache: true
+
+      - name: Install dependencies
+        run: |
+          pnpm install
+
+      - name: Build docs
+        working-directory: ./docs
+        run: |
+          pnpm run build
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./docs/.vitepress/dist
 
   create-release:
     name: "🚀 Create Release"
     runs-on: ubuntu-latest
     needs:
       - release-npm
-#      - release-docker
+      - release-docker
 
     steps:
       - name: "Checkout"
