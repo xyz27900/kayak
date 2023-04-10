@@ -155,7 +155,9 @@ jobs:
     runs-on: ubuntu-latest
     if: always()
     needs:
-      - qa
+      - build-workspace
+      - lint
+      - test
 
     steps:
       - name: "Delete artifacts"

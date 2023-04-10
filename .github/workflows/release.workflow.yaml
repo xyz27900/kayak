@@ -321,7 +321,7 @@ jobs:
 
       - name: "Update release names file"
         run: |
-          git config --local user.email ""
-          git config --local user.name ""
+          git config --local user.email "${{ github.event.sender.email }}"
+          git config --local user.name "${{ github.event.sender.login }}"
           git commit -m "Update release names" ./release/data/names.csv"
           git push
