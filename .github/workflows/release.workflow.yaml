@@ -324,6 +324,16 @@ jobs:
         run: |
           echo "release_name=$(python ./release/main.py -f ./release/data/names.csv)" >> $GITHUB_OUTPUT
 
+      - name: "Check the release name"
+        run: |
+          RELEASE_NAME=${{ steps.generate_release_name.outputs.release_name }}
+          if [ -z "$RELEASE_NAME" ]; then
+            echo "Release name is empty"
+            exit 1
+          else
+            echo "Release name: $RELEASE_NAME"
+          fi
+
       - name: "Update release names file"
         run: |
           git status
