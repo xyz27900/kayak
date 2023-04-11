@@ -1,0 +1,28 @@
+name: "Get LTS Node.js version"
+description: "Get LTS Node.js version"
+
+inputs:
+  type:
+    description: "Type of Node.js version (lts or latest)"
+    required: false
+    default: "lts"
+
+runs:
+  using: composite
+  steps:
+    - name: "Get ${{ inputs.type }} Node.js version"
+      shell: bash
+      run: |
+        if [ "${{ inputs.type }}" = "lts" ]; then
+          yq_command="map(select(.lts != false)) | .[0].version"
+        elif [ "${{ inputs.type }}" = "latest" ]; then
+         yq_command=".[0].version"
+        else
+          echo "Unknown type of Node.js version: ${{ inputs.type }}"
+          echo "Allowed types: lts, latest"
+          exit 1
+        fi
+
+        yq_command="$yq_command | sub(\"^v\";\"\")"
+        lts_node_version=$(curl -s https://nodejs.org/dist/index.json | yq "$yq_command")
+        echo "LTS_NODE_VERSION=$lts_node_version" >> "$GITHUB_OUTPUT"
