@@ -59,7 +59,7 @@ jobs:
               package_name=$(yq -oy '.name' "$file" | sed 's/@//g' | tr '/' '-')
               package_files=$(yq -oy '.files' "$file" | yq -oy '.[]')
 
-              for path in "$package_files"; do
+              for path in $(echo "$package_files" | tr '\n' ' '); do
                 echo "cp -r \"/tmp/npm-packages/$package_name/$path\" \"$(dirname "$file")\""
                 cp -r "/tmp/npm-packages/$package_name/$path" "$(dirname "$file")"
               done
