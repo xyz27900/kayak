@@ -48,7 +48,11 @@ jobs:
           name: npm-packages-${{ env.NODE_VERSION }}
           path: /tmp/npm-packages
 
-      - run: ls -la /tmp/npm-packages
+      - name: "Unpack NPM packages"
+        run: |
+          find /tmp/npm-packages -name '*.tgz' -exec sh -c 'mkdir -p "${0%.tgz}" && tar -xzf "$0" -C "${0%.tgz}" --strip-components=1' {} \;
+          ls -l /tmp/npm-packages
+          ls -l /tmp/npm-packages/kayak-cli
 #
 #  build-docker:
 #    name: "🐳 Build Docker images"
