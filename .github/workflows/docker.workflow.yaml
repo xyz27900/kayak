@@ -67,6 +67,8 @@ jobs:
           cache-from: type=gha,mode=max,scope=kayak/fontconfig
           cache-to: type=gha,mode=max,scope=kayak/fontconfig
 
+      - run: docker image ls
+
       - name: "Build kayak/crdetector:latest"
         uses: docker/build-push-action@v4
         with:
