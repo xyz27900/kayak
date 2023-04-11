@@ -45,15 +45,11 @@ jobs:
           paths: ${{ env.PATHS }}
           run: |
             pnpm build
-            pnpm pack
+            generated_tarball=$(pnpm pack | grep -oP '(?<=\+ ).*\.tgz')
 
-            package_name=$(node -p "require('./package.json').name")
-            package_version=$(node -p "require('./package.json').version")
+            echo "package name: $(node -p "require('./package.json').name")"
 
-            echo "package name: $package_name"
-            echo "package version: $package_version"
-
-            mv $package_name-$package_version.tgz $package_name.tgz
+#            mv $generated_tarball /tmp/packages/$package-name.tgz
 
       - name: "Upload packed NPM packages to storage"
         uses: actions/upload-artifact@v3
