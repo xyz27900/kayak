@@ -39,9 +39,12 @@ jobs:
       - name: "Install dependencies"
         run: pnpm install --frozen-lockfile
 
+      - name: "Create directory for packed NPM packages"
+        run: mkdir -p /tmp/npm-packages
+
       - name: "Build NPM packages"
         run: |
-          mkdir -p /tmp/npm-packages
+          ls -la
           for path in $(echo "${{ env.PATHS }}" | tr '\n' ' '); do
             cd "$path"
             pnpm build
