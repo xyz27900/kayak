@@ -17,7 +17,7 @@ jobs:
     uses: ./.github/workflows/npm.workflow.yaml
     with:
       node-version: 18
-      pnpm-version: ${{ env.PNPM_VERSION }}
+      pnpm-version: 8
 
   build-docker:
     name: "🐳 Build Docker images"
