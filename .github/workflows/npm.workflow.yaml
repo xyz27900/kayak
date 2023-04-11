@@ -44,7 +44,6 @@ jobs:
 
       - name: "Build NPM packages"
         run: |
-          ls -la packages
           for path in $(echo "${{ env.PATHS }}" | tr '\n' ' '); do
             cd "$path"
             pnpm build
@@ -53,6 +52,8 @@ jobs:
             mv "$generated_tarball" "/tmp/npm-packages/$package_name.tgz"
             ls -l /tmp/npm-packages
             cd ..
+            pwd 
+            ls -la
           done
 
       - name: "Upload packed NPM packages to storage"
