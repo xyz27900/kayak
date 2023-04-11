@@ -17,7 +17,7 @@ runs:
       run: |
         initial_path="$(pwd)"
         paths=$(echo "${{ inputs.paths }}" | tr '\n' ' ')
-        for path in "$paths"; do
+        for path in $paths; do
           cd "$initial_path/$path"
           ${{ inputs.run }}
           cd "$initial_path"
