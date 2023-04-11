@@ -29,10 +29,13 @@ jobs:
     name: "📦 Build NPM packages"
     uses: ./.github/workflows/npm.workflow.yaml
     with:
-      node-version: ${{ needs.get-lts-node-version.outputs.lts-node-version }}
+      node-version: 18
       pnpm-version: 8
     needs:
       - get-lts-node-version
+
+    env:
+      NODE_VERSION: ${{ needs.get-lts-node-version.outputs.lts-node-version }}
 
   build-workspace:
     name: "🛠️ Build workspace"
