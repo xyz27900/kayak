@@ -7,10 +7,16 @@ inputs:
     required: false
     default: "lts"
 
+outputs:
+  NODE_VERSION:
+    description: "Node.js version"
+    value: ${{ steps.get-node-version.outputs.NODE_VERSION }}
+
 runs:
   using: composite
   steps:
     - name: "Get ${{ inputs.type }} Node.js version"
+      id: get-node-version
       shell: bash
       run: |
         if [ "${{ inputs.type }}" = "lts" ]; then
