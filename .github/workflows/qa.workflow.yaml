@@ -56,10 +56,10 @@ jobs:
         run: |
           find packages -type f -name 'package.json' -not -path '*/node_modules/*' -not -path '/*cache/*' | \
             while read -r file; do
-              package_name=$(yq -oj '.name' "$file" | sed 's/@//g' | tr '/' '-')
+              package_name=$(yq -oy '.name' "$file" | sed 's/@//g' | tr '/' '-')
               package_files=$(yq -oy '.files' "$file" | yq -oy '.[]')
-          
-              ls -la "/tmp/npm-packages/$package_name"
+
+              ls -la "/tmp/npm-packages"
 
               for path in "$package_files"; do
                 cp -r "/tmp/npm-packages/$package_name/$path" "$(dirname "$file")"
