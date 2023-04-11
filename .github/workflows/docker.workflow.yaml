@@ -34,6 +34,12 @@ jobs:
       matrix:
         platform: [ linux/amd64, linux/386, linux/arm/v6, linux/arm/v7, linux/arm64/v8 ]
 
+    services:
+      registry:
+        image: registry:2
+        ports:
+          - 5000:5000
+
     steps:
       - name: "Checkout"
         uses: actions/checkout@v3
@@ -46,9 +52,9 @@ jobs:
       - name: "Build kayak/upx:latest"
         uses: docker/build-push-action@v4
         with:
-          load: true
-          platforms: ${{ matrix.platform }}
-          tags: kayak/upx:latest
+          push: true
+          platforms: ${{ matrix.platforms }}
+          tags: localhost:5000/kayak/upx:latest
           file: ./docker/upx/Dockerfile
           context: ./docker/upx
           cache-from: type=gha,mode=max,scope=kayak/upx
@@ -57,9 +63,9 @@ jobs:
       - name: "Build kayak/fontconfig:latest"
         uses: docker/build-push-action@v4
         with:
-          load: true
-          platforms: ${{ matrix.platform }}
-          tags: kayak/fontconfig:latest
+          push: true
+          platforms: ${{ matrix.platforms }}
+          tags: localhost:5000/kayak/fontconfig:latest
           file: ./docker/fontconfig/Dockerfile
           context: ./docker/fontconfig
           build-args: |
@@ -67,27 +73,25 @@ jobs:
           cache-from: type=gha,mode=max,scope=kayak/fontconfig
           cache-to: type=gha,mode=max,scope=kayak/fontconfig
 
-      - run: docker image ls
-
       - name: "Build kayak/crdetector:latest"
         uses: docker/build-push-action@v4
         with:
-          load: true
-          platforms: ${{ matrix.platform }}
-          tags: kayak/crdetector:latest
+          push: true
+          platforms: ${{ matrix.platforms }}
+          tags: localhost:5000/kayak/crdetector:latest
           file: ./docker/crdetector/Dockerfile
           context: ./docker/crdetector
           build-args: |
-            UPX_IMAGE=kayak/upx:latest
+            UPX_IMAGE=localhost:5000/kayak/upx:latest
           cache-from: type=gha,mode=max,scope=kayak/crdetector
           cache-to: type=gha,mode=max,scope=kayak/crdetector
 
       - name: "Build kayak/novnc:latest"
         uses: docker/build-push-action@v4
         with:
-          load: true
-          platforms: ${{ matrix.platform }}
-          tags: kayak/novnc:latest
+          push: true
+          platforms: ${{ matrix.platforms }}
+          tags: localhost:5000/kayak/novnc:latest
           file: ./docker/novnc/Dockerfile
           context: ./docker/novnc
           build-args: |
@@ -98,14 +102,14 @@ jobs:
       - name: "Build kayak/openbox:latest"
         uses: docker/build-push-action@v4
         with:
-          load: true
-          platforms: ${{ matrix.platform }}
-          tags: kayak/openbox:latest
+          push: true
+          platforms: ${{ matrix.platforms }}
+          tags: localhost:5000/kayak/openbox:latest
           file: ./docker/openbox/Dockerfile
           context: ./docker/openbox
           build-args: |
-            FONTCONFIG_IMAGE=kayak/fontconfig:latest
-            UPX_IMAGE=kayak/upx:latest
+            FONTCONFIG_IMAGE=localhost:5000/kayak/fontconfig:latest
+            UPX_IMAGE=localhost:5000/kayak/upx:latest
             LIBXRANDR_VERSION=${{ env.LIBXRANDR_VERSION }}
             OPENBOX_VERSION=${{ env.OPENBOX_VERSION }}
             PANGO_VERSION=${{ env.PANGO_VERSION }}
@@ -115,13 +119,13 @@ jobs:
       - name: "Build kayak/tigervnc:latest"
         uses: docker/build-push-action@v4
         with:
-          load: true
-          platforms: ${{ matrix.platform }}
-          tags: kayak/tigervnc:latest
+          push: true
+          platforms: ${{ matrix.platforms }}
+          tags: localhost:5000/kayak/tigervnc:latest
           file: ./docker/tigervnc/Dockerfile
           context: ./docker/tigervnc
           build-args: |
-            UPX_IMAGE=kayak/upx:latest
+            UPX_IMAGE=localhost:5000/kayak/upx:latest
             GNUTLS_VERSION=${{ env.GNUTLS_VERSION }}
             LIBFONTENC_VERSION=${{ env.LIBFONTENC_VERSION }}
             LIBTASN1_VERSION=${{ env.LIBTASN1_VERSION }}
@@ -138,7 +142,7 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           load: true
-          platforms: ${{ matrix.platform }}
+          platforms: ${{ matrix.platforms }}
           tags: kayak/anvil:latest
           file: ./docker/anvil/Dockerfile
           context: ./docker/anvil
@@ -149,12 +153,12 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           load: true
-          platforms: ${{ matrix.platform }}
+          platforms: ${{ matrix.platforms }}
           tags: kayak/chromium:cypress
           file: ./docker/chromium/Dockerfile.cypress
           context: ./docker/chromium
           build-args: |
-            CRDETECTOR_IMAGE=kayak/crdetector:latest
+            CRDETECTOR_IMAGE=localhost:5000/kayak/crdetector:latest
           cache-from: type=gha,mode=max,scope=kayak/chromium:cypress
           cache-to: type=gha,mode=max,scope=kayak/chromium:cypress
 
@@ -162,12 +166,12 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           load: true
-          platforms: ${{ matrix.platform }}
+          platforms: ${{ matrix.platforms }}
           tags: kayak/chromium:playwright
           file: ./docker/chromium/Dockerfile.playwright
           context: ./docker/chromium
           build-args: |
-            CRDETECTOR_IMAGE=kayak/crdetector:latest
+            CRDETECTOR_IMAGE=localhost:5000/kayak/crdetector:latest
           cache-from: type=gha,mode=max,scope=kayak/chromium:playwright
           cache-to: type=gha,mode=max,scope=kayak/chromium:playwright
 
@@ -175,15 +179,15 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           load: true
-          platforms: ${{ matrix.platform }}
+          platforms: ${{ matrix.platforms }}
           tags: kayak/display:latest
           file: ./docker/display/Dockerfile
           context: ./docker/display
           build-args: |
-            FONTCONFIG_IMAGE=kayak/fontconfig:latest
-            NOVNC_IMAGE=kayak/novnc:latest
-            OPENBOX_IMAGE=kayak/openbox:latest
-            TIGERVNC_IMAGE=kayak/tigervnc:latest
+            FONTCONFIG_IMAGE=localhost:5000/kayak/fontconfig:latest
+            NOVNC_IMAGE=localhost:5000/kayak/novnc:latest
+            OPENBOX_IMAGE=localhost:5000/kayak/openbox:latest
+            TIGERVNC_IMAGE=localhost:5000/kayak/tigervnc:latest
             USER_ID=${{ env.USER_ID }}
             GROUP_ID=${{ env.GROUP_ID }}
             USER_NAME=${{ env.USER_NAME }}
@@ -195,7 +199,7 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           load: true
-          platforms: ${{ matrix.platform }}
+          platforms: ${{ matrix.platforms }}
           tags: kayak/ffmpeg:latest
           file: ./docker/ffmpeg/Dockerfile
           context: ./docker/ffmpeg
