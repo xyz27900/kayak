@@ -50,22 +50,21 @@ jobs:
 
       - name: "Unpack NPM packages"
         run: |
-          find /tmp/npm-packages -name '*.tgz' -exec sh -c 'mkdir -p "${0%.tgz}" && tar -xzf "$0" -C "${0%.tgz}" --strip-components=1' {} \;
+          find /tmp/npm-packages -name '*.tgz' -exec sh -c 'dir="${0%.tgz}"; mkdir -p "$dir" && tar -xzf "$0" -C "$dir" --strip-components=1' {} \;
 
       - name: "Move NPM packages files to workspace"
         run: |
-          find packages -type f -name 'package.json' -not -path '*/node_modules/*' -not -path '/*cache/*' | \
-            while read -r file; do
-              package_name=$(yq -oy '.name' "$file" | sed 's/@//g' | tr '/' '-')
-              package_files=$(yq -oy '.files' "$file" | yq -oy '.[]')
+          while read -r file; do
+            package_name=$(yq -o .name "$file" | sed 's/@//g; s#/#-#g')
+            readarray -t package_files < <(yq -oy .files "$file" | yq -oy '.[]')
 
-              for path in $(echo "$package_files" | tr '\n' ' '); do
-                echo "cp -r \"/tmp/npm-packages/$package_name/$path\" \"$(dirname "$file")\""
-                cp -r "/tmp/npm-packages/$package_name/$path" "$(dirname "$file")"
-              done
-
-              rm -rf "/tmp/npm-packages/$package_name"
+            for path in "${package_files[@]}"; do
+              escaped_path=$(sed 's/ /\\ /g; s/\*/\\*/g; s/\?/\\?/g' <<< "$path")
+              find "/tmp/npm-packages/$package_name" -type f -name "$escaped_path" -exec cp {} "$(dirname "$file")" \;
             done
+
+            rm -rf "/tmp/npm-packages/$package_name"
+          done < <(find packages -type f -name 'package.json' -not -path '*/node_modules/*' -not -path '/*cache/*')
 #  build-docker:
 #    name: "🐳 Build Docker images"
 #    uses: ./.github/workflows/docker.workflow.yaml
