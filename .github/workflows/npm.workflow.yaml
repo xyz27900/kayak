@@ -46,8 +46,7 @@ jobs:
           run: |
             pnpm build
             generated_tarball=$(pnpm pack)
-            echo "package name: $(yq '.name' package.json)"
-            mv $generated_tarball /tmp/packages/$package-name.tgz
+            echo "package name: $(yq -oj '.name' package.json)"
 
       - name: "Upload packed NPM packages to storage"
         uses: actions/upload-artifact@v3
