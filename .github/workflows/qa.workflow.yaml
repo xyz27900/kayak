@@ -18,10 +18,10 @@ jobs:
     with:
       node-version: 18
       pnpm-version: 8
-
-  build-docker:
-    name: "🐳 Build Docker images"
-    uses: ./.github/workflows/docker.workflow.yaml
+#
+#  build-docker:
+#    name: "🐳 Build Docker images"
+#    uses: ./.github/workflows/docker.workflow.yaml
 #  build-workspace:
 #    name: "🛠️ Build workspace"
 #    runs-on: ubuntu-latest
