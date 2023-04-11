@@ -49,7 +49,7 @@ jobs:
           name: npm-packages-${{ matrix.node-version }}
           path: /tmp
 
-      - run: ls -la /tmp/npm-packages
+      - run: ls -la /tmp
 #
 #  build-docker:
 #    name: "🐳 Build Docker images"
