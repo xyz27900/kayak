@@ -57,12 +57,13 @@ jobs:
           while read -r file; do
             package_name=$(yq -oy '.name' "$file" | sed 's/@//g; s#/#-#g')
             readarray -t package_files < <(yq -oy '.files' "$file" | yq -oy '.[]')
+            package_dir=$(dirname "$file")
 
             for path in "${package_files[@]}"; do
               escaped_path=$(sed 's/ /\\ /g; s/\*/\\*/g; s/\?/\\?/g' <<< "$path")
-              package_dir=$(dirname "$file")
 
               while IFS= read -r -d $'\0' filepath; do
+                echo "Processing $filepath"
                 if [ -d "$filepath" ]; then
                   echo "Copying $filepath to $package_dir"
                   cp -rf "$filepath" "$package_dir"
@@ -72,9 +73,7 @@ jobs:
                 else
                   echo "$filepath is neither a directory nor a file"
                 fi
-              done < <(find "/tmp/npm-packages/$package_name" -type f -name "$escaped_path" -print0)
-
-              ls -la "$package_dir"
+              done < <(find "/tmp/npm-packages/$package_name" -maxdepth 1 -type f -name "$escaped_path" -print0)
             done
 
             rm -rf "/tmp/npm-packages/$package_name"
