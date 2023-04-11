@@ -53,16 +53,28 @@ jobs:
     needs:
       - build-workspace
 
-  cleanup:
-    name: "🧹 Cleanup"
-    runs-on: ubuntu-latest
-    if: always()
+  test-integration:
+    name: "🧪 Integration testing"
+    uses: ./.github/workflows/test-integration.workflow.yaml
+    with:
+      pnpm-version: 8
     needs:
-      - lint
-      - test-unit
+      - build-docker
+      - build-workspace
 
-    steps:
-      - name: "Delete artifacts"
-        uses: geekyeggo/delete-artifact@v2
-        with:
-          name: workspace-*
+#  cleanup:
+#    name: "🧹 Cleanup"
+#    runs-on: ubuntu-latest
+#    if: always()
+#    needs:
+#      - lint
+#      - test-unit
+#      - test-integration
+#
+#    steps:
+#      - name: "Delete artifacts"
+#        uses: geekyeggo/delete-artifact@v2
+#        with:
+#          name: |
+#            docker-images
+#            workspace-*
