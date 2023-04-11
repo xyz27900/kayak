@@ -38,11 +38,12 @@ ENV USER_ID=$USER_ID \
     USER_NAME=$USER_NAME \
     GROUP_NAME=$GROUP_NAME
 
-RUN addgroup -g $GROUP_ID $GROUP_NAME && \
-    adduser -D -u $USER_ID -G $GROUP_NAME $USER_NAME && \
-    echo "$USER_NAME ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+RUN addgroup -g $GROUP_ID $GROUP_NAME \
+    && adduser -D -u $USER_ID -G $GROUP_NAME $USER_NAME \
+    && echo "$USER_NAME ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 
-RUN mkdir -p /config/xdg/cache/fontconfig && chown $USER_ID:$GROUP_ID /config/xdg/cache/fontconfig
+RUN mkdir -p /config/xdg/cache/fontconfig \
+    && chown $USER_ID:$GROUP_ID /config/xdg/cache/fontconfig
 RUN mkdir -p /tmp/.X11-unix && chmod 1777 /tmp/.X11-unix
 
 WORKDIR /home/$USER_NAME

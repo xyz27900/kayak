@@ -19,17 +19,16 @@ RUN apk --no-cache add \
     pkgconfig \
     gperf \
     python3 \
-    font-croscore
-
-RUN xx-apk --no-cache --no-scripts add \
+    font-croscore \
+    && xx-apk --no-cache --no-scripts add \
     glib-dev \
     g++ \
     freetype-dev \
     expat-dev
 
 COPY build-fontconfig.sh /tmp/build-fontconfig.sh
-RUN mkdir -p /tmp/fontconfig && curl -# -L "https://www.freedesktop.org/software/fontconfig/release/fontconfig-${FONTCONFIG_VERSION}.tar.gz" | tar -xz --strip 1 -C /tmp/fontconfig
-RUN /tmp/build-fontconfig.sh
+RUN mkdir -p /tmp/fontconfig && curl -# -L "https://www.freedesktop.org/software/fontconfig/release/fontconfig-${FONTCONFIG_VERSION}.tar.gz" | tar -xz --strip 1 -C /tmp/fontconfig \
+    && /tmp/build-fontconfig.sh
 
 FROM scratch
 COPY --from=builder /tmp/fontconfig-install/config /opt/fontconfig/config

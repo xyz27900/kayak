@@ -35,9 +35,8 @@ RUN apk --no-cache add \
     meson \
     util-macros \
     font-util-dev \
-    xtrans
-
-RUN xx-apk --no-cache --no-scripts add \
+    xtrans \
+    && xx-apk --no-cache --no-scripts add \
     g++ \
     xcb-util-dev \
     pixman-dev \
@@ -71,43 +70,44 @@ RUN xx-apk --no-cache --no-scripts add \
     libbsd-dev
 
 COPY build-gnutls.sh /tmp/build-gnutls.sh
-RUN mkdir -p /tmp/gnutls && curl -# -L "https://www.gnupg.org/ftp/gcrypt/gnutls/v$(echo $GNUTLS_VERSION | cut -d. -f1-2)/gnutls-${GNUTLS_VERSION}.tar.xz" | tar -xJ --strip 1 -C /tmp/gnutls
-RUN /tmp/build-gnutls.sh
+RUN mkdir -p /tmp/gnutls && curl -# -L "https://www.gnupg.org/ftp/gcrypt/gnutls/v$(echo $GNUTLS_VERSION | cut -d. -f1-2)/gnutls-${GNUTLS_VERSION}.tar.xz" | tar -xJ --strip 1 -C /tmp/gnutls \
+    && /tmp/build-gnutls.sh
 
 COPY build-libxfont2.sh /tmp/build-libxfont2.sh
-RUN mkdir -p /tmp/libxfont2 && curl -# -L "https://www.x.org/pub/individual/lib/libXfont2-${LIBXFONT2_VERSION}.tar.bz2" | tar -xj --strip 1 -C /tmp/libxfont2
-RUN /tmp/build-libxfont2.sh
+RUN mkdir -p /tmp/libxfont2 && curl -# -L "https://www.x.org/pub/individual/lib/libXfont2-${LIBXFONT2_VERSION}.tar.bz2" | tar -xj --strip 1 -C /tmp/libxfont2 \
+    && /tmp/build-libxfont2.sh
 
 COPY build-libfontenc.sh /tmp/build-libfontenc.sh
-RUN mkdir -p /tmp/libfontenc && curl -# -L "https://www.x.org/releases/individual/lib/libfontenc-${LIBFONTENC_VERSION}.tar.bz2" | tar -xj --strip 1 -C /tmp/libfontenc
-RUN /tmp/build-libfontenc.sh
+RUN mkdir -p /tmp/libfontenc && curl -# -L "https://www.x.org/releases/individual/lib/libfontenc-${LIBFONTENC_VERSION}.tar.bz2" | tar -xj --strip 1 -C /tmp/libfontenc \
+    && /tmp/build-libfontenc.sh
 
 COPY build-libtasn1.sh /tmp/build-libtasn1.sh
-RUN mkdir -p /tmp/libtasn1 && curl -# -L "https://ftp.gnu.org/gnu/libtasn1/libtasn1-${LIBTASN1_VERSION}.tar.gz" | tar -xz --strip 1 -C /tmp/libtasn1
-RUN /tmp/build-libtasn1.sh
+RUN mkdir -p /tmp/libtasn1 && curl -# -L "https://ftp.gnu.org/gnu/libtasn1/libtasn1-${LIBTASN1_VERSION}.tar.gz" | tar -xz --strip 1 -C /tmp/libtasn1 \
+    && /tmp/build-libtasn1.sh
 
 COPY build-libxshmfence.sh /tmp/build-libxshmfence.sh
-RUN mkdir -p /tmp/libxshmfence && curl -# -L "https://www.x.org/releases/individual/lib/libxshmfence-${LIBXSHMFENCE_VERSION}.tar.bz2" | tar -xj --strip 1 -C /tmp/libxshmfence
-RUN /tmp/build-libxshmfence.sh
+RUN mkdir -p /tmp/libxshmfence && curl -# -L "https://www.x.org/releases/individual/lib/libxshmfence-${LIBXSHMFENCE_VERSION}.tar.bz2" | tar -xj --strip 1 -C /tmp/libxshmfence \
+    && /tmp/build-libxshmfence.sh
 
 COPY build-xkb.sh /tmp/build-xkb.sh
-RUN mkdir -p /tmp/xkb && curl -# -L "https://www.x.org/archive/individual/data/xkeyboard-config/xkeyboard-config-${XKB_VERSION}.tar.bz2" | tar -xj --strip 1 -C /tmp/xkb
-RUN /tmp/build-xkb.sh
+RUN mkdir -p /tmp/xkb && curl -# -L "https://www.x.org/archive/individual/data/xkeyboard-config/xkeyboard-config-${XKB_VERSION}.tar.bz2" | tar -xj --strip 1 -C /tmp/xkb \
+    && /tmp/build-xkb.sh
 
 COPY build-xkbcomp.sh /tmp/build-xkbcomp.sh
-RUN mkdir -p /tmp/xkbcomp && curl -# -L "https://www.x.org/releases/individual/app/xkbcomp-${XKBCOMP_VERSION}.tar.bz2" | tar -xj --strip 1 -C /tmp/xkbcomp
-RUN /tmp/build-xkbcomp.sh
+RUN mkdir -p /tmp/xkbcomp && curl -# -L "https://www.x.org/releases/individual/app/xkbcomp-${XKBCOMP_VERSION}.tar.bz2" | tar -xj --strip 1 -C /tmp/xkbcomp \
+    && /tmp/build-xkbcomp.sh
 
 COPY build-tigervnc.sh /tmp/build-tigervnc.sh
 RUN mkdir -p /tmp/tigervnc \
     && curl -# -L "https://github.com/TigerVNC/tigervnc/archive/v${TIGERVNC_VERSION}.tar.gz" | tar -xz --strip 1 -C /tmp/tigervnc \
-    && curl -# -L "https://github.com/freedesktop/xorg-xserver/archive/xorg-server-${XSERVER_VERSION}.tar.gz" | tar -xz --strip 1 -C /tmp/tigervnc/unix/xserver
-RUN /tmp/build-tigervnc.sh
+    && curl -# -L "https://github.com/freedesktop/xorg-xserver/archive/xorg-server-${XSERVER_VERSION}.tar.gz" | tar -xz --strip 1 -C /tmp/tigervnc/unix/xserver \
+    && /tmp/build-tigervnc.sh
 
-RUN xx-verify --static /tmp/tigervnc-install/usr/bin/Xvnc
-RUN xx-verify --static /tmp/tigervnc-install/usr/bin/vncpasswd
-RUN upx /tmp/tigervnc-install/usr/bin/Xvnc
-RUN upx /tmp/tigervnc-install/usr/bin/vncpasswd
+RUN xx-verify --static /tmp/tigervnc-install/usr/bin/Xvnc \
+    && xx-verify --static /tmp/tigervnc-install/usr/bin/vncpasswd
+
+RUN upx /tmp/tigervnc-install/usr/bin/Xvnc \
+    && upx /tmp/tigervnc-install/usr/bin/vncpasswd
 
 FROM scratch
 COPY --from=builder /tmp/tigervnc-install/usr/bin/Xvnc      /fakeroot/usr/bin/Xvnc

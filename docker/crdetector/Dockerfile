@@ -11,9 +11,8 @@ ENV CGO_ENABLED=1
 
 RUN apk --no-cache add \
     clang \
-    lld
-
-RUN xx-apk --no-cache --no-scripts add \
+    lld \
+    && xx-apk --no-cache --no-scripts add \
     musl-dev \
     gcc
 

@@ -28,9 +28,8 @@ RUN apk --no-cache add \
     clang \
     meson \
     pkgconfig \
-    glib-dev
-
-RUN xx-apk --no-cache --no-scripts add \
+    glib-dev \
+    && xx-apk --no-cache --no-scripts add \
     g++ \
     glib-dev \
     glib-static \
@@ -69,24 +68,24 @@ RUN /tmp/meson-cross.sh
 RUN cp -av /tmp/fontconfig-install/usr $(xx-info sysroot)
 
 COPY build-pango.sh /tmp/build-pango.sh
-RUN mkdir -p /tmp/pango && curl -# -L "https://download.gnome.org/sources/pango/$(echo $PANGO_VERSION | cut -d. -f1-2)/pango-${PANGO_VERSION}.tar.xz" | tar -xJ --strip 1 -C /tmp/pango
-RUN /tmp/build-pango.sh
+RUN mkdir -p /tmp/pango && curl -# -L "https://download.gnome.org/sources/pango/$(echo $PANGO_VERSION | cut -d. -f1-2)/pango-${PANGO_VERSION}.tar.xz" | tar -xJ --strip 1 -C /tmp/pango \
+    && /tmp/build-pango.sh
 
 COPY build-libxrandr.sh /tmp/build-libxrandr.sh
-RUN mkdir -p mkdir /tmp/libxrandr && curl -# -L "https://www.x.org/releases/individual/lib/libXrandr-${LIBXRANDR_VERSION}.tar.xz" | tar -xJ --strip 1 -C /tmp/libxrandr
-RUN /tmp/build-libxrandr.sh
+RUN mkdir -p mkdir /tmp/libxrandr && curl -# -L "https://www.x.org/releases/individual/lib/libXrandr-${LIBXRANDR_VERSION}.tar.xz" | tar -xJ --strip 1 -C /tmp/libxrandr \
+    && /tmp/build-libxrandr.sh
 
 COPY build-openbox.sh /tmp/build-openbox.sh
 RUN mkdir -p /tmp/openbox \
     && curl -# -L "http://openbox.org/dist/openbox/openbox-${OPENBOX_VERSION}.tar.xz" | tar -xJ --strip 1 -C /tmp/openbox \
-    && curl -# -L "https://raw.githubusercontent.com/gcc-mirror/gcc/master/config.sub" -o /tmp/openbox/config.sub
-RUN /tmp/build-openbox.sh
+    && curl -# -L "https://raw.githubusercontent.com/gcc-mirror/gcc/master/config.sub" -o /tmp/openbox/config.sub \
+    && /tmp/build-openbox.sh
 
-RUN xx-verify --static /tmp/openbox-install/usr/bin/openbox
-RUN xx-verify --static /tmp/openbox-install/usr/bin/obxprop
+RUN xx-verify --static /tmp/openbox-install/usr/bin/openbox \
+    && xx-verify --static /tmp/openbox-install/usr/bin/obxprop
 
-RUN upx /tmp/openbox-install/usr/bin/openbox
-RUN upx /tmp/openbox-install/usr/bin/obxprop
+RUN upx /tmp/openbox-install/usr/bin/openbox \
+    && upx /tmp/openbox-install/usr/bin/obxprop
 
 FROM scratch
 COPY --from=builder /tmp/openbox-install/usr/bin/openbox /fakeroot/usr/bin/openbox
