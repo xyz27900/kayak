@@ -44,7 +44,7 @@ jobs:
         run: |
           pnpm build
           generated_tarball=$(pnpm pack)
-          package_name=$(echo $generated_tarball | sed -E 's/^([-[:alnum:]]+)-[[:digit:]]+\.[[:digit:]]+(\.[[:digit:]]+)?(-[[:alnum:]]+)?\.tgz$/\1/'
+          package_name=$(echo $generated_tarball | sed -E 's/^([-[:alnum:]]+)-[[:digit:]]+\.[[:digit:]]+(\.[[:digit:]]+)?(-[[:alnum:]]+)?\.tgz$/\1/')
           mv "$generated_tarball" "/tmp/npm-packages/$package_name.tgz"
           ls -l /tmp/npm-packages
 
