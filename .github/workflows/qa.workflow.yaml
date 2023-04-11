@@ -60,7 +60,19 @@ jobs:
 
             for path in "${package_files[@]}"; do
               escaped_path=$(sed 's/ /\\ /g; s/\*/\\*/g; s/\?/\\?/g' <<< "$path")
-              find "/tmp/npm-packages/$package_name" -type f -name "$escaped_path" -exec echo "Copy {} to $(dirname "$file")" \; -exec cp -rfT {} "$(dirname "$file")" \;
+
+              while IFS= read -r -d $'\0' filepath; do
+                dest_dir="$(dirname "$file")"
+                if [ -d "$dest_dir" ]; then
+                  echo "Copying $filepath to $dest_dir"
+                  cp -rf "$filepath" "$dest_dir"
+                else
+                  echo "Copying $filepath to $dest_dir"
+                  cp -f "$filepath" "$dest_dir"
+                else
+                  echo "$dest_dir is neither a directory nor a file"
+                fi
+              done < <(find "/tmp/npm-packages/$package_name" -type f -name "$escaped_path" -print0)
             done
 
             rm -rf "/tmp/npm-packages/$package_name"
