@@ -59,13 +59,10 @@ jobs:
               package_name=$(yq -oy '.name' "$file" | sed 's/@//g' | tr '/' '-')
               package_files=$(yq -oy '.files' "$file" | yq -oy '.[]')
 
-              ls -la "/tmp/npm-packages"
-
               for path in "$package_files"; do
+                echo "cp -r \"/tmp/npm-packages/$package_name/$path\" \"$(dirname "$file")\""
                 cp -r "/tmp/npm-packages/$package_name/$path" "$(dirname "$file")"
               done
-
-              ls -la "$(dirname "$file")"
 
               rm -rf "/tmp/npm-packages/$package_name"
             done
