@@ -1,8 +1,5 @@
 name: "Quality Assurance"
 
-env:
-  PNPM_VERSION: 8
-
 on:
   push:
     branches:
@@ -24,88 +21,18 @@ jobs:
 
   build-workspace:
     name: "🛠️ Build workspace"
-    runs-on: ubuntu-latest
+    uses: ./.github/workflows/workspace.workflow.yaml
+    with:
+      pnpm-version: 8
     needs:
       - build-npm
 
-    strategy:
-      matrix:
-        node-version: [ 18, 19 ]
-
-    steps:
-      - name: "Checkout"
-        uses: actions/checkout@v3
-
-      - name: "Setup pnpm"
-        uses: ./.github/actions/setup-pnpm
-        with:
-          node-version: ${{ matrix.node-version }}
-          pnpm-version: ${{ env.PNPM_VERSION }}
-          cache: true
-
-      - name: "Install dependencies"
-        run: pnpm install --frozen-lockfile
-
-      - name: "Download NPM packages from storage"
-        uses: actions/download-artifact@v3
-        with:
-          name: npm-packages-${{ matrix.node-version }}
-          path: /tmp/npm-packages
-
-      - name: "Unpack NPM packages"
-        run: |
-          find /tmp/npm-packages -name '*.tgz' -exec sh -c 'dir="${0%.tgz}"; mkdir -p "$dir" && tar -xzf "$0" -C "$dir" --strip-components=1' {} \;
-
-      - name: "Move NPM packages files to workspace"
-        run: |
-          while read -r file; do
-            package_name=$(yq -oy '.name' "$file" | sed 's/@//g; s#/#-#g')
-            readarray -t package_files < <(yq -oy '.files' "$file" | yq -oy '.[]')
-            package_dir=$(dirname "$file")
-
-            for path in "${package_files[@]}"; do
-              escaped_path=$(sed 's/ /\\ /g; s/\*/\\*/g; s/\?/\\?/g' <<< "$path")
-
-              while IFS= read -r -d $'\0' filepath; do
-                if [ -d "$filepath" ]; then
-                  cp -rf "$filepath" "$package_dir"
-                elif [ -f "$filepath" ]; then
-                  cp -f "$filepath" "$package_dir"
-                else
-                  echo "$filepath is neither a directory nor a file"
-                  exit 1
-                fi
-              done < <(find "/tmp/npm-packages/$package_name" -maxdepth 1 -name "$escaped_path" -print0)
-            done
-
-            rm -rf "/tmp/npm-packages/$package_name"
-          done < <(find packages -type f -name 'package.json' -not -path '*/node_modules/*' -not -path '/*cache/*')
-
-      - name: "Compress workspace"
-        run: |
-          mkdir -p /tmp/workspace
-          cp -r ./packages /tmp/workspace/packages
-          find . -name 'node_modules' -not -path './node_modules/*' -type d -prune -exec sh -c 'mkdir -p /tmp/workspace/${0#./}; cp -rT "$0" /tmp/workspace/${0#./}' {} \;
-          tar -czf /tmp/workspace.tar.gz -C /tmp/workspace .
-
-      - name: "Upload workspace to storage"
-        uses: actions/upload-artifact@v3
-        with:
-          name: workspace-${{ matrix.node-version }}
-          path: /tmp/workspace.tar.gz
-
   lint:
     name: "👀 Lint"
-    runs-on: ubuntu-latest
-    needs:
-      - build-workspace
-
-    strategy:
-      matrix:
-        node-version: [ 18, 19 ]
-
-    env:
-      PATHS: |
+    uses: ./.github/workflows/lint.workflow.yaml
+    with:
+      pnpm-version: 8
+      paths: |
         scripts
         docs
         packages/cli
@@ -113,74 +40,18 @@ jobs:
         packages/cypress
         packages/metamask
         packages/playwright
-
-    steps:
-      - name: "Checkout"
-        uses: actions/checkout@v3
-
-      - name: "Setup pnpm"
-        uses: ./.github/actions/setup-pnpm
-        with:
-          node-version: ${{ matrix.node-version }}
-          pnpm-version: ${{ env.PNPM_VERSION }}
-
-      - name: "Download workspace from storage"
-        uses: actions/download-artifact@v3
-        with:
-          name: workspace-${{ matrix.node-version }}
-          path: /tmp
-
-      - name: "Decompress workspace files"
-        run: |
-          tar -xzf /tmp/workspace.tar.gz -C . --overwrite
-
-      - name: "Run linters"
-        uses: ./.github/actions/execute-for-paths
-        with:
-          paths: ${{ env.PATHS }}
-          run: |
-            pnpm lint
-
-  unit-tests:
-    name: "🧪 Unit tests"
-    runs-on: ubuntu-latest
     needs:
       - build-workspace
 
-    strategy:
-      matrix:
-        node-version: [ 18, 19 ]
-
-    env:
-      PATHS: |
+  test-unit:
+    name: "🧪 Unit testing"
+    uses: ./.github/workflows/test-unit.workflow.yaml
+    with:
+      pnpm-version: 8
+      paths: |
         packages/cli
-
-    steps:
-      - name: "Checkout"
-        uses: actions/checkout@v3
-
-      - name: "Setup pnpm"
-        uses: ./.github/actions/setup-pnpm
-        with:
-          node-version: ${{ matrix.node-version }}
-          pnpm-version: ${{ env.PNPM_VERSION }}
-
-      - name: "Download workspace from storage"
-        uses: actions/download-artifact@v3
-        with:
-          name: workspace-${{ matrix.node-version }}
-          path: /tmp
-
-      - name: "Decompress workspace files"
-        run: |
-          tar -xzf /tmp/workspace.tar.gz -C . --overwrite
-
-      - name: "Run tests"
-        uses: ./.github/actions/execute-for-paths
-        with:
-          paths: ${{ env.PATHS }}
-          command: |
-            pnpm test
+    needs:
+      - build-workspace
 
   cleanup:
     name: "🧹 Cleanup"
@@ -188,7 +59,7 @@ jobs:
     if: always()
     needs:
       - lint
-      - unit-tests
+      - test-unit
 
     steps:
       - name: "Delete artifacts"

@@ -1,0 +1,80 @@
+name: "Build workspace"
+
+on:
+  workflow_call:
+    inputs:
+      pnpm-version:
+        description: "pnpm version"
+        required: true
+        type: number
+
+jobs:
+  build-workspace:
+    name: "Build workspace"
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [ 18, 19 ]
+
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v3
+
+      - name: "Setup pnpm"
+        uses: ./.github/actions/setup-pnpm
+        with:
+          node-version: ${{ matrix.node-version }}
+          pnpm-version: ${{ inputs.pnpm-version }}
+          cache: true
+
+      - name: "Install dependencies"
+        run: pnpm install --frozen-lockfile
+
+      - name: "Download NPM packages from storage"
+        uses: actions/download-artifact@v3
+        with:
+          name: npm-packages-${{ matrix.node-version }}
+          path: /tmp/npm-packages
+
+      - name: "Unpack NPM packages"
+        run: |
+          find /tmp/npm-packages -name '*.tgz' -exec sh -c 'dir="${0%.tgz}"; mkdir -p "$dir" && tar -xzf "$0" -C "$dir" --strip-components=1' {} \;
+
+      - name: "Move NPM packages files to workspace"
+        run: |
+          while read -r file; do
+            package_name=$(yq -oy '.name' "$file" | sed 's/@//g; s#/#-#g')
+            readarray -t package_files < <(yq -oy '.files' "$file" | yq -oy '.[]')
+            package_dir=$(dirname "$file")
+
+            for path in "${package_files[@]}"; do
+              escaped_path=$(sed 's/ /\\ /g; s/\*/\\*/g; s/\?/\\?/g' <<< "$path")
+
+              while IFS= read -r -d $'\0' filepath; do
+                if [ -d "$filepath" ]; then
+                  cp -rf "$filepath" "$package_dir"
+                elif [ -f "$filepath" ]; then
+                  cp -f "$filepath" "$package_dir"
+                else
+                  echo "$filepath is neither a directory nor a file"
+                  exit 1
+                fi
+              done < <(find "/tmp/npm-packages/$package_name" -maxdepth 1 -name "$escaped_path" -print0)
+            done
+
+            rm -rf "/tmp/npm-packages/$package_name"
+          done < <(find packages -type f -name 'package.json' -not -path '*/node_modules/*' -not -path '/*cache/*')
+
+      - name: "Compress workspace"
+        run: |
+          mkdir -p /tmp/workspace
+          cp -r ./packages /tmp/workspace/packages
+          find . -name 'node_modules' -not -path './node_modules/*' -type d -prune -exec sh -c 'mkdir -p /tmp/workspace/${0#./}; cp -rT "$0" /tmp/workspace/${0#./}' {} \;
+          tar -czf /tmp/workspace.tar.gz -C /tmp/workspace .
+
+      - name: "Upload workspace to storage"
+        uses: actions/upload-artifact@v3
+        with:
+          name: workspace-${{ matrix.node-version }}
+          path: /tmp/workspace.tar.gz
