@@ -60,8 +60,7 @@ jobs:
 
             for path in "${package_files[@]}"; do
               escaped_path=$(sed 's/ /\\ /g; s/\*/\\*/g; s/\?/\\?/g' <<< "$path")
-              find "/tmp/npm-packages/$package_name" -type f -name "$escaped_path" -exec cp -f {} "$(dirname "$file")" \;
-              ls -la "$(dirname "$file")"
+              find "/tmp/npm-packages/$package_name" -type f -name "$escaped_path" -exec echo "Copy {} to $(dirname "$file")" \; -exec cp -rfT {} "$(dirname "$file")" \;
             done
 
             rm -rf "/tmp/npm-packages/$package_name"
