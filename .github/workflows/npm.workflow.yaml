@@ -44,7 +44,7 @@ jobs:
 
       - name: "Build NPM packages"
         run: |
-          ls -la
+          ls -la packages
           for path in $(echo "${{ env.PATHS }}" | tr '\n' ' '); do
             cd "$path"
             pnpm build
