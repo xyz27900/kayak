@@ -55,6 +55,6 @@ jobs:
       - name: "Upload packed NPM packages to storage"
         uses: actions/upload-artifact@v3
         with:
-          name: npm-packages-${{ inputs.node-version }}
+          name: npm-packages-${{ steps.get-node-version.outputs.NODE_VERSION }}
           path: |
             /tmp/npm-packages/*.tgz

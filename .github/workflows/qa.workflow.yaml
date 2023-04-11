@@ -169,17 +169,17 @@ jobs:
           command: |
             pnpm test
 
-  cleanup:
-    name: "🧹 Cleanup"
-    runs-on: ubuntu-latest
-    if: always()
-    needs:
-      - build-workspace
-      - lint
-      - unit-tests
-
-    steps:
-      - name: "Delete artifacts"
-        uses: geekyeggo/delete-artifact@v2
-        with:
-          name: workspace-*
+#  cleanup:
+#    name: "🧹 Cleanup"
+#    runs-on: ubuntu-latest
+#    if: always()
+#    needs:
+#      - build-workspace
+#      - lint
+#      - unit-tests
+#
+#    steps:
+#      - name: "Delete artifacts"
+#        uses: geekyeggo/delete-artifact@v2
+#        with:
+#          name: workspace-*
