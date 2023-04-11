@@ -43,7 +43,7 @@ jobs:
         run: mkdir -p /tmp/npm-packages
 
       - name: "Build NPM packages"
-        uses: ./.github/actions/execute-in-paths
+        uses: ./.github/actions/execute-for-paths
         with:
           paths: ${{ env.PATHS }}
           run: |
@@ -58,4 +58,4 @@ jobs:
         with:
           name: npm-packages-${{ inputs.node-version }}
           path: |
-            /tmp/packages/*.tgz
+            /tmp/npm-packages/*.tgz
