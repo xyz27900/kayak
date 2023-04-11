@@ -73,6 +73,8 @@ jobs:
                   echo "$dest_dir is neither a directory nor a file"
                 fi
               done < <(find "/tmp/npm-packages/$package_name" -type f -name "$escaped_path" -print0)
+          
+              ls -la "$dest_dir"
             done
 
             rm -rf "/tmp/npm-packages/$package_name"
