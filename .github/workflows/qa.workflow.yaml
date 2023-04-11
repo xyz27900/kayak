@@ -65,6 +65,19 @@ jobs:
 
             rm -rf "/tmp/npm-packages/$package_name"
           done < <(find packages -type f -name 'package.json' -not -path '*/node_modules/*' -not -path '/*cache/*')
+
+      - name: "Compress workspace"
+        run: |
+          mkdir -p /tmp/workspace
+          cp -r ./packages /tmp/workspace/packages
+          find . -name 'node_modules' -not -path './node_modules/*' -type d -prune -exec sh -c 'mkdir -p /tmp/workspace/${0#./}; cp -rT "$0" /tmp/workspace/${0#./}' {} \;
+          tar -czf /tmp/workspace-${{ steps.get-node-version.outputs.NODE_VERSION }}.tar.gz -C /tmp/workspace .
+
+      - name: "Upload workspace to storage"
+        uses: actions/upload-artifact@v3
+        with:
+          name: workspace-${{ steps.get-node-version.outputs.NODE_VERSION }}
+          path: /tmp/workspace-${{ steps.get-node-version.outputs.NODE_VERSION }}.tar.gz
 #  build-docker:
 #    name: "🐳 Build Docker images"
 #    uses: ./.github/workflows/docker.workflow.yaml

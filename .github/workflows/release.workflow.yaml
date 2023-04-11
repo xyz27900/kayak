@@ -59,7 +59,7 @@ jobs:
           find packages -type f -name 'package.json' -not -path '*/node_modules/*' -not -path '/*cache/*' | \
             while read -r file; do
               version=$(yq -oj '.version' "$file")
-          
+
               if [ "$version" != "$github_ref" ]; then
                 echo "Version in $file is not equal to tag: $version != $github_ref"
                 exit 1
