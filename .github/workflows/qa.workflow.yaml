@@ -51,9 +51,22 @@ jobs:
       - name: "Unpack NPM packages"
         run: |
           find /tmp/npm-packages -name '*.tgz' -exec sh -c 'mkdir -p "${0%.tgz}" && tar -xzf "$0" -C "${0%.tgz}" --strip-components=1' {} \;
-          ls -l /tmp/npm-packages
-          ls -l /tmp/npm-packages/kayak-cli
-#
+
+      - name: "Move NPM packages files to workspace"
+        run: |
+          find packages -type f -name 'package.json' -not -path '*/node_modules/*' -not -path '/*cache/*' | \
+            while read -r file; do
+              name=$(yq -oj '.name' "$file" | sed 's/@//g' | tr '/' '-')
+              files=$(yq -oj '.files' "$file" | yq '.[]')
+
+              for path in "$files"; do
+                cp -r "/tmp/npm-packages/$name/$path" "$(dirname "$file")"
+              done
+
+              ls -la "$(dirname "$file")"
+
+              rm -rf "/tmp/npm-packages/$name"
+            done
 #  build-docker:
 #    name: "🐳 Build Docker images"
 #    uses: ./.github/workflows/docker.workflow.yaml
