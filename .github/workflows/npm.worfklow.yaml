@@ -1,0 +1,63 @@
+name: "Build NPM packages"
+
+on:
+  workflow_call:
+    inputs:
+      node-version:
+        description: "Node.js version"
+        required: true
+        type: number
+      pnpm-version:
+        description: "pnpm version"
+        required: true
+        type: number
+
+jobs:
+  build-npm:
+    name: "Build NPM packages"
+    runs-on: ubuntu-latest
+
+    env:
+      PATHS: |
+        packages/core
+        packages/metamask
+        packages/cypress
+        packages/playwright
+        packages/cli
+
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v3
+
+      - name: "Setup pnpm"
+        uses: ./.github/actions/setup-pnpm
+        with:
+          node-version: ${{ inputs.node-version }}
+          pnpm-version: ${{ inputs.pnpm-version }}
+          cache: true
+
+      - name: "Install dependencies"
+        run: pnpm install --frozen-lockfile
+
+      - name: "Build NPM packages"
+        uses: ./.github/actions/execute-in-paths
+        with:
+          paths: ${{ env.PATHS }}
+          run: |
+            pnpm build
+            pnpm pack
+            package_name=$(node -p "require('./package.json').name")
+            package_version=$(node -p "require('./package.json').version")
+            mv $package_name-$package_version.tgz $package_name.tgz
+
+      - name: "Copy packed NPM packages to /tmp/packages"
+        run: |
+          mkdir -p /tmp/packages
+          find packages . -name '*.tgz' -type f -exec sh -c 'cp "$0" /tmp/packages/${0#./}' {} \;
+
+      - name: "Upload packed NPM packages to storage"
+        uses: actions/upload-artifact@v3
+        with:
+          name: npm-packages-${{ inputs.node-version }}
+          path: |
+            /tmp/packages/*.tgz

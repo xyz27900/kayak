@@ -12,6 +12,13 @@ on:
       - main
 
 jobs:
+  build-npm:
+    name: "📦 Build NPM packages"
+    uses: ./.github/workflows/npm.workflow.yaml
+    with:
+      node-version: 18
+      pnpm-version: ${{ env.PNPM_VERSION }}
+
   build-docker:
     name: "🐳 Build Docker images"
     uses: ./.github/workflows/docker.workflow.yaml

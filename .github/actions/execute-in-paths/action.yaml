@@ -5,13 +5,21 @@ inputs:
   paths:
     description: "Paths to execute the command in"
     required: true
-  command:
-    description: "Command to execute"
+  run:
+    description: "Script to execute"
     required: true
 
 runs:
   using: "composite"
   steps:
+    - name: "Save \"run\" as bash script"
+      shell: bash
+      run: |
+        script_name="run-$RANDOM.sh"
+        echo "${{ inputs.run }}" > "$script_name"
+        chmod +x "$script_name"
+        echo "SCRIPT_NAME=$script_name" >> $GITHUB_ENV
+
     - name: "Execute in paths"
       shell: bash
       run: |
@@ -20,7 +28,7 @@ runs:
         for path in $paths; do
             echo "$path:${{ inputs.command }}"
             cd "$initial_path/$path"
-            eval ${{ inputs.command }}
+            ./$SCRIPT_NAME
             cd "$initial_path"
             echo "----------------"
         done
