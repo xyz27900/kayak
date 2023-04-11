@@ -134,10 +134,6 @@ jobs:
     needs:
       - build-workspace
 
-    strategy:
-      matrix:
-        node-version: [ 18, 19 ]
-
     env:
       PATHS: |
         packages/cli
@@ -172,43 +168,7 @@ jobs:
           paths: ${{ env.PATHS }}
           command: |
             pnpm test
-#
-#  integration-tests:
-#    name: "🧪 Integration tests"
-#    runs-on: ubuntu-latest
-#    needs:
-#      - build-workspace
-#
-#    strategy:
-#      matrix:
-#        node-version: [ 18, 19 ]
-#
-#    steps:
-#      - name: "Checkout"
-#        uses: actions/checkout@v3
-#
-#      - name: "Setup pnpm"
-#        uses: ./.github/actions/setup-pnpm
-#        with:
-#          node-version: ${{ matrix.node-version }}
-#          pnpm-version: ${{ env.PNPM_VERSION }}
-#
-#      - name: "Download workspace artifact"
-#        uses: actions/download-artifact@v3
-#        with:
-#          name: workspace-${{ matrix.node-version }}
-#          path: /tmp
-#
-#      - name: "Decompress workspace files"
-#        run: |
-#          tar -xzf /tmp/workspace-${{ matrix.node-version }}.tar.gz -C . --overwrite
-#
-#      - name: "Run tests"
-#        uses: ./.github/actions/execute-in-paths
-#        with:
-#          paths: ${{ env.PATHS }}
-#          command: pnpm test
-#
+
   cleanup:
     name: "🧹 Cleanup"
     runs-on: ubuntu-latest
