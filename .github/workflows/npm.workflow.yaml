@@ -3,10 +3,6 @@ name: "Build NPM packages"
 on:
   workflow_call:
     inputs:
-      node-version:
-        description: "Node.js version"
-        required: true
-        type: number
       pnpm-version:
         description: "pnpm version"
         required: true
@@ -26,13 +22,17 @@ jobs:
         packages/cli
 
     steps:
+      - name: "Get Node.js version"
+        id: get-node-version
+        uses: ./.github/actions/get-node-version
+
       - name: "Checkout"
         uses: actions/checkout@v3
 
       - name: "Setup pnpm"
         uses: ./.github/actions/setup-pnpm
         with:
-          node-version: ${{ inputs.node-version }}
+          node-version: ${{ steps.get-node-version.outputs.NODE_VERSION }}
           pnpm-version: ${{ inputs.pnpm-version }}
           cache: true
 

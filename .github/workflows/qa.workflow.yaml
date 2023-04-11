@@ -12,49 +12,30 @@ on:
       - main
 
 jobs:
-  get-lts-node-version:
-    name: "🔎 Get LTS Node.js version"
-    runs-on: ubuntu-latest
-    outputs:
-      lts-node-version: ${{ steps.get-lts-node-version.outputs.lts-node-version }}
-
-    steps:
-      - name: "Get LTS Node.js version"
-        id: get-lts-node-version
-        run: |
-          lts_node_version=$(curl -s https://nodejs.org/dist/index.json | yq 'map(select(.lts != false)) | .[0].version | sub("^v";"")')
-          echo "LTS_NODE_VERSION=$lts_node_version" >> "$GITHUB_OUTPUT"
-
   build-npm:
     name: "📦 Build NPM packages"
     uses: ./.github/workflows/npm.workflow.yaml
     with:
-      node-version: 18
       pnpm-version: 8
-    needs:
-      - get-lts-node-version
-
-    env:
-      NODE_VERSION: ${{ needs.get-lts-node-version.outputs.lts-node-version }}
 
   build-workspace:
     name: "🛠️ Build workspace"
     runs-on: ubuntu-latest
     needs:
-      - get-lts-node-version
       - build-npm
 
-    env:
-      NODE_VERSION: ${{ needs.get-lts-node-version.outputs.lts-node-version }}
-
     steps:
+      - name: "Get Node.js version"
+        id: get-node-version
+        uses: ./.github/actions/get-node-version
+
       - name: "Checkout"
         uses: actions/checkout@v3
 
       - name: "Setup pnpm"
         uses: ./.github/actions/setup-pnpm
         with:
-          node-version: ${{ env.NODE_VERSION }}
+          node-version: ${{ steps.get-node-version.outputs.NODE_VERSION }}
           pnpm-version: ${{ env.PNPM_VERSION }}
           cache: true
 
