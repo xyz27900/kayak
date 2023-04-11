@@ -208,6 +208,7 @@ jobs:
 
       - name: "Save Docker images"
         run: |
+          mkdir -p /tmp/docker-images
           docker save kayak/anvil:latest | gzip > /tmp/docker-images/kayak-anvil.tar.gz
           docker save kayak/chromium:cypress | gzip > /tmp/docker-images/kayak-chromium-cypress.tar.gz
           docker save kayak/chromium:playwright | gzip > /tmp/docker-images/kayak-chromium-playwright.tar.gz

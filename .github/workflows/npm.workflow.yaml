@@ -13,6 +13,10 @@ jobs:
     name: "Build NPM packages"
     runs-on: ubuntu-latest
 
+    strategy:
+      matrix:
+        node-version: [ 18, 19 ]
+
     env:
       PATHS: |
         packages/core
@@ -25,14 +29,10 @@ jobs:
       - name: "Checkout"
         uses: actions/checkout@v3
 
-      - name: "Get Node.js version"
-        id: get-node-version
-        uses: ./.github/actions/get-node-version
-
       - name: "Setup pnpm"
         uses: ./.github/actions/setup-pnpm
         with:
-          node-version: ${{ steps.get-node-version.outputs.NODE_VERSION }}
+          node-version: ${{ matrix.node-version }}
           pnpm-version: ${{ inputs.pnpm-version }}
           cache: true
 
@@ -55,6 +55,6 @@ jobs:
       - name: "Upload packed NPM packages to storage"
         uses: actions/upload-artifact@v3
         with:
-          name: npm-packages-${{ steps.get-node-version.outputs.NODE_VERSION }}
+          name: npm-packages-${{ matrix.node-version }}
           path: |
             /tmp/npm-packages/*.tgz

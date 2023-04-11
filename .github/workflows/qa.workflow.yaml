@@ -28,18 +28,18 @@ jobs:
     needs:
       - build-npm
 
+    strategy:
+      matrix:
+        node-version: [ 18, 19 ]
+
     steps:
       - name: "Checkout"
         uses: actions/checkout@v3
 
-      - name: "Get Node.js version"
-        id: get-node-version
-        uses: ./.github/actions/get-node-version
-
       - name: "Setup pnpm"
         uses: ./.github/actions/setup-pnpm
         with:
-          node-version: ${{ steps.get-node-version.outputs.NODE_VERSION }}
+          node-version: ${{ matrix.node-version }}
           pnpm-version: ${{ env.PNPM_VERSION }}
           cache: true
 
@@ -49,7 +49,7 @@ jobs:
       - name: "Download NPM packages from storage"
         uses: actions/download-artifact@v3
         with:
-          name: npm-packages-${{ steps.get-node-version.outputs.NODE_VERSION }}
+          name: npm-packages-${{ matrix.node-version }}
           path: /tmp/npm-packages
 
       - name: "Unpack NPM packages"
@@ -86,19 +86,23 @@ jobs:
           mkdir -p /tmp/workspace
           cp -r ./packages /tmp/workspace/packages
           find . -name 'node_modules' -not -path './node_modules/*' -type d -prune -exec sh -c 'mkdir -p /tmp/workspace/${0#./}; cp -rT "$0" /tmp/workspace/${0#./}' {} \;
-          tar -czf /tmp/workspace-${{ steps.get-node-version.outputs.NODE_VERSION }}.tar.gz -C /tmp/workspace .
+          tar -czf /tmp/workspace.tar.gz -C /tmp/workspace .
 
       - name: "Upload workspace to storage"
         uses: actions/upload-artifact@v3
         with:
-          name: workspace-${{ steps.get-node-version.outputs.NODE_VERSION }}
-          path: /tmp/workspace-${{ steps.get-node-version.outputs.NODE_VERSION }}.tar.gz
+          name: workspace-${{ matrix.node-version }}
+          path: /tmp/workspace.tar.gz
 
   lint:
     name: "👀 Lint"
     runs-on: ubuntu-latest
     needs:
       - build-workspace
+
+    strategy:
+      matrix:
+        node-version: [ 18, 19 ]
 
     env:
       PATHS: |
@@ -114,25 +118,21 @@ jobs:
       - name: "Checkout"
         uses: actions/checkout@v3
 
-      - name: "Get Node.js version"
-        id: get-node-version
-        uses: ./.github/actions/get-node-version
-
       - name: "Setup pnpm"
         uses: ./.github/actions/setup-pnpm
         with:
-          node-version: ${{ steps.get-node-version.outputs.NODE_VERSION }}
+          node-version: ${{ matrix.node-version }}
           pnpm-version: ${{ env.PNPM_VERSION }}
 
       - name: "Download workspace from storage"
         uses: actions/download-artifact@v3
         with:
-          name: workspace-${{ steps.get-node-version.outputs.NODE_VERSION }}
+          name: workspace-${{ matrix.node-version }}
           path: /tmp
 
       - name: "Decompress workspace files"
         run: |
-          tar -xzf /tmp/workspace-${{ steps.get-node-version.outputs.NODE_VERSION }}.tar.gz -C . --overwrite
+          tar -xzf /tmp/workspace.tar.gz -C . --overwrite
 
       - name: "Run linters"
         uses: ./.github/actions/execute-for-paths
@@ -147,6 +147,10 @@ jobs:
     needs:
       - build-workspace
 
+    strategy:
+      matrix:
+        node-version: [ 18, 19 ]
+
     env:
       PATHS: |
         packages/cli
@@ -155,25 +159,21 @@ jobs:
       - name: "Checkout"
         uses: actions/checkout@v3
 
-      - name: "Get Node.js version"
-        id: get-node-version
-        uses: ./.github/actions/get-node-version
-
       - name: "Setup pnpm"
         uses: ./.github/actions/setup-pnpm
         with:
-          node-version: ${{ steps.get-node-version.outputs.NODE_VERSION }}
+          node-version: ${{ matrix.node-version }}
           pnpm-version: ${{ env.PNPM_VERSION }}
 
       - name: "Download workspace from storage"
         uses: actions/download-artifact@v3
         with:
-          name: workspace-${{ steps.get-node-version.outputs.NODE_VERSION }}
+          name: workspace-${{ matrix.node-version }}
           path: /tmp
 
       - name: "Decompress workspace files"
         run: |
-          tar -xzf /tmp/workspace-${{ steps.get-node-version.outputs.NODE_VERSION }}.tar.gz -C . --overwrite
+          tar -xzf /tmp/workspace.tar.gz -C . --overwrite
 
       - name: "Run tests"
         uses: ./.github/actions/execute-for-paths
