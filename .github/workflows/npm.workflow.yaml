@@ -40,7 +40,6 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: "Build NPM packages"
-        working-directory: packages/core
         run: |
           mkdir -p /tmp/npm-packages
           for path in $(echo "${{ env.PATHS }}" | tr '\n' ' '); do
