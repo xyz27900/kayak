@@ -81,143 +81,97 @@ jobs:
 #  build-docker:
 #    name: "🐳 Build Docker images"
 #    uses: ./.github/workflows/docker.workflow.yaml
-#  build-workspace:
-#    name: "🛠️ Build workspace"
-#    runs-on: ubuntu-latest
-#
-#    strategy:
-#      matrix:
-#        node-version: [ 18, 19 ]
-#
-#    env:
-#      PATHS: |
-#        packages/core
-#        packages/metamask
-#        packages/cypress
-#        packages/playwright
-#        packages/cli
-#
-#    steps:
-#      - name: "Checkout"
-#        uses: actions/checkout@v3
-#
-#      - name: "Setup pnpm"
-#        uses: ./.github/actions/setup-pnpm
-#        with:
-#          node-version: ${{ matrix.node-version }}
-#          pnpm-version: ${{ env.PNPM_VERSION }}
-#          cache: true
-#
-#      - name: "Install dependencies"
-#        run: pnpm install --frozen-lockfile
-#
-#      - name: "Build packages"
-#        uses: ./.github/actions/execute-in-paths
-#        with:
-#          paths: ${{ env.PATHS }}
-#          command: pnpm build
-#
-#      - name: "Copy workspace files to /tmp/workspace"
-#        run: |
-#          mkdir -p /tmp/workspace
-#          cp -r ./packages /tmp/workspace/packages
-#          find . -name 'node_modules' -not -path './node_modules/*' -type d -prune -exec sh -c 'mkdir -p /tmp/workspace/${0#./}; cp -rT "$0" /tmp/workspace/${0#./}' {} \;
-#
-#      - name: "Compress workspace files"
-#        run: |
-#          tar -czf workspace-${{ matrix.node-version }}.tar.gz -C /tmp/workspace .
-#
-#      - name: "Upload workspace artifact"
-#        uses: actions/upload-artifact@v3
-#        with:
-#          name: workspace-${{ matrix.node-version }}
-#          path: workspace-${{ matrix.node-version }}.tar.gz
-#
-#  lint:
-#    name: "👀 Lint"
-#    runs-on: ubuntu-latest
-#    needs:
-#      - build-workspace
-#
-#    strategy:
-#      matrix:
-#        node-version: [ 18, 19 ]
-#
-#    env:
-#      PATHS: |
-#        scripts
-#        docs
-#        packages/cli
-#        packages/core
-#        packages/cypress
-#        packages/metamask
-#        packages/playwright
-#
-#    steps:
-#      - name: "Checkout"
-#        uses: actions/checkout@v3
-#
-#      - name: "Setup pnpm"
-#        uses: ./.github/actions/setup-pnpm
-#        with:
-#          node-version: ${{ matrix.node-version }}
-#          pnpm-version: ${{ env.PNPM_VERSION }}
-#
-#      - name: "Download workspace artifact"
-#        uses: actions/download-artifact@v3
-#        with:
-#          name: workspace-${{ matrix.node-version }}
-#          path: /tmp
-#
-#      - name: "Decompress workspace files"
-#        run: |
-#          tar -xzf /tmp/workspace-${{ matrix.node-version }}.tar.gz -C . --overwrite
-#
-#      - name: "Run linters"
-#        uses: ./.github/actions/execute-in-paths
-#        with:
-#          paths: ${{ env.PATHS }}
-#          command: pnpm lint
-#
-#  unit-tests:
-#    name: "🧪 Unit tests"
-#    runs-on: ubuntu-latest
-#    needs:
-#      - build-workspace
-#
-#    strategy:
-#      matrix:
-#        node-version: [ 18, 19 ]
-#
-#    env:
-#      PATHS: |
-#        packages/cli
-#
-#    steps:
-#      - name: "Checkout"
-#        uses: actions/checkout@v3
-#
-#      - name: "Setup pnpm"
-#        uses: ./.github/actions/setup-pnpm
-#        with:
-#          node-version: ${{ matrix.node-version }}
-#          pnpm-version: ${{ env.PNPM_VERSION }}
-#
-#      - name: "Download workspace artifact"
-#        uses: actions/download-artifact@v3
-#        with:
-#          name: workspace-${{ matrix.node-version }}
-#          path: /tmp
-#
-#      - name: "Decompress workspace files"
-#        run: |
-#          tar -xzf /tmp/workspace-${{ matrix.node-version }}.tar.gz -C . --overwrite
-#
-#      - name: "Run tests"
-#        uses: ./.github/actions/execute-in-paths
-#        with:
-#          paths: ${{ env.PATHS }}
-#          command: pnpm test
+  lint:
+    name: "👀 Lint"
+    runs-on: ubuntu-latest
+    needs:
+      - build-workspace
+
+    env:
+      PATHS: |
+        scripts
+        docs
+        packages/cli
+        packages/core
+        packages/cypress
+        packages/metamask
+        packages/playwright
+
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v3
+
+      - name: "Get Node.js version"
+        id: get-node-version
+        uses: ./.github/actions/get-node-version
+
+      - name: "Setup pnpm"
+        uses: ./.github/actions/setup-pnpm
+        with:
+          node-version: ${{ steps.get-node-version.outputs.NODE_VERSION }}
+          pnpm-version: ${{ env.PNPM_VERSION }}
+
+      - name: "Download workspace from storage"
+        uses: actions/download-artifact@v3
+        with:
+          name: workspace-${{ steps.get-node-version.outputs.NODE_VERSION }}
+          path: /tmp
+
+      - name: "Decompress workspace files"
+        run: |
+          tar -xzf /tmp/workspace-${{ steps.get-node-version.outputs.NODE_VERSION }}.tar.gz -C . --overwrite
+
+      - name: "Run linters"
+        uses: ./.github/actions/execute-for-paths
+        with:
+          paths: ${{ env.PATHS }}
+          run: |
+            pnpm lint
+
+  unit-tests:
+    name: "🧪 Unit tests"
+    runs-on: ubuntu-latest
+    needs:
+      - build-workspace
+
+    strategy:
+      matrix:
+        node-version: [ 18, 19 ]
+
+    env:
+      PATHS: |
+        packages/cli
+
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v3
+
+      - name: "Get Node.js version"
+        id: get-node-version
+        uses: ./.github/actions/get-node-version
+
+      - name: "Setup pnpm"
+        uses: ./.github/actions/setup-pnpm
+        with:
+          node-version: ${{ steps.get-node-version.outputs.NODE_VERSION }}
+          pnpm-version: ${{ env.PNPM_VERSION }}
+
+      - name: "Download workspace from storage"
+        uses: actions/download-artifact@v3
+        with:
+          name: workspace-${{ steps.get-node-version.outputs.NODE_VERSION }}
+          path: /tmp
+
+      - name: "Decompress workspace files"
+        run: |
+          tar -xzf /tmp/workspace-${{ steps.get-node-version.outputs.NODE_VERSION }}.tar.gz -C . --overwrite
+
+      - name: "Run tests"
+        uses: ./.github/actions/execute-for-paths
+        with:
+          paths: ${{ env.PATHS }}
+          command: |
+            pnpm test
 #
 #  integration-tests:
 #    name: "🧪 Integration tests"
@@ -255,17 +209,17 @@ jobs:
 #          paths: ${{ env.PATHS }}
 #          command: pnpm test
 #
-#  cleanup:
-#    name: "🧹 Cleanup"
-#    runs-on: ubuntu-latest
-#    if: always()
-#    needs:
-#      - build-workspace
-#      - lint
-#      - unit-tests
-#
-#    steps:
-#      - name: "Delete artifacts"
-#        uses: geekyeggo/delete-artifact@v2
-#        with:
-#          name: workspace-*
+  cleanup:
+    name: "🧹 Cleanup"
+    runs-on: ubuntu-latest
+    if: always()
+    needs:
+      - build-workspace
+      - lint
+      - unit-tests
+
+    steps:
+      - name: "Delete artifacts"
+        uses: geekyeggo/delete-artifact@v2
+        with:
+          name: workspace-*
