@@ -63,18 +63,17 @@ jobs:
               escaped_path=$(sed 's/ /\\ /g; s/\*/\\*/g; s/\?/\\?/g' <<< "$path")
 
               while IFS= read -r -d $'\0' filepath; do
-                echo "Processing $filepath"
                 if [ -d "$filepath" ]; then
-                  echo "Copying $filepath to $package_dir"
                   cp -rf "$filepath" "$package_dir"
                 elif [ -f "$filepath" ]; then
-                  echo "Copying $filepath to $package_dir"
                   cp -f "$filepath" "$package_dir"
                 else
                   echo "$filepath is neither a directory nor a file"
                 fi
-              done < <(find "/tmp/npm-packages/$package_name" -maxdepth 1 -type f -name "$escaped_path" -print0)
+              done < <(find "/tmp/npm-packages/$package_name" -maxdepth 1 -name "$escaped_path" -print0)
             done
+
+            ls -la "$package_dir"
 
             rm -rf "/tmp/npm-packages/$package_name"
           done < <(find packages -type f -name 'package.json' -not -path '*/node_modules/*' -not -path '/*cache/*')
