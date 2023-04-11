@@ -46,7 +46,7 @@ jobs:
           run: |
             pnpm build
             generated_tarball=$(pnpm pack | grep -oP '(?<=\+ ).*\.tgz')
-
+            pwd
             echo "package name: $(node -p "require('./package.json').name")"
 
 #            mv $generated_tarball /tmp/packages/$package-name.tgz
