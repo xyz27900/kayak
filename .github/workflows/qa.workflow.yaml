@@ -55,8 +55,8 @@ jobs:
       - name: "Move NPM packages files to workspace"
         run: |
           while read -r file; do
-            package_name=$(yq -o .name "$file" | sed 's/@//g; s#/#-#g')
-            readarray -t package_files < <(yq -oy .files "$file" | yq -oy '.[]')
+            package_name=$(yq -oy '.name' "$file" | sed 's/@//g; s#/#-#g')
+            readarray -t package_files < <(yq -oy '.files' "$file" | yq -oy '.[]')
 
             for path in "${package_files[@]}"; do
               escaped_path=$(sed 's/ /\\ /g; s/\*/\\*/g; s/\?/\\?/g' <<< "$path")
