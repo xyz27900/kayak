@@ -43,19 +43,15 @@ jobs:
         run: mkdir -p /tmp/npm-packages
 
       - name: "Build NPM packages"
-        run: |
-          initial_path="$(pwd)"
-          for path in $(echo "${{ env.PATHS }}" | tr '\n' ' '); do
-            cd "$initial_path/$path"
+        uses: ./.github/actions/execute-in-paths
+        with:
+          paths: ${{ env.PATHS }}
+          run: |
             pnpm build
             generated_tarball=$(pnpm pack)
             package_name=$(echo $generated_tarball | sed -E 's/^([-[:alnum:]]+)-[[:digit:]]+\.[[:digit:]]+(\.[[:digit:]]+)?(-[[:alnum:]]+)?\.tgz$/\1/')
             mv "$generated_tarball" "/tmp/npm-packages/$package_name.tgz"
             ls -l /tmp/npm-packages
-            cd "$initial_path"
-            pwd 
-            ls -la
-          done
 
       - name: "Upload packed NPM packages to storage"
         uses: actions/upload-artifact@v3

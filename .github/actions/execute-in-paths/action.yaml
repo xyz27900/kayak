@@ -12,24 +12,13 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: "Save \"run\" input as a bash script"
-      id: save-run-script
-      shell: bash
-      run: |
-        mkdir -p /tmp/scripts
-        script_name="run-$RANDOM.sh"
-        echo "#!/bin/bash" > /tmp/scripts/$script_name
-        echo "${{ inputs.run }}" >> /tmp/scripts/$script_name
-        chmod +x /tmp/scripts/$script_name
-        echo "SCRIPT_PATH=/tmp/scripts/$script_name" >> $GITHUB_OUTPUT
-
     - name: "Execute script in each path"
       shell: bash
       run: |
         initial_path="$(pwd)"
         paths=$(echo "${{ inputs.paths }}" | tr '\n' ' ')
         for path in $paths; do
-            cd "$initial_path/$path"
-            source ${{ steps.save-run-script.outputs.SCRIPT_PATH }}
-            cd "$initial_path"
+          cd "$initial_path/$path"
+          ${{ inputs.run }}
+          cd "$initial_path"
         done
