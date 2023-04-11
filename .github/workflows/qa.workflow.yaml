@@ -12,6 +12,10 @@ on:
       - main
 
 jobs:
+  build-docker:
+    name: "🐳 Build Docker images"
+    uses: ./.github/workflows/docker.workflow.yaml
+
   build-npm:
     name: "📦 Build NPM packages"
     uses: ./.github/workflows/npm.workflow.yaml
@@ -69,11 +73,10 @@ jobs:
                   cp -f "$filepath" "$package_dir"
                 else
                   echo "$filepath is neither a directory nor a file"
+                  exit 1
                 fi
               done < <(find "/tmp/npm-packages/$package_name" -maxdepth 1 -name "$escaped_path" -print0)
             done
-
-            ls -la "$package_dir"
 
             rm -rf "/tmp/npm-packages/$package_name"
           done < <(find packages -type f -name 'package.json' -not -path '*/node_modules/*' -not -path '/*cache/*')
@@ -90,9 +93,7 @@ jobs:
         with:
           name: workspace-${{ steps.get-node-version.outputs.NODE_VERSION }}
           path: /tmp/workspace-${{ steps.get-node-version.outputs.NODE_VERSION }}.tar.gz
-#  build-docker:
-#    name: "🐳 Build Docker images"
-#    uses: ./.github/workflows/docker.workflow.yaml
+
   lint:
     name: "👀 Lint"
     runs-on: ubuntu-latest
@@ -181,17 +182,16 @@ jobs:
           command: |
             pnpm test
 
-#  cleanup:
-#    name: "🧹 Cleanup"
-#    runs-on: ubuntu-latest
-#    if: always()
-#    needs:
-#      - build-workspace
-#      - lint
-#      - unit-tests
-#
-#    steps:
-#      - name: "Delete artifacts"
-#        uses: geekyeggo/delete-artifact@v2
-#        with:
-#          name: workspace-*
+  cleanup:
+    name: "🧹 Cleanup"
+    runs-on: ubuntu-latest
+    if: always()
+    needs:
+      - lint
+      - unit-tests
+
+    steps:
+      - name: "Delete artifacts"
+        uses: geekyeggo/delete-artifact@v2
+        with:
+          name: workspace-*
