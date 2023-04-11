@@ -47,7 +47,6 @@ jobs:
             pnpm build
             generated_tarball=$(pnpm pack | grep -oP '(?<=\+ ).*\.tgz')
             echo "package name: $(node -p "process.cwd()")"
-
 #            mv $generated_tarball /tmp/packages/$package-name.tgz
 
       - name: "Upload packed NPM packages to storage"
