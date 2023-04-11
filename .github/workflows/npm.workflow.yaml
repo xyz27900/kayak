@@ -39,14 +39,14 @@ jobs:
       - name: "Install dependencies"
         run: pnpm install --frozen-lockfile
 
-      - name: "Build NPM packages"
-        uses: ./.github/actions/execute-in-paths
-        with:
-          paths: ${{ env.PATHS }}
-          run: |
-            pnpm build
-            generated_tarball=$(pnpm pack)
-            echo "package name"
+      - name: "Build packages/core"
+        working-directory: packages/core
+        run: |
+          pnpm build
+          generated_tarball=$(pnpm pack)
+          package_name=$(echo $generated_tarball | sed -E 's/^([-[:alnum:]]+)-[[:digit:]]+\.[[:digit:]]+(\.[[:digit:]]+)?(-[[:alnum:]]+)?\.tgz$/\1/'
+          mv "$generated_tarball" "/tmp/npm-packages/$package_name.tgz"
+          ls -l /tmp/npm-packages
 
       - name: "Upload packed NPM packages to storage"
         uses: actions/upload-artifact@v3
