@@ -51,7 +51,6 @@ jobs:
             generated_tarball=$(pnpm pack)
             package_name=$(echo $generated_tarball | sed -E 's/^([-[:alnum:]]+)-[[:digit:]]+\.[[:digit:]]+(\.[[:digit:]]+)?(-[[:alnum:]]+)?\.tgz$/\1/')
             mv "$generated_tarball" "/tmp/npm-packages/$package_name.tgz"
-            ls -l /tmp/npm-packages
 
       - name: "Upload packed NPM packages to storage"
         uses: actions/upload-artifact@v3
