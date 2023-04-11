@@ -45,7 +45,7 @@ jobs:
       - name: "Download NPM packages from storage"
         uses: actions/download-artifact@v3
         with:
-          name: npm-packages-${{ env.NODE_VERSION }}
+          name: npm-packages-${{ steps.get-node-version.outputs.NODE_VERSION }}
           path: /tmp/npm-packages
 
       - name: "Unpack NPM packages"
