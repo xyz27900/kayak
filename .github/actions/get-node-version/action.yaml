@@ -1,5 +1,5 @@
-name: "Get LTS Node.js version"
-description: "Get LTS Node.js version"
+name: "Get Node.js version"
+description: "Get Node.js version"
 
 inputs:
   type:
@@ -23,6 +23,8 @@ runs:
           exit 1
         fi
 
+        echo "Get ${{ inputs.type }} Node.js version"
+
         yq_command="$yq_command | sub(\"^v\";\"\")"
-        lts_node_version=$(curl -s https://nodejs.org/dist/index.json | yq "$yq_command")
-        echo "LTS_NODE_VERSION=$lts_node_version" >> "$GITHUB_OUTPUT"
+        node_version=$(curl -s https://nodejs.org/dist/index.json | yq "$yq_command")
+        echo "NODE_VERSION=$node_version" >> "$GITHUB_OUTPUT"
