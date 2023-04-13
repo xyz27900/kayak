@@ -53,83 +53,83 @@ jobs:
         with:
           platforms: arm,arm64,ppc64le,mips64,s390x
 
-      - name: "Build kayak/upx:latest"
+      - name: "Build kayak/upx:${{ github.ref_name }}"
         uses: docker/build-push-action@v4
         with:
           push: true
           platforms: ${{ env.PLATFORMS }}
-          tags: localhost:5000/kayak/upx:latest
+          tags: localhost:5000/kayak/upx:${{ github.ref_name }}
           file: ./docker/upx/Dockerfile
           context: ./docker/upx
-          cache-from: type=gha,mode=max,scope=kayak/upx
-          cache-to: type=gha,mode=max,scope=kayak/upx
+          cache-from: type=gha,mode=max,scope=kayak/upx:${{ github.ref_name }}
+          cache-to: type=gha,mode=max,scope=kayak/upx:${{ github.ref_name }}
 
-      - name: "Build kayak/fontconfig:latest"
+      - name: "Build kayak/fontconfig:${{ github.ref_name }}"
         uses: docker/build-push-action@v4
         with:
           push: true
           platforms: ${{ env.PLATFORMS }}
-          tags: localhost:5000/kayak/fontconfig:latest
+          tags: localhost:5000/kayak/fontconfig:${{ github.ref_name }}
           file: ./docker/fontconfig/Dockerfile
           context: ./docker/fontconfig
           build-args: |
             FONTCONFIG_VERSION=${{ env.FONTCONFIG_VERSION }}
-          cache-from: type=gha,mode=max,scope=kayak/fontconfig
-          cache-to: type=gha,mode=max,scope=kayak/fontconfig
+          cache-from: type=gha,mode=max,scope=kayak/fontconfig:${{ github.ref_name }}
+          cache-to: type=gha,mode=max,scope=kayak/fontconfig:${{ github.ref_name }}
 
-      - name: "Build kayak/crdetector:latest"
+      - name: "Build kayak/crdetector:${{ github.ref_name }}"
         uses: docker/build-push-action@v4
         with:
           push: true
           platforms: ${{ env.PLATFORMS }}
-          tags: localhost:5000/kayak/crdetector:latest
+          tags: localhost:5000/kayak/crdetector:${{ github.ref_name }}
           file: ./docker/crdetector/Dockerfile
           context: ./docker/crdetector
           build-args: |
-            UPX_IMAGE=localhost:5000/kayak/upx:latest
-          cache-from: type=gha,mode=max,scope=kayak/crdetector
-          cache-to: type=gha,mode=max,scope=kayak/crdetector
+            UPX_IMAGE=localhost:5000/kayak/upx:${{ github.ref_name }}
+          cache-from: type=gha,mode=max,scope=kayak/crdetector:${{ github.ref_name }}
+          cache-to: type=gha,mode=max,scope=kayak/crdetector:${{ github.ref_name }}
 
-      - name: "Build kayak/novnc:latest"
+      - name: "Build kayak/novnc:${{ github.ref_name }}"
         uses: docker/build-push-action@v4
         with:
           push: true
           platforms: ${{ env.PLATFORMS }}
-          tags: localhost:5000/kayak/novnc:latest
+          tags: localhost:5000/kayak/novnc:${{ github.ref_name }}
           file: ./docker/novnc/Dockerfile
           context: ./docker/novnc
           build-args: |
             NOVNC_VERSION=${{ env.NOVNC_VERSION }}
-          cache-from: type=gha,mode=max,scope=kayak/novnc
-          cache-to: type=gha,mode=max,scope=kayak/novnc
+          cache-from: type=gha,mode=max,scope=kayak/novnc:${{ github.ref_name }}
+          cache-to: type=gha,mode=max,scope=kayak/novnc:${{ github.ref_name }}
 
-      - name: "Build kayak/openbox:latest"
+      - name: "Build kayak/openbox:${{ github.ref_name }}"
         uses: docker/build-push-action@v4
         with:
           push: true
           platforms: ${{ env.PLATFORMS }}
-          tags: localhost:5000/kayak/openbox:latest
+          tags: localhost:5000/kayak/openbox:${{ github.ref_name }}
           file: ./docker/openbox/Dockerfile
           context: ./docker/openbox
           build-args: |
-            FONTCONFIG_IMAGE=localhost:5000/kayak/fontconfig:latest
-            UPX_IMAGE=localhost:5000/kayak/upx:latest
+            FONTCONFIG_IMAGE=localhost:5000/kayak/fontconfig:${{ github.ref_name }}
+            UPX_IMAGE=localhost:5000/kayak/upx:${{ github.ref_name }}
             LIBXRANDR_VERSION=${{ env.LIBXRANDR_VERSION }}
             OPENBOX_VERSION=${{ env.OPENBOX_VERSION }}
             PANGO_VERSION=${{ env.PANGO_VERSION }}
-          cache-from: type=gha,mode=max,scope=kayak/openbox
-          cache-to: type=gha,mode=max,scope=kayak/openbox
+          cache-from: type=gha,mode=max,scope=kayak/openbox:${{ github.ref_name }}
+          cache-to: type=gha,mode=max,scope=kayak/openbox:${{ github.ref_name }}
 
-      - name: "Build kayak/tigervnc:latest"
+      - name: "Build kayak/tigervnc:${{ github.ref_name }}"
         uses: docker/build-push-action@v4
         with:
           push: true
           platforms: ${{ env.PLATFORMS }}
-          tags: localhost:5000/kayak/tigervnc:latest
+          tags: localhost:5000/kayak/tigervnc:${{ github.ref_name }}
           file: ./docker/tigervnc/Dockerfile
           context: ./docker/tigervnc
           build-args: |
-            UPX_IMAGE=localhost:5000/kayak/upx:latest
+            UPX_IMAGE=localhost:5000/kayak/upx:${{ github.ref_name }}
             GNUTLS_VERSION=${{ env.GNUTLS_VERSION }}
             LIBFONTENC_VERSION=${{ env.LIBFONTENC_VERSION }}
             LIBTASN1_VERSION=${{ env.LIBTASN1_VERSION }}
@@ -139,8 +139,8 @@ jobs:
             XKB_VERSION=${{ env.XKB_VERSION }}
             XKBCOMP_VERSION=${{ env.XKBCOMP_VERSION }}
             XSERVER_VERSION=${{ env.XSERVER_VERSION }}
-          cache-from: type=gha,mode=max,scope=kayak/tigervnc
-          cache-to: type=gha,mode=max,scope=kayak/tigervnc
+          cache-from: type=gha,mode=max,scope=kayak/tigervnc:${{ github.ref_name }}
+          cache-to: type=gha,mode=max,scope=kayak/tigervnc:${{ github.ref_name }}
 
       - name: "Login to GitHub Container Registry"
         uses: docker/login-action@v2
@@ -169,9 +169,9 @@ jobs:
           file: ./docker/chromium/Dockerfile
           context: ./docker/chromium
           build-args: |
-            CRDETECTOR_IMAGE=localhost:5000/kayak/crdetector:latest
-          cache-from: type=gha,mode=max,scope=kayak/chromium
-          cache-to: type=gha,mode=max,scope=kayak/chromium
+            CRDETECTOR_IMAGE=localhost:5000/kayak/crdetector:${{ github.ref_name }}
+          cache-from: type=gha,mode=max,scope=kayak/chromium:${{ github.ref_name }}
+          cache-to: type=gha,mode=max,scope=kayak/chromium:${{ github.ref_name }}
 
       - name: "Build kayak/display:${{ github.ref_name }}"
         uses: docker/build-push-action@v4
@@ -182,16 +182,16 @@ jobs:
           file: ./docker/display/Dockerfile
           context: ./docker/display
           build-args: |
-            FONTCONFIG_IMAGE=localhost:5000/kayak/fontconfig:latest
-            NOVNC_IMAGE=localhost:5000/kayak/novnc:latest
-            OPENBOX_IMAGE=localhost:5000/kayak/openbox:latest
-            TIGERVNC_IMAGE=localhost:5000/kayak/tigervnc:latest
+            FONTCONFIG_IMAGE=localhost:5000/kayak/fontconfig:${{ github.ref_name }}
+            NOVNC_IMAGE=localhost:5000/kayak/novnc:${{ github.ref_name }}
+            OPENBOX_IMAGE=localhost:5000/kayak/openbox:${{ github.ref_name }}
+            TIGERVNC_IMAGE=localhost:5000/kayak/tigervnc:${{ github.ref_name }}
             USER_ID=${{ env.USER_ID }}
             GROUP_ID=${{ env.GROUP_ID }}
             USER_NAME=${{ env.USER_NAME }}
             GROUP_NAME=${{ env.GROUP_NAME }}
-          cache-from: type=gha,mode=max,scope=kayak/display
-          cache-to: type=gha,mode=max,scope=kayak/display
+          cache-from: type=gha,mode=max,scope=kayak/display:${{ github.ref_name }}
+          cache-to: type=gha,mode=max,scope=kayak/display:${{ github.ref_name }}
 
       - name: "Build kayak/ffmpeg:${{ github.ref_name }}"
         uses: docker/build-push-action@v4
@@ -201,5 +201,5 @@ jobs:
           tags: ghcr.io/${{ github.repository }}/ffmpeg:${{ github.ref_name }}
           file: ./docker/ffmpeg/Dockerfile
           context: ./docker/ffmpeg
-          cache-from: type=gha,mode=max,scope=kayak/ffmpeg
-          cache-to: type=gha,mode=max,scope=kayak/ffmpeg
+          cache-from: type=gha,mode=max,scope=kayak/ffmpeg:${{ github.ref_name }}
+          cache-to: type=gha,mode=max,scope=kayak/ffmpeg:${{ github.ref_name }}

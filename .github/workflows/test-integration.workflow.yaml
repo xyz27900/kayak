@@ -52,8 +52,7 @@ jobs:
       - name: "Pull Docker images"
         run: |
           docker pull ghcr.io/${{ github.repository }}/anvil:${{ github.ref_name }}
-          docker pull ghcr.io/${{ github.repository }}/chromium/${{ github.ref_name }}-cypress
-          docker pull ghcr.io/${{ github.repository }}/chromium/${{ github.ref_name }}-playwright
+          docker pull ghcr.io/${{ github.repository }}/chromium/${{ github.ref_name }}
           docker pull ghcr.io/${{ github.repository }}/display:${{ github.ref_name }}
           docker pull ghcr.io/${{ github.repository }}/ffmpeg:${{ github.ref_name }}
 
