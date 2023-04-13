@@ -50,7 +50,6 @@ jobs:
       - name: "Prepare NPM environment variables"
         run: |
           echo "NPM_REGISTRY=http://localhost:4873" >> $GITHUB_ENV
-          echo "NPM_AUTH_TOKEN=token" >> $GITHUB_ENV
 
       - name: "Publish packages to Verdaccio"
         uses: ./.github/actions/execute-for-paths
@@ -61,6 +60,9 @@ jobs:
             packages/cypress
             packages/metamask
             packages/playwright
+          run: |
+            echo "http://localhost:4873/:_authToken=token" > ~/.npmrc
+            pnpm publish --registry http://localhost:4873
 
       - name: "Setup Docker"
         uses: ./.github/actions/setup-docker
