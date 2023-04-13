@@ -49,7 +49,8 @@ jobs:
 
       - name: "Prepare NPM environment variables"
         run: |
-          echo "NPM_REGISTRY=http://localhost:4873" >> $GITHUB_ENV
+          pnpm adduser --registry http://localhost:4873
+          cat ~/.npmrc
 
       - name: "Publish packages to Verdaccio"
         uses: ./.github/actions/execute-for-paths
