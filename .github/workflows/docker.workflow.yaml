@@ -138,12 +138,19 @@ jobs:
           cache-from: type=gha,mode=max,scope=kayak/tigervnc
           cache-to: type=gha,mode=max,scope=kayak/tigervnc
 
+      - name: "Login to GitHub Container Registry"
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
       - name: "Build kayak/anvil:latest"
         uses: docker/build-push-action@v4
         with:
-          load: true
+          push: true
           platforms: ${{ env.PLATFORMS }}
-          tags: kayak/anvil:latest
+          tags: ghcr.io/${{ github.repository_owner }}/kayak/anvil:${{ github.ref_name }}
           file: ./docker/anvil/Dockerfile
           context: ./docker/anvil
           cache-from: type=gha,mode=max,scope=kayak/anvil
@@ -152,9 +159,9 @@ jobs:
       - name: "Build kayak/chromium:cypress"
         uses: docker/build-push-action@v4
         with:
-          load: true
+          push: true
           platforms: ${{ env.PLATFORMS }}
-          tags: kayak/chromium:cypress
+          tags: ghcr.io/${{ github.repository_owner }}/kayak/chromium:${{ github.ref_name }}-cypress
           file: ./docker/chromium/Dockerfile.cypress
           context: ./docker/chromium
           build-args: |
@@ -165,9 +172,9 @@ jobs:
       - name: "Build kayak/chromium:playwright"
         uses: docker/build-push-action@v4
         with:
-          load: true
+          push: true
           platforms: ${{ env.PLATFORMS }}
-          tags: kayak/chromium:playwright
+          tags: ghcr.io/${{ github.repository_owner }}/kayak/chromium:${{ github.ref_name }}-playwright
           file: ./docker/chromium/Dockerfile.playwright
           context: ./docker/chromium
           build-args: |
@@ -178,9 +185,9 @@ jobs:
       - name: "Build kayak/display:latest"
         uses: docker/build-push-action@v4
         with:
-          load: true
+          push: true
           platforms: ${{ env.PLATFORMS }}
-          tags: kayak/display:latest
+          tags: ghcr.io/${{ github.repository_owner }}/kayak/display:${{ github.ref_name }}
           file: ./docker/display/Dockerfile
           context: ./docker/display
           build-args: |
@@ -198,26 +205,10 @@ jobs:
       - name: "Build kayak/ffmpeg:latest"
         uses: docker/build-push-action@v4
         with:
-          load: true
+          push: true
           platforms: ${{ env.PLATFORMS }}
-          tags: kayak/ffmpeg:latest
+          tags: ghcr.io/${{ github.repository_owner }}/kayak/ffmpeg:${{ github.ref_name }}
           file: ./docker/ffmpeg/Dockerfile
           context: ./docker/ffmpeg
           cache-from: type=gha,mode=max,scope=kayak/ffmpeg
           cache-to: type=gha,mode=max,scope=kayak/ffmpeg
-
-      - name: "Save Docker images"
-        run: |
-          mkdir -p /tmp/docker-images
-          docker save kayak/anvil:latest | gzip > /tmp/docker-images/kayak-anvil.tar.gz
-          docker save kayak/chromium:cypress | gzip > /tmp/docker-images/kayak-chromium-cypress.tar.gz
-          docker save kayak/chromium:playwright | gzip > /tmp/docker-images/kayak-chromium-playwright.tar.gz
-          docker save kayak/display:latest | gzip > /tmp/docker-images/kayak-display.tar.gz
-          docker save kayak/ffmpeg:latest | gzip > /tmp/docker-images/kayak-ffmpeg.tar.gz
-
-      - name: "Upload Docker images to storage"
-        uses: actions/upload-artifact@v3
-        with:
-          name: docker-images
-          path: |
-            /tmp/docker-images/kayak-*.tar.gz
