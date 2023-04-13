@@ -28,6 +28,11 @@ env:
 
 on:
   workflow_call:
+    inputs:
+      image-tag:
+        description: "Docker image tag"
+        required: true
+        type: string
 
 jobs:
   build-docker:
@@ -53,83 +58,83 @@ jobs:
         with:
           platforms: arm,arm64,ppc64le,mips64,s390x
 
-      - name: "Build kayak/upx:${{ github.ref_name }}"
+      - name: "Build kayak/upx:${{ inputs.image-tag }}"
         uses: docker/build-push-action@v4
         with:
           push: true
           platforms: ${{ env.PLATFORMS }}
-          tags: localhost:5000/kayak/upx:${{ github.ref_name }}
+          tags: localhost:5000/kayak/upx:${{ inputs.image-tag }}
           file: ./docker/upx/Dockerfile
           context: ./docker/upx
-          cache-from: type=gha,mode=max,scope=kayak/upx:${{ github.ref_name }}
-          cache-to: type=gha,mode=max,scope=kayak/upx:${{ github.ref_name }}
+          cache-from: type=gha,mode=max,scope=kayak/upx:${{ inputs.image-tag }}
+          cache-to: type=gha,mode=max,scope=kayak/upx:${{ inputs.image-tag }}
 
-      - name: "Build kayak/fontconfig:${{ github.ref_name }}"
+      - name: "Build kayak/fontconfig:${{ inputs.image-tag }}"
         uses: docker/build-push-action@v4
         with:
           push: true
           platforms: ${{ env.PLATFORMS }}
-          tags: localhost:5000/kayak/fontconfig:${{ github.ref_name }}
+          tags: localhost:5000/kayak/fontconfig:${{ inputs.image-tag }}
           file: ./docker/fontconfig/Dockerfile
           context: ./docker/fontconfig
           build-args: |
             FONTCONFIG_VERSION=${{ env.FONTCONFIG_VERSION }}
-          cache-from: type=gha,mode=max,scope=kayak/fontconfig:${{ github.ref_name }}
-          cache-to: type=gha,mode=max,scope=kayak/fontconfig:${{ github.ref_name }}
+          cache-from: type=gha,mode=max,scope=kayak/fontconfig:${{ inputs.image-tag }}
+          cache-to: type=gha,mode=max,scope=kayak/fontconfig:${{ inputs.image-tag }}
 
-      - name: "Build kayak/crdetector:${{ github.ref_name }}"
+      - name: "Build kayak/crdetector:${{ inputs.image-tag }}"
         uses: docker/build-push-action@v4
         with:
           push: true
           platforms: ${{ env.PLATFORMS }}
-          tags: localhost:5000/kayak/crdetector:${{ github.ref_name }}
+          tags: localhost:5000/kayak/crdetector:${{ inputs.image-tag }}
           file: ./docker/crdetector/Dockerfile
           context: ./docker/crdetector
           build-args: |
-            UPX_IMAGE=localhost:5000/kayak/upx:${{ github.ref_name }}
-          cache-from: type=gha,mode=max,scope=kayak/crdetector:${{ github.ref_name }}
-          cache-to: type=gha,mode=max,scope=kayak/crdetector:${{ github.ref_name }}
+            UPX_IMAGE=localhost:5000/kayak/upx:${{ inputs.image-tag }}
+          cache-from: type=gha,mode=max,scope=kayak/crdetector:${{ inputs.image-tag }}
+          cache-to: type=gha,mode=max,scope=kayak/crdetector:${{ inputs.image-tag }}
 
-      - name: "Build kayak/novnc:${{ github.ref_name }}"
+      - name: "Build kayak/novnc:${{ inputs.image-tag }}"
         uses: docker/build-push-action@v4
         with:
           push: true
           platforms: ${{ env.PLATFORMS }}
-          tags: localhost:5000/kayak/novnc:${{ github.ref_name }}
+          tags: localhost:5000/kayak/novnc:${{ inputs.image-tag }}
           file: ./docker/novnc/Dockerfile
           context: ./docker/novnc
           build-args: |
             NOVNC_VERSION=${{ env.NOVNC_VERSION }}
-          cache-from: type=gha,mode=max,scope=kayak/novnc:${{ github.ref_name }}
-          cache-to: type=gha,mode=max,scope=kayak/novnc:${{ github.ref_name }}
+          cache-from: type=gha,mode=max,scope=kayak/novnc:${{ inputs.image-tag }}
+          cache-to: type=gha,mode=max,scope=kayak/novnc:${{ inputs.image-tag }}
 
-      - name: "Build kayak/openbox:${{ github.ref_name }}"
+      - name: "Build kayak/openbox:${{ inputs.image-tag }}"
         uses: docker/build-push-action@v4
         with:
           push: true
           platforms: ${{ env.PLATFORMS }}
-          tags: localhost:5000/kayak/openbox:${{ github.ref_name }}
+          tags: localhost:5000/kayak/openbox:${{ inputs.image-tag }}
           file: ./docker/openbox/Dockerfile
           context: ./docker/openbox
           build-args: |
-            FONTCONFIG_IMAGE=localhost:5000/kayak/fontconfig:${{ github.ref_name }}
-            UPX_IMAGE=localhost:5000/kayak/upx:${{ github.ref_name }}
+            FONTCONFIG_IMAGE=localhost:5000/kayak/fontconfig:${{ inputs.image-tag }}
+            UPX_IMAGE=localhost:5000/kayak/upx:${{ inputs.image-tag }}
             LIBXRANDR_VERSION=${{ env.LIBXRANDR_VERSION }}
             OPENBOX_VERSION=${{ env.OPENBOX_VERSION }}
             PANGO_VERSION=${{ env.PANGO_VERSION }}
-          cache-from: type=gha,mode=max,scope=kayak/openbox:${{ github.ref_name }}
-          cache-to: type=gha,mode=max,scope=kayak/openbox:${{ github.ref_name }}
+          cache-from: type=gha,mode=max,scope=kayak/openbox:${{ inputs.image-tag }}
+          cache-to: type=gha,mode=max,scope=kayak/openbox:${{ inputs.image-tag }}
 
-      - name: "Build kayak/tigervnc:${{ github.ref_name }}"
+      - name: "Build kayak/tigervnc:${{ inputs.image-tag }}"
         uses: docker/build-push-action@v4
         with:
           push: true
           platforms: ${{ env.PLATFORMS }}
-          tags: localhost:5000/kayak/tigervnc:${{ github.ref_name }}
+          tags: localhost:5000/kayak/tigervnc:${{ inputs.image-tag }}
           file: ./docker/tigervnc/Dockerfile
           context: ./docker/tigervnc
           build-args: |
-            UPX_IMAGE=localhost:5000/kayak/upx:${{ github.ref_name }}
+            UPX_IMAGE=localhost:5000/kayak/upx:${{ inputs.image-tag }}
             GNUTLS_VERSION=${{ env.GNUTLS_VERSION }}
             LIBFONTENC_VERSION=${{ env.LIBFONTENC_VERSION }}
             LIBTASN1_VERSION=${{ env.LIBTASN1_VERSION }}
@@ -139,8 +144,8 @@ jobs:
             XKB_VERSION=${{ env.XKB_VERSION }}
             XKBCOMP_VERSION=${{ env.XKBCOMP_VERSION }}
             XSERVER_VERSION=${{ env.XSERVER_VERSION }}
-          cache-from: type=gha,mode=max,scope=kayak/tigervnc:${{ github.ref_name }}
-          cache-to: type=gha,mode=max,scope=kayak/tigervnc:${{ github.ref_name }}
+          cache-from: type=gha,mode=max,scope=kayak/tigervnc:${{ inputs.image-tag }}
+          cache-to: type=gha,mode=max,scope=kayak/tigervnc:${{ inputs.image-tag }}
 
       - name: "Login to GitHub Container Registry"
         uses: docker/login-action@v2
@@ -149,57 +154,57 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: "Build kayak/anvil:${{ github.ref_name }}"
+      - name: "Build kayak/anvil:${{ inputs.image-tag }}"
         uses: docker/build-push-action@v4
         with:
           push: true
           platforms: ${{ env.PLATFORMS }}
-          tags: ghcr.io/${{ github.repository }}/anvil:${{ github.ref_name }}
+          tags: ghcr.io/${{ github.repository }}/anvil:${{ inputs.image-tag }}
           file: ./docker/anvil/Dockerfile
           context: ./docker/anvil
           cache-from: type=gha,mode=max,scope=kayak/anvil
           cache-to: type=gha,mode=max,scope=kayak/anvil
 
-      - name: "Build kayak/chromium:${{ github.ref_name }}"
+      - name: "Build kayak/chromium:${{ inputs.image-tag }}"
         uses: docker/build-push-action@v4
         with:
           push: true
           platforms: ${{ env.PLATFORMS }}
-          tags: ghcr.io/${{ github.repository }}/chromium:${{ github.ref_name }}
+          tags: ghcr.io/${{ github.repository }}/chromium:${{ inputs.image-tag }}
           file: ./docker/chromium/Dockerfile
           context: ./docker/chromium
           build-args: |
-            CRDETECTOR_IMAGE=localhost:5000/kayak/crdetector:${{ github.ref_name }}
-          cache-from: type=gha,mode=max,scope=kayak/chromium:${{ github.ref_name }}
-          cache-to: type=gha,mode=max,scope=kayak/chromium:${{ github.ref_name }}
+            CRDETECTOR_IMAGE=localhost:5000/kayak/crdetector:${{ inputs.image-tag }}
+          cache-from: type=gha,mode=max,scope=kayak/chromium:${{ inputs.image-tag }}
+          cache-to: type=gha,mode=max,scope=kayak/chromium:${{ inputs.image-tag }}
 
-      - name: "Build kayak/display:${{ github.ref_name }}"
+      - name: "Build kayak/display:${{ inputs.image-tag }}"
         uses: docker/build-push-action@v4
         with:
           push: true
           platforms: ${{ env.PLATFORMS }}
-          tags: ghcr.io/${{ github.repository }}/display:${{ github.ref_name }}
+          tags: ghcr.io/${{ github.repository }}/display:${{ inputs.image-tag }}
           file: ./docker/display/Dockerfile
           context: ./docker/display
           build-args: |
-            FONTCONFIG_IMAGE=localhost:5000/kayak/fontconfig:${{ github.ref_name }}
-            NOVNC_IMAGE=localhost:5000/kayak/novnc:${{ github.ref_name }}
-            OPENBOX_IMAGE=localhost:5000/kayak/openbox:${{ github.ref_name }}
-            TIGERVNC_IMAGE=localhost:5000/kayak/tigervnc:${{ github.ref_name }}
+            FONTCONFIG_IMAGE=localhost:5000/kayak/fontconfig:${{ inputs.image-tag }}
+            NOVNC_IMAGE=localhost:5000/kayak/novnc:${{ inputs.image-tag }}
+            OPENBOX_IMAGE=localhost:5000/kayak/openbox:${{ inputs.image-tag }}
+            TIGERVNC_IMAGE=localhost:5000/kayak/tigervnc:${{ inputs.image-tag }}
             USER_ID=${{ env.USER_ID }}
             GROUP_ID=${{ env.GROUP_ID }}
             USER_NAME=${{ env.USER_NAME }}
             GROUP_NAME=${{ env.GROUP_NAME }}
-          cache-from: type=gha,mode=max,scope=kayak/display:${{ github.ref_name }}
-          cache-to: type=gha,mode=max,scope=kayak/display:${{ github.ref_name }}
+          cache-from: type=gha,mode=max,scope=kayak/display:${{ inputs.image-tag }}
+          cache-to: type=gha,mode=max,scope=kayak/display:${{ inputs.image-tag }}
 
-      - name: "Build kayak/ffmpeg:${{ github.ref_name }}"
+      - name: "Build kayak/ffmpeg:${{ inputs.image-tag }}"
         uses: docker/build-push-action@v4
         with:
           push: true
           platforms: ${{ env.PLATFORMS }}
-          tags: ghcr.io/${{ github.repository }}/ffmpeg:${{ github.ref_name }}
+          tags: ghcr.io/${{ github.repository }}/ffmpeg:${{ inputs.image-tag }}
           file: ./docker/ffmpeg/Dockerfile
           context: ./docker/ffmpeg
-          cache-from: type=gha,mode=max,scope=kayak/ffmpeg:${{ github.ref_name }}
-          cache-to: type=gha,mode=max,scope=kayak/ffmpeg:${{ github.ref_name }}
+          cache-from: type=gha,mode=max,scope=kayak/ffmpeg:${{ inputs.image-tag }}
+          cache-to: type=gha,mode=max,scope=kayak/ffmpeg:${{ inputs.image-tag }}

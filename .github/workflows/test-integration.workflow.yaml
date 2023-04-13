@@ -7,6 +7,10 @@ on:
         description: "pnpm version"
         required: true
         type: number
+      image-tag:
+        description: "Docker image tag"
+        required: true
+        type: string
 
 jobs:
   test:
@@ -51,10 +55,10 @@ jobs:
 
       - name: "Pull Docker images"
         run: |
-          docker pull ghcr.io/${{ github.repository }}/anvil:${{ github.ref_name }}
-          docker pull ghcr.io/${{ github.repository }}/chromium/${{ github.ref_name }}
-          docker pull ghcr.io/${{ github.repository }}/display:${{ github.ref_name }}
-          docker pull ghcr.io/${{ github.repository }}/ffmpeg:${{ github.ref_name }}
+          docker pull ghcr.io/${{ github.repository }}/anvil:${{ inputs.image-tag }}
+          docker pull ghcr.io/${{ github.repository }}/chromium:${{ inputs.image-tag }}
+          docker pull ghcr.io/${{ github.repository }}/display:${{ inputs.image-tag }}
+          docker pull ghcr.io/${{ github.repository }}/ffmpeg:${{ inputs.image-tag }}
 
 #      - name: "Run tests"
 #        working-directory: ./examples/playwright

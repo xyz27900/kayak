@@ -12,6 +12,8 @@ jobs:
   build-docker:
     name: "🐳 Build Docker images"
     uses: ./.github/workflows/docker.workflow.yaml
+    with:
+      image-tag: ${{ github.ref_name }}
 
   build-npm:
     name: "📦 Build NPM packages"
@@ -58,6 +60,7 @@ jobs:
     uses: ./.github/workflows/test-integration.workflow.yaml
     with:
       pnpm-version: 8
+      image-tag: ${{ github.ref_name }}
     needs:
       - build-docker
       - build-workspace
