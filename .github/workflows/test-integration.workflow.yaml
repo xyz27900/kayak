@@ -47,6 +47,21 @@ jobs:
         run: |
           tar -xzf /tmp/workspace.tar.gz -C . --overwrite
 
+      - name: "Prepare NPM environment variables"
+        run: |
+          echo "NPM_REGISTRY=http://localhost:4873" >> $GITHUB_ENV
+          echo "NPM_AUTH_TOKEN=token" >> $GITHUB_ENV
+
+      - name: "Publish packages to Verdaccio"
+        uses: ./.github/actions/execute-for-paths
+        with:
+          paths: |
+            packages/cli
+            packages/core
+            packages/cypress
+            packages/metamask
+            packages/playwright
+
       - name: "Setup Docker"
         uses: ./.github/actions/setup-docker
         with:

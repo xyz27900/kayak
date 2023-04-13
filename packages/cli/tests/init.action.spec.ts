@@ -73,7 +73,7 @@ describe('Test "init" action', () => {
     await initAction({});
 
     const dirContent = await fs.promises.readdir('/project');
-    expect(dirContent).toEqual(['.env.kayak', '.kayak', 'kayak.config.js', 'package.json']);
+    expect(dirContent).toEqual(['.env.kayak', '.gitignore', '.kayak', 'kayak.config.js', 'package.json']);
 
     const kayakConfig = await fs.promises.readFile('/project/kayak.config.js', { encoding: 'utf-8' });
     const dockerfile = await fs.promises.readFile('/project/.kayak/Dockerfile', { encoding: 'utf-8' });
@@ -101,7 +101,7 @@ describe('Test "init" action', () => {
     await initAction({});
 
     const dirContent = await fs.promises.readdir('/project');
-    expect(dirContent).toEqual(['.env.kayak', '.kayak', 'kayak.config.js', 'package.json']);
+    expect(dirContent).toEqual(['.env.kayak', '.gitignore', '.kayak', 'kayak.config.js', 'package.json']);
 
     const kayakConfig = await fs.promises.readFile('/project/kayak.config.js', { encoding: 'utf-8' });
     const dockerfile = await fs.promises.readFile('/project/.kayak/Dockerfile', { encoding: 'utf-8' });
@@ -131,7 +131,7 @@ describe('Test "init" action', () => {
     await initAction({});
 
     const dirContent = await fs.promises.readdir('/project');
-    expect(dirContent).toEqual(['.env.kayak', '.kayak', 'kayak.config.ts', 'package.json']);
+    expect(dirContent).toEqual(['.env.kayak', '.gitignore', '.kayak', 'kayak.config.ts', 'package.json']);
 
     const kayakConfig = await fs.promises.readFile('/project/kayak.config.ts', { encoding: 'utf-8' });
     const dockerfile = await fs.promises.readFile('/project/.kayak/Dockerfile', { encoding: 'utf-8' });
@@ -159,7 +159,7 @@ describe('Test "init" action', () => {
     await initAction({});
 
     const dirContent = await fs.promises.readdir('/project');
-    expect(dirContent).toEqual(['.env.kayak', '.kayak', 'kayak.config.ts', 'package.json']);
+    expect(dirContent).toEqual(['.env.kayak', '.gitignore', '.kayak', 'kayak.config.ts', 'package.json']);
 
     const kayakConfig = await fs.promises.readFile('/project/kayak.config.ts', { encoding: 'utf-8' });
     const dockerfile = await fs.promises.readFile('/project/.kayak/Dockerfile', { encoding: 'utf-8' });
@@ -188,7 +188,7 @@ describe('Test "init" action', () => {
     prompts.inject(['playwright', 'js']);
     await initAction({});
     const dirContent = await fs.promises.readdir('/project');
-    expect(dirContent).toEqual(['.env.kayak', '.kayak', 'kayak.config.js', 'package.json']);
+    expect(dirContent).toEqual(['.env.kayak', '.gitignore', '.kayak', 'kayak.config.js', 'package.json']);
 
     const kayakConfig = await fs.promises.readFile('/project/kayak.config.js', { encoding: 'utf-8' });
     const dockerfile = await fs.promises.readFile('/project/.kayak/Dockerfile', { encoding: 'utf-8' });
@@ -216,7 +216,7 @@ describe('Test "init" action', () => {
     await initAction({});
 
     const dirContent = await fs.promises.readdir('/project');
-    expect(dirContent).toEqual(['.env.kayak', '.kayak', 'kayak.config.js', 'package.json']);
+    expect(dirContent).toEqual(['.env.kayak', '.gitignore', '.kayak', 'kayak.config.js', 'package.json']);
 
     const kayakConfig = await fs.promises.readFile('/project/kayak.config.js', { encoding: 'utf-8' });
     const dockerfile = await fs.promises.readFile('/project/.kayak/Dockerfile', { encoding: 'utf-8' });
@@ -246,7 +246,7 @@ describe('Test "init" action', () => {
     await initAction({});
 
     const dirContent = await fs.promises.readdir('/project');
-    expect(dirContent).toEqual(['.env.kayak', '.kayak', 'kayak.config.ts', 'package.json']);
+    expect(dirContent).toEqual(['.env.kayak', '.gitignore', '.kayak', 'kayak.config.ts', 'package.json']);
 
     const kayakConfig = await fs.promises.readFile('/project/kayak.config.ts', { encoding: 'utf-8' });
     const dockerfile = await fs.promises.readFile('/project/.kayak/Dockerfile', { encoding: 'utf-8' });
@@ -274,7 +274,7 @@ describe('Test "init" action', () => {
     await initAction({});
 
     const dirContent = await fs.promises.readdir('/project');
-    expect(dirContent).toEqual(['.env.kayak', '.kayak', 'kayak.config.ts', 'package.json']);
+    expect(dirContent).toEqual(['.env.kayak', '.gitignore', '.kayak', 'kayak.config.ts', 'package.json']);
 
     const kayakConfig = await fs.promises.readFile('/project/kayak.config.ts', { encoding: 'utf-8' });
     const dockerfile = await fs.promises.readFile('/project/.kayak/Dockerfile', { encoding: 'utf-8' });
