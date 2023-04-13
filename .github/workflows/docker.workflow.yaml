@@ -166,7 +166,7 @@ jobs:
           push: true
           platforms: ${{ env.PLATFORMS }}
           tags: ghcr.io/${{ github.repository }}/chromium:${{ github.ref_name }}
-          file: ./docker/chromium/Dockerfile.cypress
+          file: ./docker/chromium/Dockerfile
           context: ./docker/chromium
           build-args: |
             CRDETECTOR_IMAGE=localhost:5000/kayak/crdetector:latest
