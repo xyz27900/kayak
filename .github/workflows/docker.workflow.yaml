@@ -1,6 +1,7 @@
 name: "Build Docker images"
 
 permissions:
+  contents: read
   packages: write
 
 env:
