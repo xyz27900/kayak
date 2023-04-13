@@ -46,16 +46,8 @@ chromium: crdetector
 		--load \
 		--build-arg CRDETECTOR_IMAGE=$(CRDETECTOR_IMAGE) \
 		--platform $(PLATFORM) \
-		--tag kayak/chromium:cypress \
-		--file chromium/Dockerfile.cypress chromium
-
-	@docker buildx build \
-		--progress=plain \
-		--load \
-		--build-arg CRDETECTOR_IMAGE=$(CRDETECTOR_IMAGE) \
-		--platform $(PLATFORM) \
-		--tag kayak/chromium:playwright \
-		--file chromium/Dockerfile.playwright chromium
+		--tag kayak/chromium:latest \
+		--file chromium/Dockerfile chromium
 
 .PHONY: crdetector
 crdetector: upx

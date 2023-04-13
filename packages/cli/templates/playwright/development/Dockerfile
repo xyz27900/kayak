@@ -6,7 +6,8 @@ RUN sed -i 's/workspace:\*/\*/g' package.json
 RUN echo "@kayak:registry=http://127.0.0.1:4873" > .npmrc
 RUN npm install
 
-FROM kayak/chromium:playwright
+ARG KAYAK_IMAGE_TAG=latest
+FROM kayak/chromium:${KAYAK_IMAGE_TAG}
 
 WORKDIR /app
 COPY . .

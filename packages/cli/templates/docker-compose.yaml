@@ -2,7 +2,7 @@ version: "3.9"
 
 services:
   display:
-    image: kayak/display
+    image: kayak/display:${KAYAK_IMAGE_TAG}
     container_name: display
     environment:
       DISPLAY: :0.0
@@ -14,7 +14,7 @@ services:
       - kayak-network
 
   ffmpeg:
-    image: kayak/ffmpeg
+    image: kayak/ffmpeg:${KAYAK_IMAGE_TAG}
     container_name: ffmpeg
     depends_on:
       - display
@@ -26,16 +26,16 @@ services:
       VIDEO_FILENAME: output.mp4
       CR_DETECTOR_URL: application:5000
     volumes:
-      - $KAYAK_VIDEOS_DIR:/videos
+      - ${KAYAK_VIDEOS_DIR}:/videos
     networks:
       - kayak-network
 
   anvil:
-    image: kayak/anvil
+    image: kayak/anvil:${KAYAK_IMAGE_TAG}
     container_name: anvil
     environment:
       ANVIL_FORK_URL: https://rpc.ankr.com/eth_goerli
-      SEED_PHRASE: $SEED_PHRASE
+      SEED_PHRASE: ${SEED_PHRASE}
       CHAIN_ID: 1337
     networks:
       - kayak-network
@@ -45,6 +45,8 @@ services:
       context: ..
       dockerfile: ./.kayak/Dockerfile
       network: host
+      args:
+        KAYAK_IMAGE_TAG: ${KAYAK_IMAGE_TAG}
     container_name: kayak-application
     depends_on:
       - display

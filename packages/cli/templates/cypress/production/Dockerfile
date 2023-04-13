@@ -4,7 +4,8 @@ WORKDIR /tmp
 COPY package.json package.json
 RUN npm install
 
-FROM kayak/chromium:cypress
+ARG KAYAK_IMAGE_TAG=latest
+FROM kayak/chromium:${KAYAK_IMAGE_TAG}
 
 WORKDIR /app
 COPY . .

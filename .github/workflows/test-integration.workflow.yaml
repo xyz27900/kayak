@@ -42,19 +42,20 @@ jobs:
         with:
           platforms: arm,arm64,ppc64le,mips64,s390x
 
-      - name: "Download Docker images from storage"
-        uses: actions/download-artifact@v3
+      - name: "Login to GitHub Container Registry"
+        uses: docker/login-action@v2
         with:
-          name: docker-images
-          path: /tmp/docker-images
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: "Decompress Docker images"
+      - name: "Pull Docker images"
         run: |
-          find /tmp/docker-images -name '*.tar.gz' -exec tar -xzf {} -C /tmp/docker-images \;
-
-      - name: "Load Docker images"
-        run: |
-          find /tmp/docker-images -name '*.tar' -exec docker load -i {} \;
+          docker pull ghcr.io/${{ github.repository }}/anvil:${{ github.ref_name }}
+          docker pull ghcr.io/${{ github.repository }}/chromium/${{ github.ref_name }}-cypress
+          docker pull ghcr.io/${{ github.repository }}/chromium/${{ github.ref_name }}-playwright
+          docker pull ghcr.io/${{ github.repository }}/display:${{ github.ref_name }}
+          docker pull ghcr.io/${{ github.repository }}/ffmpeg:${{ github.ref_name }}
 
 #      - name: "Run tests"
 #        working-directory: ./examples/playwright

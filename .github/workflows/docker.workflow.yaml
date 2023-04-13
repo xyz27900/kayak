@@ -160,31 +160,18 @@ jobs:
           cache-from: type=gha,mode=max,scope=kayak/anvil
           cache-to: type=gha,mode=max,scope=kayak/anvil
 
-      - name: "Build kayak/chromium:${{ github.ref_name }}-cypress"
+      - name: "Build kayak/chromium:${{ github.ref_name }}"
         uses: docker/build-push-action@v4
         with:
           push: true
           platforms: ${{ env.PLATFORMS }}
-          tags: ghcr.io/${{ github.repository }}/chromium:${{ github.ref_name }}-cypress
+          tags: ghcr.io/${{ github.repository }}/chromium:${{ github.ref_name }}
           file: ./docker/chromium/Dockerfile.cypress
           context: ./docker/chromium
           build-args: |
             CRDETECTOR_IMAGE=localhost:5000/kayak/crdetector:latest
-          cache-from: type=gha,mode=max,scope=kayak/chromium:cypress
-          cache-to: type=gha,mode=max,scope=kayak/chromium:cypress
-
-      - name: "Build kayak/chromium:${{ github.ref_name }}-playwright"
-        uses: docker/build-push-action@v4
-        with:
-          push: true
-          platforms: ${{ env.PLATFORMS }}
-          tags: ghcr.io/${{ github.repository }}/chromium:${{ github.ref_name }}-playwright
-          file: ./docker/chromium/Dockerfile.playwright
-          context: ./docker/chromium
-          build-args: |
-            CRDETECTOR_IMAGE=localhost:5000/kayak/crdetector:latest
-          cache-from: type=gha,mode=max,scope=kayak/chromium:playwright
-          cache-to: type=gha,mode=max,scope=kayak/chromium:playwright
+          cache-from: type=gha,mode=max,scope=kayak/chromium
+          cache-to: type=gha,mode=max,scope=kayak/chromium
 
       - name: "Build kayak/display:${{ github.ref_name }}"
         uses: docker/build-push-action@v4
