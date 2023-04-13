@@ -17,6 +17,12 @@ jobs:
     name: "Integration testing"
     runs-on: ubuntu-latest
 
+    services:
+      verdaccio:
+        image: verdaccio/verdaccio:5
+        ports:
+          - 4873:4873
+
     strategy:
       matrix:
         node-version: [ 18, 19 ]

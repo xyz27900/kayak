@@ -1,5 +1,5 @@
 {
   "@kayak/cli": "^0.0.1",
   "@kayak/cypress": "^0.0.1",
-  "cypress": "^12.2.0"
+  "cypress": "^12.9.0"
 }

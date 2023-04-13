@@ -1,4 +1,5 @@
 import fs from 'fs';
+import os from 'os';
 import path from 'path';
 import process from 'process';
 import { logger } from '@kayak/core';
@@ -125,16 +126,14 @@ export const initAction = async (options: InitActionOptions): Promise<void> => {
     testRunner
   });
 
-  createDockerSetup({
-    cwd,
-    testRunner
-  });
-
   setupEnvironment({
     cwd,
     seedPhrase,
     password
   });
+
+  createDockerSetup(cwd);
+  updateGitignore(cwd);
 
   const message = `You are almost ready to go!\nNow you need to install dependencies:\n\n  ${logger.format('npm install', 'cyan')}\n\nIf you need to add more services for testing (for example, your backend), just edit the ${logger.format('.kayak/docker-compose.yaml', 'cyan')} file.`;
   process.stdout.write('\n' + message + '\n');
@@ -181,26 +180,7 @@ const updatePackageJson = ({ cwd, testRunner }: UpdatePackageJsonOptions): void 
     ...dependencies
   };
 
-  fs.writeFileSync(packageJsonFilePath, JSON.stringify(packageJson, null, 2));
-};
-
-interface CreateDockerSetupOptions {
-  cwd: string;
-  testRunner: KayakTestRunner;
-}
-
-const createDockerSetup = ({ cwd, testRunner }: CreateDockerSetupOptions): void => {
-  const dockerSetupDir = path.resolve(cwd, '.kayak');
-
-  const dockerfilePath = templates.getDockerfile(testRunner);
-  const dockerComposeFilePath = templates.dockerComposeFile;
-
-  if (!fs.existsSync(dockerSetupDir)) {
-    fs.mkdirSync(dockerSetupDir);
-  }
-
-  fs.copyFileSync(dockerfilePath, path.resolve(dockerSetupDir, 'Dockerfile'));
-  fs.copyFileSync(dockerComposeFilePath, path.resolve(dockerSetupDir, 'docker-compose.yaml'));
+  fs.writeFileSync(packageJsonFilePath, JSON.stringify(packageJson, null, 2) + os.EOL);
 };
 
 interface SetupEnvironmentOptions {
@@ -215,7 +195,36 @@ const setupEnvironment = ({ cwd, seedPhrase, password }: SetupEnvironmentOptions
   const envFileContent = [
     `SEED_PHRASE="${seedPhrase}"`,
     `PASSWORD="${password}"`
-  ].join('\n');
+  ].join(os.EOL);
 
-  fs.writeFileSync(absoluteEnvFilePath, envFileContent + '\n');
+  fs.writeFileSync(absoluteEnvFilePath, envFileContent + os.EOL);
+};
+
+const createDockerSetup = (cwd: string): void => {
+  const dockerSetupDir = path.resolve(cwd, '.kayak');
+
+  const dockerfilePath = templates.getDockerfile();
+  const dockerComposeFilePath = templates.dockerComposeFile;
+
+  if (!fs.existsSync(dockerSetupDir)) {
+    fs.mkdirSync(dockerSetupDir);
+  }
+
+  fs.copyFileSync(dockerfilePath, path.resolve(dockerSetupDir, 'Dockerfile'));
+  fs.copyFileSync(dockerComposeFilePath, path.resolve(dockerSetupDir, 'docker-compose.yaml'));
+};
+
+const updateGitignore = (cwd: string): void => {
+  const absoluteGitignorePath = path.resolve(cwd, '.gitignore');
+
+  const gitignoreContent = fs.existsSync(absoluteGitignorePath)
+    ? fs.readFileSync(absoluteGitignorePath, { encoding: 'utf-8' })
+    : '';
+
+  const shouldUpdateGitignore = !gitignoreContent.includes('*.kayak');
+  if (!shouldUpdateGitignore) {
+    return;
+  }
+
+  fs.appendFileSync(absoluteGitignorePath, '*.kayak' + os.EOL, { encoding: 'utf-8' });
 };

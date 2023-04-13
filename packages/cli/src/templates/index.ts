@@ -27,14 +27,14 @@ export class Templates {
     return path.resolve(this.templatesDir, testRunner);
   }
 
-  public getDockerfile(testRunner: KayakTestRunner): string {
-    const templateSubdir = this.isDebug ? 'development' : 'production';
-    return path.resolve(this.getByTestRunner(testRunner), templateSubdir, 'Dockerfile');
+  public getDockerfile(): string {
+    const templatePostfix = this.isDebug ? 'dev' : 'prod';
+    return path.resolve(this.templatesDir, `Dockerfile.${templatePostfix}`);
   }
 
   public getDependencies(testRunner: KayakTestRunner): string {
-    const templateSubdir = this.isDebug ? 'development' : 'production';
-    return path.resolve(this.getByTestRunner(testRunner), templateSubdir, 'dependencies.json');
+    const templatePostfix = this.isDebug ? 'dev' : 'prod';
+    return path.resolve(this.getByTestRunner(testRunner), `dependencies.${templatePostfix}.json`);
   }
 
   public getConfigFile(testRunner: KayakTestRunner, language: KayakLanguage): string {

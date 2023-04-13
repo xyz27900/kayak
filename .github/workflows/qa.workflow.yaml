@@ -42,6 +42,10 @@ jobs:
         packages/cypress
         packages/metamask
         packages/playwright
+        examples/cypress
+        examples/cypress-plugin
+        examples/playwright
+        examples/playwright-plugin
     needs:
       - build-workspace
 

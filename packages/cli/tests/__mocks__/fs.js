@@ -34,32 +34,22 @@ const filesystem = {
   [path.resolve(__dirname, '../..')]: {
     templates: {
       cypress: {
-        development: {
-          'dependencies.json': JSON.stringify(cypressDevDependencies, null, 2),
-          Dockerfile: 'Dockerfile Cypress Development'
-        },
-        production: {
-          'dependencies.json': JSON.stringify(cypressProdDependencies, null, 2),
-          Dockerfile: 'Dockerfile Cypress Production'
-        },
+        'dependencies.dev.json': JSON.stringify(cypressDevDependencies, null, 2),
+        'dependencies.prod.json': JSON.stringify(cypressProdDependencies, null, 2),
         'kayak.config.ts': 'Kayak Config Cypress TS',
         'kayak.config.js': 'Kayak Config Cypress JS',
         'tsconfig.json': 'TS Config Cypress JSON'
       },
       playwright: {
-        development: {
-          'dependencies.json': JSON.stringify(playwrightDevDependencies, null, 2),
-          Dockerfile: 'Dockerfile Playwright Development'
-        },
-        production: {
-          'dependencies.json': JSON.stringify(playwrightProdDependencies, null, 2),
-          Dockerfile: 'Dockerfile Playwright Production'
-        },
+        'dependencies.dev.json': JSON.stringify(playwrightDevDependencies, null, 2),
+        'dependencies.prod.json': JSON.stringify(playwrightProdDependencies, null, 2),
         'kayak.config.ts': 'Kayak Config Playwright TS',
         'kayak.config.js': 'Kayak Config Playwright JS',
         'tsconfig.json': 'TS Config Playwright JSON'
       },
-      'docker-compose.yaml': 'Docker Compose'
+      'docker-compose.yaml': 'Docker Compose',
+      'Dockerfile.dev': 'Dockerfile Development',
+      'Dockerfile.prod': 'Dockerfile Production'
     },
     'package.json': JSON.stringify(packageJson, null, 2)
   }

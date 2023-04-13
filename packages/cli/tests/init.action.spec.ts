@@ -81,7 +81,7 @@ describe('Test "init" action', () => {
     const packageJson = JSON.parse(await fs.promises.readFile('/project/package.json', { encoding: 'utf-8' }));
 
     expect(kayakConfig).toEqual('Kayak Config Cypress JS');
-    expect(dockerfile).toEqual('Dockerfile Cypress Development');
+    expect(dockerfile).toEqual('Dockerfile Development');
     expect(dockerComposeFile).toEqual('Docker Compose');
     expect(packageJson).toEqual(
       expect.objectContaining({
@@ -109,7 +109,7 @@ describe('Test "init" action', () => {
     const packageJson = JSON.parse(await fs.promises.readFile('/project/package.json', { encoding: 'utf-8' }));
 
     expect(kayakConfig).toEqual('Kayak Config Cypress JS');
-    expect(dockerfile).toEqual('Dockerfile Cypress Production');
+    expect(dockerfile).toEqual('Dockerfile Production');
     expect(dockerComposeFile).toEqual('Docker Compose');
     expect(packageJson).toEqual(
       expect.objectContaining({
@@ -139,7 +139,7 @@ describe('Test "init" action', () => {
     const packageJson = JSON.parse(await fs.promises.readFile('/project/package.json', { encoding: 'utf-8' }));
 
     expect(kayakConfig).toEqual('Kayak Config Cypress TS');
-    expect(dockerfile).toEqual('Dockerfile Cypress Development');
+    expect(dockerfile).toEqual('Dockerfile Development');
     expect(dockerComposeFile).toEqual('Docker Compose');
     expect(packageJson).toEqual(
       expect.objectContaining({
@@ -167,7 +167,7 @@ describe('Test "init" action', () => {
     const packageJson = JSON.parse(await fs.promises.readFile('/project/package.json', { encoding: 'utf-8' }));
 
     expect(kayakConfig).toEqual('Kayak Config Cypress TS');
-    expect(dockerfile).toEqual('Dockerfile Cypress Production');
+    expect(dockerfile).toEqual('Dockerfile Production');
     expect(dockerComposeFile).toEqual('Docker Compose');
     expect(packageJson).toEqual(
       expect.objectContaining({
@@ -196,7 +196,7 @@ describe('Test "init" action', () => {
     const packageJson = JSON.parse(await fs.promises.readFile('/project/package.json', { encoding: 'utf-8' }));
 
     expect(kayakConfig).toEqual('Kayak Config Playwright JS');
-    expect(dockerfile).toEqual('Dockerfile Playwright Development');
+    expect(dockerfile).toEqual('Dockerfile Development');
     expect(dockerComposeFile).toEqual('Docker Compose');
     expect(packageJson).toEqual(
       expect.objectContaining({
@@ -224,7 +224,7 @@ describe('Test "init" action', () => {
     const packageJson = JSON.parse(await fs.promises.readFile('/project/package.json', { encoding: 'utf-8' }));
 
     expect(kayakConfig).toEqual('Kayak Config Playwright JS');
-    expect(dockerfile).toEqual('Dockerfile Playwright Production');
+    expect(dockerfile).toEqual('Dockerfile Production');
     expect(dockerComposeFile).toEqual('Docker Compose');
     expect(packageJson).toEqual(
       expect.objectContaining({
@@ -254,7 +254,7 @@ describe('Test "init" action', () => {
     const packageJson = JSON.parse(await fs.promises.readFile('/project/package.json', { encoding: 'utf-8' }));
 
     expect(kayakConfig).toEqual('Kayak Config Playwright TS');
-    expect(dockerfile).toEqual('Dockerfile Playwright Development');
+    expect(dockerfile).toEqual('Dockerfile Development');
     expect(dockerComposeFile).toEqual('Docker Compose');
     expect(packageJson).toEqual(
       expect.objectContaining({
@@ -282,7 +282,7 @@ describe('Test "init" action', () => {
     const packageJson = JSON.parse(await fs.promises.readFile('/project/package.json', { encoding: 'utf-8' }));
 
     expect(kayakConfig).toEqual('Kayak Config Playwright TS');
-    expect(dockerfile).toEqual('Dockerfile Playwright Production');
+    expect(dockerfile).toEqual('Dockerfile Production');
     expect(dockerComposeFile).toEqual('Docker Compose');
     expect(packageJson).toEqual(
       expect.objectContaining({
