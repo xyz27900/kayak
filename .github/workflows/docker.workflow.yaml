@@ -1,5 +1,8 @@
 name: "Build Docker images"
 
+permissions:
+  packages: write
+
 env:
   NODE_VERSION: 18
   PNPM_VERSION: 8
@@ -139,10 +142,10 @@ jobs:
           cache-to: type=gha,mode=max,scope=kayak/tigervnc
 
       - name: "Login to GitHub Container Registry"
-        uses: docker/login-action@v1
+        uses: docker/login-action@v2
         with:
           registry: ghcr.io
-          username: ${{ github.repository_owner }}
+          username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: "Build kayak/anvil:latest"
@@ -150,7 +153,7 @@ jobs:
         with:
           push: true
           platforms: ${{ env.PLATFORMS }}
-          tags: ghcr.io/${{ github.repository_owner }}/kayak/anvil:${{ github.ref_name }}
+          tags: ghcr.io/${{ github.repository }}/anvil:${{ github.ref_name }}
           file: ./docker/anvil/Dockerfile
           context: ./docker/anvil
           cache-from: type=gha,mode=max,scope=kayak/anvil
@@ -161,7 +164,7 @@ jobs:
         with:
           push: true
           platforms: ${{ env.PLATFORMS }}
-          tags: ghcr.io/${{ github.repository_owner }}/kayak/chromium:${{ github.ref_name }}-cypress
+          tags: ghcr.io/${{ github.repository }}/chromium:${{ github.ref_name }}-cypress
           file: ./docker/chromium/Dockerfile.cypress
           context: ./docker/chromium
           build-args: |
@@ -174,7 +177,7 @@ jobs:
         with:
           push: true
           platforms: ${{ env.PLATFORMS }}
-          tags: ghcr.io/${{ github.repository_owner }}/kayak/chromium:${{ github.ref_name }}-playwright
+          tags: ghcr.io/${{ github.repository }}/chromium:${{ github.ref_name }}-playwright
           file: ./docker/chromium/Dockerfile.playwright
           context: ./docker/chromium
           build-args: |
@@ -187,7 +190,7 @@ jobs:
         with:
           push: true
           platforms: ${{ env.PLATFORMS }}
-          tags: ghcr.io/${{ github.repository_owner }}/kayak/display:${{ github.ref_name }}
+          tags: ghcr.io/${{ github.repository }}/display:${{ github.ref_name }}
           file: ./docker/display/Dockerfile
           context: ./docker/display
           build-args: |
@@ -207,7 +210,7 @@ jobs:
         with:
           push: true
           platforms: ${{ env.PLATFORMS }}
-          tags: ghcr.io/${{ github.repository_owner }}/kayak/ffmpeg:${{ github.ref_name }}
+          tags: ghcr.io/${{ github.repository }}/ffmpeg:${{ github.ref_name }}
           file: ./docker/ffmpeg/Dockerfile
           context: ./docker/ffmpeg
           cache-from: type=gha,mode=max,scope=kayak/ffmpeg
