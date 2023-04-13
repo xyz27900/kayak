@@ -1,28 +1,8 @@
-ifneq (,$(wildcard ./.env))
-    include .env
-    export
-endif
-
-ifneq (,$(wildcard ../.env))
-    include ../.env
-    export
-endif
-
+NPM_REGISTRY      = http://127.0.0.1:4873
 ALL_PACKAGES      = $(shell find . -maxdepth 1 -type d | sed 's/^\.\///' | grep -v '^\.$$' | grep -v '^\..*')
 PACKAGES_TO_LINT  = cli core cypress metamask playwright
 PACKAGES_TO_TEST  = cli
 PACKAGES_TO_BUILD = core metamask cypress playwright cli
-
-.PHONY: npmrc
-npmrc:
-	@if [ -z "$(NPM_REGISTRY)" ]; then echo "NPM_REGISTRY is not set"; exit 1; fi
-	@if [ -z "$(NPM_AUTH_TOKEN)" ]; then echo "NPM_AUTH_TOKEN is not set"; exit 1; fi
-	@set -e; \
-	for pkg in $(ALL_PACKAGES); do \
-		echo "[NPMRC] $$pkg"; \
-		cd $$pkg && echo "$(NPM_REGISTRY)/:_authToken=$(NPM_AUTH_TOKEN)" > .npmrc
-		cd ..; \
-	done
 
 .PHONY: lint
 lint:

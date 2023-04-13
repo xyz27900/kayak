@@ -47,23 +47,36 @@ jobs:
         run: |
           tar -xzf /tmp/workspace.tar.gz -C . --overwrite
 
-      - name: "Prepare NPM environment variables"
+      - name: "Create NPM user"
         run: |
-          pnpm adduser --registry http://localhost:4873
+          expect <<EOF
+          set timeout 5
+          spawn pnpm adduser --registry http://localhost:4873
+          expect "Username:"
+          send "test\r"
+          expect "Password:"
+          send "test\r"
+          expect "Email:"
+          send "test@example.com\r"
+          expect eof
+          EOF
+
+      - name: "Get NPM auth token"
+        id: get-npm-token
+        run: |
           cat ~/.npmrc
 
-      - name: "Publish packages to Verdaccio"
-        uses: ./.github/actions/execute-for-paths
-        with:
-          paths: |
-            packages/cli
-            packages/core
-            packages/cypress
-            packages/metamask
-            packages/playwright
-          run: |
-            echo "http://localhost:4873/:_authToken=token" > ~/.npmrc
-            pnpm publish --registry http://localhost:4873
+#      - name: "Publish packages to Verdaccio"
+#        uses: ./.github/actions/execute-for-paths
+#        with:
+#          paths: |
+#            packages/cli
+#            packages/core
+#            packages/cypress
+#            packages/metamask
+#            packages/playwright
+#          run: |
+#            echo "@kayak:registry=http://localhost:4873" >> .npmrc
 
       - name: "Setup Docker"
         uses: ./.github/actions/setup-docker
