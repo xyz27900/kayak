@@ -110,19 +110,14 @@ jobs:
       - name: "Initialise Kayak"
         working-directory: ./examples/playwright
         run: |
-          expect <<EOF
-          set timeout 5
-          spawn npx kayak init --playwright --typescript
-          expect "*"
-          send "\r"
-          expect "*"
-          send "\r"
-          expect eof
-          EOF
+          npx kayak init --playwright --typescript
         env:
           KAYAK_DEBUG: true
+          SEED_PHRASE: "test test test test test test test test test test test junk"
+          PASSWORD: "test-test"
 
       - name: "Run tests"
         working-directory: ./examples/playwright
         run: |
+          ls -la
           pnpm test

@@ -52,6 +52,37 @@ describe('Test "init" action', () => {
     await expect(result).rejects.toThrow('Unable to find package.json');
   });
 
+  it('Should throw an error if process.env.CI is true, but runner is not specified', async () => {
+    process.env.CI = 'true';
+    const result = initAction({});
+    await expect(result).rejects.toThrow('Test runner must be specified in CI');
+  });
+
+  it('Should throw an error if process.env.CI is true, but language is not specified', async () => {
+    process.env.CI = 'true';
+    const result = initAction({ cypress: true });
+    await expect(result).rejects.toThrow('Language must be specified in CI');
+  });
+
+  it('Should throw an error if process.env.CI is true, but process.env.SEED_PHRASE is not specified', async () => {
+    process.env.CI = 'true';
+    const result = initAction({
+      cypress: true,
+      typescript: true
+    });
+    await expect(result).rejects.toThrow('Seed phrase must be specified in CI');
+  });
+
+  it('Should throw an error if process.env.CI is true, but process.env.PASSWORD is not specified', async () => {
+    process.env.CI = 'true';
+    process.env.SEED_PHRASE = 'seed phrase';
+    const result = initAction({
+      cypress: true,
+      typescript: true
+    });
+    await expect(result).rejects.toThrow('Password must be specified in CI');
+  });
+
   it('Should create a new Cypress project if "cypress" is passed as a parameter', async () => {
     prompts.inject(['typescript']);
     await initAction({ cypress: true });

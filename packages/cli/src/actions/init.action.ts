@@ -16,6 +16,7 @@ interface InitActionOptions {
 
 export const initAction = async (options: InitActionOptions): Promise<void> => {
   const cwd = process.cwd();
+  const isCI = !!process.env.CI;
 
   if (options.cypress && options.playwright) {
     throw new Error('Options --cypress and --playwright cannot be used together');
@@ -27,6 +28,22 @@ export const initAction = async (options: InitActionOptions): Promise<void> => {
 
   const isRunnerSpecified = options.cypress || options.playwright;
   const isLanguageSpecified = options.javascript || options.typescript;
+
+  if (isCI && !isRunnerSpecified) {
+    throw new Error('Test runner must be specified in CI');
+  }
+
+  if (isCI && !isLanguageSpecified) {
+    throw new Error('Language must be specified in CI');
+  }
+
+  if (isCI && !process.env.SEED_PHRASE) {
+    throw new Error('Seed phrase must be specified in CI');
+  }
+
+  if (isCI && !process.env.PASSWORD) {
+    throw new Error('Password must be specified in CI');
+  }
 
   const testRunnerQuestion: PromptObject<'testRunner'> = {
     type: 'select',
@@ -101,16 +118,26 @@ export const initAction = async (options: InitActionOptions): Promise<void> => {
     ...commonQuestions
   ];
 
-  const result: Answers<'testRunner' | 'language' | 'seedPhrase' | 'password'> = await prompts(
-    questions,
-    {
-      onCancel: () => {
-        throw new Error('Operation cancelled');
-      }
-    }
-  );
+  let result: Partial<Answers<'testRunner' | 'language' | 'seedPhrase' | 'password'>> = {};
+  let seedPhrase: string;
+  let password: string;
 
-  const { seedPhrase, password } = result;
+  if (!isCI) {
+    result = await prompts(
+      questions,
+      {
+        onCancel: () => {
+          throw new Error('Operation cancelled');
+        }
+      }
+    );
+
+    seedPhrase = result.seedPhrase as string;
+    password = result.password as string;
+  } else {
+    seedPhrase = process.env.SEED_PHRASE as string;
+    password = process.env.PASSWORD as string;
+  }
 
   const testRunner = isRunnerSpecified
     ? Object.keys(options).find((key) => kayakTestRunners.includes(key as KayakTestRunner)) as KayakTestRunner
