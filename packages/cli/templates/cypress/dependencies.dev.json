@@ -1,5 +1,0 @@
-{
-  "@kayak/cli": "*",
-  "@kayak/cypress": "*",
-  "cypress": "*"
-}

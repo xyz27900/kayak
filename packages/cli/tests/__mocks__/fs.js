@@ -7,22 +7,12 @@ const packageJson = {
   devDependencies: {}
 };
 
-const cypressDevDependencies = {
-  'cypress-dependency-1': '*',
-  'cypress-dependency-2': '*'
-};
-
-const cypressProdDependencies = {
+const cypressDependencies = {
   'cypress-dependency-1': '1.0.0',
   'cypress-dependency-2': '1.0.0'
 };
 
-const playwrightDevDependencies = {
-  'playwright-dependency-1': '*',
-  'playwright-dependency-2': '*'
-};
-
-const playwrightProdDependencies = {
+const playwrightDependencies = {
   'playwright-dependency-1': '1.0.0',
   'playwright-dependency-2': '1.0.0'
 };
@@ -34,15 +24,13 @@ const filesystem = {
   [path.resolve(__dirname, '../..')]: {
     templates: {
       cypress: {
-        'dependencies.dev.json': JSON.stringify(cypressDevDependencies, null, 2),
-        'dependencies.prod.json': JSON.stringify(cypressProdDependencies, null, 2),
+        'dependencies.json': JSON.stringify(cypressDependencies, null, 2),
         'kayak.config.ts': 'Kayak Config Cypress TS',
         'kayak.config.js': 'Kayak Config Cypress JS',
         'tsconfig.json': 'TS Config Cypress JSON'
       },
       playwright: {
-        'dependencies.dev.json': JSON.stringify(playwrightDevDependencies, null, 2),
-        'dependencies.prod.json': JSON.stringify(playwrightProdDependencies, null, 2),
+        'dependencies.json': JSON.stringify(playwrightDependencies, null, 2),
         'kayak.config.ts': 'Kayak Config Playwright TS',
         'kayak.config.js': 'Kayak Config Playwright JS',
         'tsconfig.json': 'TS Config Playwright JSON'

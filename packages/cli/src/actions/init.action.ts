@@ -135,11 +135,6 @@ export const initAction = async (options: InitActionOptions): Promise<void> => {
     language
   });
 
-  updatePackageJson({
-    cwd,
-    testRunner
-  });
-
   setupEnvironment({
     cwd,
     seedPhrase,
@@ -147,8 +142,14 @@ export const initAction = async (options: InitActionOptions): Promise<void> => {
   });
 
   updateGitignore(cwd);
-
   createDockerSetup(cwd);
+
+  if (!templates.isDebug) {
+    updatePackageJson({
+      cwd,
+      testRunner
+    });
+  }
 
   const message = `You are almost ready to go!\nNow you need to install dependencies:\n\n  ${logger.format('npm install', 'cyan')}\n\nIf you need to add more services for testing (for example, your backend), just edit the ${logger.format('.kayak/docker-compose.yaml', 'cyan')} file.`;
   process.stdout.write('\n' + message + '\n');
@@ -164,38 +165,6 @@ const createConfigFile = ({ cwd, testRunner, language }: CreateConfigFileOptions
   const configFilePath = templates.getConfigFile(testRunner, language);
   const configFileName = path.basename(configFilePath);
   fs.copyFileSync(configFilePath, path.resolve(cwd, configFileName));
-};
-
-interface UpdatePackageJsonOptions {
-  cwd: string;
-  testRunner: KayakTestRunner;
-}
-
-const updatePackageJson = ({ cwd, testRunner }: UpdatePackageJsonOptions): void => {
-  const dependenciesFilePath = templates.getDependencies(testRunner);
-  const packageJsonFilePath = path.resolve(cwd, 'package.json');
-
-  if (!fs.existsSync(packageJsonFilePath)) {
-    throw new Error('Unable to find package.json');
-  }
-
-  const dependenciesFileContent = fs.readFileSync(dependenciesFilePath, { encoding: 'utf-8' });
-  const packageJsonFileContent = fs.readFileSync(packageJsonFilePath, { encoding: 'utf-8' });
-
-  const dependencies = JSON.parse(dependenciesFileContent);
-  const packageJson = JSON.parse(packageJsonFileContent);
-
-  packageJson.scripts = {
-    ...packageJson.scripts,
-    kayak: `kayak test --${testRunner}`
-  };
-
-  packageJson.devDependencies = {
-    ...packageJson.devDependencies,
-    ...dependencies
-  };
-
-  fs.writeFileSync(packageJsonFilePath, JSON.stringify(packageJson, null, 2) + os.EOL);
 };
 
 interface SetupEnvironmentOptions {
@@ -242,4 +211,36 @@ const createDockerSetup = (cwd: string): void => {
 
   fs.copyFileSync(dockerfilePath, path.resolve(dockerSetupDir, 'Dockerfile'));
   fs.copyFileSync(dockerComposeFilePath, path.resolve(dockerSetupDir, 'docker-compose.yaml'));
+};
+
+interface UpdatePackageJsonOptions {
+  cwd: string;
+  testRunner: KayakTestRunner;
+}
+
+const updatePackageJson = ({ cwd, testRunner }: UpdatePackageJsonOptions): void => {
+  const dependenciesFilePath = templates.getDependencies(testRunner);
+  const packageJsonFilePath = path.resolve(cwd, 'package.json');
+
+  if (!fs.existsSync(packageJsonFilePath)) {
+    throw new Error('Unable to find package.json');
+  }
+
+  const dependenciesFileContent = fs.readFileSync(dependenciesFilePath, { encoding: 'utf-8' });
+  const packageJsonFileContent = fs.readFileSync(packageJsonFilePath, { encoding: 'utf-8' });
+
+  const dependencies = JSON.parse(dependenciesFileContent);
+  const packageJson = JSON.parse(packageJsonFileContent);
+
+  packageJson.scripts = {
+    ...packageJson.scripts,
+    kayak: `kayak test --${testRunner}`
+  };
+
+  packageJson.devDependencies = {
+    ...packageJson.devDependencies,
+    ...dependencies
+  };
+
+  fs.writeFileSync(packageJsonFilePath, JSON.stringify(packageJson, null, 2) + os.EOL);
 };

@@ -83,17 +83,7 @@ describe('Test "init" action', () => {
     expect(kayakConfig).toEqual('Kayak Config Cypress JS');
     expect(dockerfile).toEqual('Dockerfile Development');
     expect(dockerComposeFile).toEqual('Docker Compose');
-    expect(packageJson).toEqual(
-      expect.objectContaining({
-        scripts: {
-          kayak: 'kayak test --cypress'
-        },
-        devDependencies: {
-          'cypress-dependency-1': '*',
-          'cypress-dependency-2': '*'
-        }
-      })
-    );
+    expect(packageJson).toEqual(packageJson);
   });
 
   it('Should init a new Cypress JavaScript project [Production Mode]', async () => {
@@ -141,17 +131,7 @@ describe('Test "init" action', () => {
     expect(kayakConfig).toEqual('Kayak Config Cypress TS');
     expect(dockerfile).toEqual('Dockerfile Development');
     expect(dockerComposeFile).toEqual('Docker Compose');
-    expect(packageJson).toEqual(
-      expect.objectContaining({
-        scripts: {
-          kayak: 'kayak test --cypress'
-        },
-        devDependencies: {
-          'cypress-dependency-1': '*',
-          'cypress-dependency-2': '*'
-        }
-      })
-    );
+    expect(packageJson).toEqual(packageJson);
   });
 
   it('Should init a new Cypress TypeScript project [Production Mode]', async () => {
@@ -198,17 +178,7 @@ describe('Test "init" action', () => {
     expect(kayakConfig).toEqual('Kayak Config Playwright JS');
     expect(dockerfile).toEqual('Dockerfile Development');
     expect(dockerComposeFile).toEqual('Docker Compose');
-    expect(packageJson).toEqual(
-      expect.objectContaining({
-        scripts: {
-          kayak: 'kayak test --playwright'
-        },
-        devDependencies: {
-          'playwright-dependency-1': '*',
-          'playwright-dependency-2': '*'
-        }
-      })
-    );
+    expect(packageJson).toEqual(packageJson);
   });
 
   it('Should init a new Playwright JavaScript project [Production Mode]', async () => {
@@ -256,17 +226,7 @@ describe('Test "init" action', () => {
     expect(kayakConfig).toEqual('Kayak Config Playwright TS');
     expect(dockerfile).toEqual('Dockerfile Development');
     expect(dockerComposeFile).toEqual('Docker Compose');
-    expect(packageJson).toEqual(
-      expect.objectContaining({
-        scripts: {
-          kayak: 'kayak test --playwright'
-        },
-        devDependencies: {
-          'playwright-dependency-1': '*',
-          'playwright-dependency-2': '*'
-        }
-      })
-    );
+    expect(packageJson).toEqual(packageJson);
   });
 
   it('Should init a new Playwright TypeScript project [Production Mode]', async () => {

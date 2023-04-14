@@ -15,7 +15,7 @@ export class Templates {
     }
   }
 
-  private get isDebug(): boolean {
+  public get isDebug(): boolean {
     return process.env.KAYAK_DEBUG === 'true' || process.env.KAYAK_DEBUG === '1';
   }
 
@@ -33,8 +33,7 @@ export class Templates {
   }
 
   public getDependencies(testRunner: KayakTestRunner): string {
-    const templatePostfix = this.isDebug ? 'dev' : 'prod';
-    return path.resolve(this.getByTestRunner(testRunner), `dependencies.${templatePostfix}.json`);
+    return path.resolve(this.getByTestRunner(testRunner), 'dependencies.json');
   }
 
   public getConfigFile(testRunner: KayakTestRunner, language: KayakLanguage): string {
