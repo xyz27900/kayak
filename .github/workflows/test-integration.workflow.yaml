@@ -47,9 +47,12 @@ jobs:
         run: |
           tar -xzf /tmp/workspace.tar.gz -C . --overwrite
 
-      - name: "Create NPM user"
+      - name: "Install expect"
         run: |
           sudo apt install -y expect
+
+      - name: "Create NPM user"
+        run: |
           expect <<EOF
           set timeout 5
           spawn pnpm adduser --registry http://localhost:4873
@@ -62,22 +65,29 @@ jobs:
           expect eof
           EOF
 
-      - name: "Get NPM auth token"
-        id: get-npm-token
+      - name: "Login to Verdaccio"
         run: |
-          cat ~/.npmrc
+          expect <<EOF
+          set timeout 5
+          spawn pnpm login --registry http://localhost:4873
+          expect "Username:"
+          send "test\r"
+          expect "Password:"
+          send "test\r"
+          expect eof
+          EOF
 
-#      - name: "Publish packages to Verdaccio"
-#        uses: ./.github/actions/execute-for-paths
-#        with:
-#          paths: |
-#            packages/cli
-#            packages/core
-#            packages/cypress
-#            packages/metamask
-#            packages/playwright
-#          run: |
-#            echo "@kayak:registry=http://localhost:4873" >> .npmrc
+      - name: "Publish packages to Verdaccio"
+        uses: ./.github/actions/execute-for-paths
+        with:
+          paths: |
+            packages/cli
+            packages/core
+            packages/cypress
+            packages/metamask
+            packages/playwright
+          run: |
+            pnpm publish --registry http://localhost:4873
 
       - name: "Setup Docker"
         uses: ./.github/actions/setup-docker
