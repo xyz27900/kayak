@@ -44,7 +44,7 @@ services:
     build:
       context: ..
       dockerfile: ./.kayak/Dockerfile
-      network: host
+      network: verdaccio
       args:
         KAYAK_IMAGE_TAG: ${KAYAK_IMAGE_TAG}
     container_name: kayak-application
