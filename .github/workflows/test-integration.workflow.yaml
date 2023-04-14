@@ -104,3 +104,5 @@ jobs:
         working-directory: ./examples/playwright
         run: |
           npx kayak init --playwright --typescript
+        env: |
+          KAYAK_DEBUG=true
