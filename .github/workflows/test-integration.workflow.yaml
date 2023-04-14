@@ -110,10 +110,11 @@ jobs:
       - name: "Initialise Kayak"
         working-directory: ./examples/playwright
         run: |
-          npx kayak init --playwright --typescript
           ls -la
           echo "----"
           ls -la ../../packages/playwright
+          echo "----"
+          npx kayak init --playwright --typescript
         env:
           KAYAK_DEBUG: true
           SEED_PHRASE: "test test test test test test test test test test test junk"
