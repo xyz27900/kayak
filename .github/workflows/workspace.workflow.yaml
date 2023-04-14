@@ -59,9 +59,6 @@ jobs:
                 fi
               done < <(find "/tmp/npm-packages/$package_name" -maxdepth 1 -name "$escaped_path" -print0)
             done
-          
-            echo "---"
-            ls -la "$package_dir"
 
             rm -rf "/tmp/npm-packages/$package_name"
           done < <(find packages -type f -name 'package.json' -not -path '*/node_modules/*' -not -path '/*cache/*')
