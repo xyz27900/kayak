@@ -55,7 +55,7 @@ jobs:
         run: |
           expect <<EOF
           set timeout 5
-          spawn pnpm adduser --registry http://verdaccio:4873
+          spawn pnpm adduser --registry http://localhost:4873
           expect "Username:"
           send "$NPM_USERNAME\r"
           expect "Password:"
@@ -79,7 +79,7 @@ jobs:
             packages/metamask
             packages/playwright
           run: |
-            pnpm publish --registry http://verdaccio:4873
+            pnpm publish --registry http://localhost:4873
 
       - name: "Setup Docker"
         uses: ./.github/actions/setup-docker
