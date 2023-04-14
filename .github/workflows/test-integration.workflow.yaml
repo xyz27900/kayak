@@ -123,3 +123,4 @@ jobs:
           pnpm test
         env:
           KAYAK_DEBUG: true
+          KAYAK_IMAGE_TAG: ${{ inputs.image-tag }}
