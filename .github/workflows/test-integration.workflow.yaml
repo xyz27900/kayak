@@ -69,6 +69,10 @@ jobs:
           NPM_PASSWORD: test
           NPM_EMAIL: test@example.com
 
+      - name: "List docker networks"
+        run: |
+          docker network ls
+
       - name: "Publish packages to Verdaccio"
         uses: ./.github/actions/execute-for-paths
         with:
