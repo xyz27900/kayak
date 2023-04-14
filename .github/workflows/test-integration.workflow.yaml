@@ -103,6 +103,7 @@ jobs:
       - name: "Run tests"
         working-directory: ./examples/playwright
         run: |
+          ls -la node_modules/.bin
           npx kayak init --playwright --typescript
         env:
           KAYAK_DEBUG: true
