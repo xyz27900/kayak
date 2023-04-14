@@ -60,7 +60,7 @@ jobs:
       - build-workspace
 
   test-integration:
-    name: "🧪 Integration testing"
+    name: "💉 Integration testing"
     uses: ./.github/workflows/test-integration.workflow.yaml
     with:
       pnpm-version: 8

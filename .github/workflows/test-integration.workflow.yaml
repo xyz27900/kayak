@@ -100,8 +100,7 @@ jobs:
           docker pull ghcr.io/${{ github.repository }}/display:${{ inputs.image-tag }}
           docker pull ghcr.io/${{ github.repository }}/ffmpeg:${{ inputs.image-tag }}
 
-#      - name: "Run tests"
-#        working-directory: ./examples/playwright
-#        run: |
-#          mv .env.kayak .env
-#          pnpm test
+      - name: "Run tests"
+        working-directory: ./examples/playwright
+        run: |
+          npx kayak init --playwright --typescript

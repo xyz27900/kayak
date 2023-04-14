@@ -47,20 +47,20 @@ describe('Test "init" action', () => {
 
   it('Should throw an error if package.json does not exist', async () => {
     await fs.promises.unlink('/project/package.json');
-    prompts.inject(['cypress', 'ts']);
+    prompts.inject(['cypress', 'typescript']);
     const result = initAction({});
     await expect(result).rejects.toThrow('Unable to find package.json');
   });
 
   it('Should create a new Cypress project if "cypress" is passed as a parameter', async () => {
-    prompts.inject(['ts']);
+    prompts.inject(['typescript']);
     await initAction({ cypress: true });
     const kayakConfig = await fs.promises.readFile('/project/kayak.config.ts', { encoding: 'utf-8' });
     expect(kayakConfig).toEqual('Kayak Config Cypress TS');
   });
 
   it('Should create a new Playwright project if "playwright" is passed as a parameter', async () => {
-    prompts.inject(['ts']);
+    prompts.inject(['typescript']);
     await initAction({ playwright: true });
     const kayakConfig = await fs.promises.readFile('/project/kayak.config.ts', { encoding: 'utf-8' });
     expect(kayakConfig).toEqual('Kayak Config Playwright TS');
@@ -69,7 +69,7 @@ describe('Test "init" action', () => {
   it('Should init a new Cypress JavaScript project [Development Mode]', async () => {
     process.env.KAYAK_DEBUG = 'true';
 
-    prompts.inject(['cypress', 'js']);
+    prompts.inject(['cypress', 'javascript']);
     await initAction({});
 
     const dirContent = await fs.promises.readdir('/project');
@@ -97,7 +97,7 @@ describe('Test "init" action', () => {
   });
 
   it('Should init a new Cypress JavaScript project [Production Mode]', async () => {
-    prompts.inject(['cypress', 'js']);
+    prompts.inject(['cypress', 'javascript']);
     await initAction({});
 
     const dirContent = await fs.promises.readdir('/project');
@@ -127,7 +127,7 @@ describe('Test "init" action', () => {
   it('Should init a new Cypress TypeScript project [Development Mode]', async () => {
     process.env.KAYAK_DEBUG = 'true';
 
-    prompts.inject(['cypress', 'ts']);
+    prompts.inject(['cypress', 'typescript']);
     await initAction({});
 
     const dirContent = await fs.promises.readdir('/project');
@@ -155,7 +155,7 @@ describe('Test "init" action', () => {
   });
 
   it('Should init a new Cypress TypeScript project [Production Mode]', async () => {
-    prompts.inject(['cypress', 'ts']);
+    prompts.inject(['cypress', 'typescript']);
     await initAction({});
 
     const dirContent = await fs.promises.readdir('/project');
@@ -185,7 +185,7 @@ describe('Test "init" action', () => {
   it('Should init a new Playwright JavaScript project [Development Mode]', async () => {
     process.env.KAYAK_DEBUG = 'true';
 
-    prompts.inject(['playwright', 'js']);
+    prompts.inject(['playwright', 'javascript']);
     await initAction({});
     const dirContent = await fs.promises.readdir('/project');
     expect(dirContent).toEqual(['.env.kayak', '.gitignore', '.kayak', 'kayak.config.js', 'package.json']);
@@ -212,7 +212,7 @@ describe('Test "init" action', () => {
   });
 
   it('Should init a new Playwright JavaScript project [Production Mode]', async () => {
-    prompts.inject(['playwright', 'js']);
+    prompts.inject(['playwright', 'javascript']);
     await initAction({});
 
     const dirContent = await fs.promises.readdir('/project');
@@ -242,7 +242,7 @@ describe('Test "init" action', () => {
   it('Should init a new Playwright TypeScript project [Development Mode]', async () => {
     process.env.KAYAK_DEBUG = 'true';
 
-    prompts.inject(['playwright', 'ts']);
+    prompts.inject(['playwright', 'typescript']);
     await initAction({});
 
     const dirContent = await fs.promises.readdir('/project');
@@ -270,7 +270,7 @@ describe('Test "init" action', () => {
   });
 
   it('Should init a new Playwright TypeScript project [Production Mode]', async () => {
-    prompts.inject(['playwright', 'ts']);
+    prompts.inject(['playwright', 'typescript']);
     await initAction({});
 
     const dirContent = await fs.promises.readdir('/project');

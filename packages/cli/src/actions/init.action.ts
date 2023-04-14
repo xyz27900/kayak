@@ -10,6 +10,8 @@ import { KayakLanguage, kayakLanguages, KayakTestRunner, kayakTestRunners } from
 interface InitActionOptions {
   cypress?: boolean;
   playwright?: boolean;
+  javascript?: boolean;
+  typescript?: boolean;
 }
 
 export const initAction = async (options: InitActionOptions): Promise<void> => {
@@ -19,7 +21,12 @@ export const initAction = async (options: InitActionOptions): Promise<void> => {
     throw new Error('Options --cypress and --playwright cannot be used together');
   }
 
+  if(options.javascript && options.typescript) {
+    throw new Error('Options --javascript and --typescript cannot be used together');
+  }
+
   const isRunnerSpecified = options.cypress || options.playwright;
+  const isLanguageSpecified = options.javascript || options.typescript;
 
   const testRunnerQuestion: PromptObject<'testRunner'> = {
     type: 'select',
@@ -44,11 +51,11 @@ export const initAction = async (options: InitActionOptions): Promise<void> => {
     choices: [
       {
         title: 'TypeScript',
-        value: 'ts'
+        value: 'typescript'
       },
       {
         title: 'JavaScript',
-        value: 'js'
+        value: 'javascript'
       }
     ]
   };
@@ -86,11 +93,13 @@ export const initAction = async (options: InitActionOptions): Promise<void> => {
     }
   };
 
-  const commonQuestions = [languageQuestion, seedPhraseQuestion, passwordQuestion];
+  const commonQuestions = [seedPhraseQuestion, passwordQuestion];
 
-  const questions: PromptObject[] = isRunnerSpecified
-    ? commonQuestions
-    : [testRunnerQuestion, ...commonQuestions];
+  const questions: PromptObject[] = [
+    ...(!isRunnerSpecified ? [testRunnerQuestion] : []),
+    ...(!isLanguageSpecified ? [languageQuestion] : []),
+    ...commonQuestions
+  ];
 
   const result: Answers<'testRunner' | 'language' | 'seedPhrase' | 'password'> = await prompts(
     questions,
@@ -101,10 +110,15 @@ export const initAction = async (options: InitActionOptions): Promise<void> => {
     }
   );
 
-  const { language, seedPhrase, password } = result;
+  const { seedPhrase, password } = result;
+
   const testRunner = isRunnerSpecified
-    ? Object.keys(options)[0]
+    ? Object.keys(options).find((key) => kayakTestRunners.includes(key as KayakTestRunner)) as KayakTestRunner
     : result.testRunner;
+
+  const language = isLanguageSpecified
+    ? Object.keys(options).find((key) => kayakLanguages.includes(key as KayakLanguage)) as KayakLanguage
+    : result.language;
 
   /* Validate result */
   if (!kayakTestRunners.includes(testRunner)) {
@@ -132,8 +146,9 @@ export const initAction = async (options: InitActionOptions): Promise<void> => {
     password
   });
 
-  createDockerSetup(cwd);
   updateGitignore(cwd);
+
+  createDockerSetup(cwd);
 
   const message = `You are almost ready to go!\nNow you need to install dependencies:\n\n  ${logger.format('npm install', 'cyan')}\n\nIf you need to add more services for testing (for example, your backend), just edit the ${logger.format('.kayak/docker-compose.yaml', 'cyan')} file.`;
   process.stdout.write('\n' + message + '\n');
@@ -200,20 +215,6 @@ const setupEnvironment = ({ cwd, seedPhrase, password }: SetupEnvironmentOptions
   fs.writeFileSync(absoluteEnvFilePath, envFileContent + os.EOL);
 };
 
-const createDockerSetup = (cwd: string): void => {
-  const dockerSetupDir = path.resolve(cwd, '.kayak');
-
-  const dockerfilePath = templates.getDockerfile();
-  const dockerComposeFilePath = templates.dockerComposeFile;
-
-  if (!fs.existsSync(dockerSetupDir)) {
-    fs.mkdirSync(dockerSetupDir);
-  }
-
-  fs.copyFileSync(dockerfilePath, path.resolve(dockerSetupDir, 'Dockerfile'));
-  fs.copyFileSync(dockerComposeFilePath, path.resolve(dockerSetupDir, 'docker-compose.yaml'));
-};
-
 const updateGitignore = (cwd: string): void => {
   const absoluteGitignorePath = path.resolve(cwd, '.gitignore');
 
@@ -227,4 +228,18 @@ const updateGitignore = (cwd: string): void => {
   }
 
   fs.appendFileSync(absoluteGitignorePath, '*.kayak' + os.EOL, { encoding: 'utf-8' });
+};
+
+const createDockerSetup = (cwd: string): void => {
+  const dockerSetupDir = path.resolve(cwd, '.kayak');
+
+  const dockerfilePath = templates.getDockerfile();
+  const dockerComposeFilePath = templates.dockerComposeFile;
+
+  if (!fs.existsSync(dockerSetupDir)) {
+    fs.mkdirSync(dockerSetupDir);
+  }
+
+  fs.copyFileSync(dockerfilePath, path.resolve(dockerSetupDir, 'Dockerfile'));
+  fs.copyFileSync(dockerComposeFilePath, path.resolve(dockerSetupDir, 'docker-compose.yaml'));
 };

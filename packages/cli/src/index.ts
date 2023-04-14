@@ -22,8 +22,10 @@ program
 program
   .command('init')
   .description('Initialize a new project')
-  .option('--cypress', 'Configure for Cypress')
-  .option('--playwright', 'Configure for Playwright')
+  .option('-cy, --cypress', 'Configure for Cypress')
+  .option('-pw, --playwright', 'Configure for Playwright')
+  .option('-js, --javascript', 'Configure for JavaScript')
+  .option('-ts, --typescript', 'Configure for TypeScript')
   .action(initAction);
 
 program

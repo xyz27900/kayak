@@ -1,6 +1,6 @@
 import path from 'path';
 import process from 'process';
-import { KayakLanguage, KayakTestRunner } from '~/types';
+import { KayakLanguage, kayakLanguageToExtension, KayakTestRunner } from '~/types';
 import { findPackageJson } from '~/utils';
 
 export class Templates {
@@ -38,7 +38,7 @@ export class Templates {
   }
 
   public getConfigFile(testRunner: KayakTestRunner, language: KayakLanguage): string {
-    return path.resolve(this.getByTestRunner(testRunner), `kayak.config.${language}`);
+    return path.resolve(this.getByTestRunner(testRunner), `kayak.config.${kayakLanguageToExtension[language]}`);
   }
 }
 
