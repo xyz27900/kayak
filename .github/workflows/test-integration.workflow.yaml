@@ -47,35 +47,27 @@ jobs:
         run: |
           tar -xzf /tmp/workspace.tar.gz -C . --overwrite
 
-#      - name: "Install expect"
-#        run: |
-#          sudo apt install -y expect
-#
-#      - name: "Create NPM user"
-#        run: |
-#          expect <<EOF
-#          set timeout 5
-#          spawn pnpm adduser --registry http://localhost:4873
-#          expect "Username:"
-#          send "test\r"
-#          expect "Password:"
-#          send "test\r"
-#          expect "Email:"
-#          send "test@example.com\r"
-#          expect eof
-#          EOF
+      - name: "Install expect"
+        run: |
+          sudo apt install -y expect
 
-#      - name: "Login to Verdaccio"
-#        run: |
-#          expect <<EOF
-#          set timeout 5
-#          spawn pnpm login --registry http://localhost:4873
-#          expect "Username:"
-#          send "test\r"
-#          expect "Password:"
-#          send "test\r"
-#          expect eof
-#          EOF
+      - name: "Create NPM user"
+        run: |
+          expect <<EOF
+          set timeout 5
+          spawn pnpm adduser --registry http://localhost:4873
+          expect "Username:"
+          send "$NPM_USERNAME\r"
+          expect "Password:"
+          send "$NPM_PASSWORD\r"
+          expect "Email:"
+          send "$NPM_EMAIL\r"
+          expect eof
+          EOF
+        env:
+          NPM_USERNAME: test
+          NPM_PASSWORD: test
+          NPM_EMAIL: test@example.com
 
       - name: "Publish packages to Verdaccio"
         uses: ./.github/actions/execute-for-paths
