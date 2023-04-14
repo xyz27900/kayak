@@ -28,9 +28,6 @@ jobs:
           pnpm-version: ${{ inputs.pnpm-version }}
           cache: true
 
-      - name: "Install dependencies"
-        run: pnpm install --frozen-lockfile
-
       - name: "Download NPM packages from storage"
         uses: actions/download-artifact@v3
         with:
@@ -66,7 +63,7 @@ jobs:
             rm -rf "/tmp/npm-packages/$package_name"
           done < <(find packages -type f -name 'package.json' -not -path '*/node_modules/*' -not -path '/*cache/*')
 
-      - name: "Link built packages"
+      - name: "Install dependencies"
         run: pnpm install --frozen-lockfile
 
       - name: "Compress workspace"

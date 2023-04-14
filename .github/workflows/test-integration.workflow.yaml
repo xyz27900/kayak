@@ -100,10 +100,24 @@ jobs:
           docker pull ghcr.io/${{ github.repository }}/display:${{ inputs.image-tag }}
           docker pull ghcr.io/${{ github.repository }}/ffmpeg:${{ inputs.image-tag }}
 
-      - name: "Run tests"
+      - name: "Change Docker images tags"
+        run: |
+          docker tag ghcr.io/${{ github.repository }}/anvil:${{ inputs.image-tag }} ${{ github.event.repository.name }}/anvil:${{ inputs.image-tag }}
+          docker tag ghcr.io/${{ github.repository }}/chromium:${{ inputs.image-tag }} ${{ github.event.repository.name }}/chromium:${{ inputs.image-tag }}
+          docker tag ghcr.io/${{ github.repository }}/display:${{ inputs.image-tag }} ${{ github.event.repository.name }}/display:${{ inputs.image-tag }}
+          docker tag ghcr.io/${{ github.repository }}/ffmpeg:${{ inputs.image-tag }} ${{ github.event.repository.name }}/ffmpeg:${{ inputs.image-tag }}
+
+      - name: "Initialise Kayak"
         working-directory: ./examples/playwright
         run: |
-          ls -la node_modules/.bin
-          npx kayak init --playwright --typescript
+          expect <<EOF
+          set timeout 5
+          spawn npx kayak init --playwright --typescript
+          expect "*"
+          send "\r"
+          expect "*"
+          send "\r"
+          expect eof
+          EOF
         env:
           KAYAK_DEBUG: true
