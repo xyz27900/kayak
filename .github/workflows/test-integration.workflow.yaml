@@ -65,17 +65,17 @@ jobs:
           expect eof
           EOF
 
-      - name: "Login to Verdaccio"
-        run: |
-          expect <<EOF
-          set timeout 5
-          spawn pnpm login --registry http://localhost:4873
-          expect "Username:"
-          send "test\r"
-          expect "Password:"
-          send "test\r"
-          expect eof
-          EOF
+#      - name: "Login to Verdaccio"
+#        run: |
+#          expect <<EOF
+#          set timeout 5
+#          spawn pnpm login --registry http://localhost:4873
+#          expect "Username:"
+#          send "test\r"
+#          expect "Password:"
+#          send "test\r"
+#          expect eof
+#          EOF
 
       - name: "Publish packages to Verdaccio"
         uses: ./.github/actions/execute-for-paths
