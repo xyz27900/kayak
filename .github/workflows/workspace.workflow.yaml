@@ -66,6 +66,9 @@ jobs:
             rm -rf "/tmp/npm-packages/$package_name"
           done < <(find packages -type f -name 'package.json' -not -path '*/node_modules/*' -not -path '/*cache/*')
 
+      - name: "Link built packages"
+        run: pnpm install --frozen-lockfile
+
       - name: "Compress workspace"
         run: |
           mkdir -p /tmp/workspace
