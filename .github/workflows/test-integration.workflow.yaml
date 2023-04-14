@@ -111,6 +111,9 @@ jobs:
         working-directory: ./examples/playwright
         run: |
           npx kayak init --playwright --typescript
+          ls -la
+          echo "----"
+          ls -la ../../packages/playwright
         env:
           KAYAK_DEBUG: true
           SEED_PHRASE: "test test test test test test test test test test test junk"
