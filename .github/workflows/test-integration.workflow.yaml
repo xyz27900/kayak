@@ -49,7 +49,7 @@ jobs:
 
       - name: "Create NPM user"
         run: |
-          apt install -y expect
+          sudo apt install -y expect
           expect <<EOF
           set timeout 5
           spawn pnpm adduser --registry http://localhost:4873
