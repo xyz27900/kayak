@@ -121,3 +121,8 @@ jobs:
           EOF
         env:
           KAYAK_DEBUG: true
+
+      - name: "Run tests"
+        working-directory: ./examples/playwright
+        run: |
+          pnpm test
