@@ -110,10 +110,6 @@ jobs:
       - name: "Initialise Kayak"
         working-directory: ./examples/playwright
         run: |
-          ls -la
-          echo "----"
-          ls -la ../../packages/playwright
-          echo "----"
           npx kayak init --playwright --typescript
         env:
           KAYAK_DEBUG: true
@@ -125,3 +121,5 @@ jobs:
         run: |
           ls -la
           pnpm test
+        env:
+          KAYAK_DEBUG: true
