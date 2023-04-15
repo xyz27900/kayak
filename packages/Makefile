@@ -37,7 +37,10 @@ publish:
 	@set -e; \
 	for pkg in $(ALL_PACKAGES); do \
 		echo "[Publish] $$pkg"; \
-		cd $$pkg && pnpm publish --registry $(NPM_REGISTRY) --no-git-checks; \
+		cd $$pkg; \
+		echo "$(NPM_REGISTRY)/:_authToken=$(NPM_AUTH_TOKEN)" > .npmrc; \
+		pnpm publish --registry $(NPM_REGISTRY) --no-git-checks; \
+		rm .npmrc; \
 		cd ..; \
 	done
 

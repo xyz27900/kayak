@@ -25,7 +25,7 @@ export const spawnAsync = (command: string, args: string[], options?: SpawnAsync
       if (code === 0) {
         resolve();
       } else {
-        reject(new Error(`Command exited with code ${code}`));
+        reject(new Error(`Command ${command} exited with code ${code}`));
       }
     });
   });

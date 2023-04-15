@@ -5,8 +5,8 @@ import { chromium, test as testBase } from '@playwright/test';
 
 export const test = testBase.extend({
   // eslint-disable-next-line no-empty-pattern
-  context: async ({}, use, _testInfo) => {
-    await spawnAsync('which', ['notify-send']);
+  context: async ({}, use, testInfo) => {
+    await spawnAsync('notify-send', ['-t', '1500', testInfo.title]);
 
     coreEnv.runtime = 'playwright';
     const debuggingPort = await pickRandomDebuggingPort();

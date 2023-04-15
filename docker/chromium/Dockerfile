@@ -14,6 +14,7 @@ COPY install-chromium.sh /install-chromium.sh
 COPY entrypoint.sh /entrypoint.sh
 
 RUN apt update && apt install -y --no-install-recommends \
+    libnotify-bin \
     x11-xserver-utils \
     && rm -rf /var/lib/apt/lists/*
 
