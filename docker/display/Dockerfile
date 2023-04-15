@@ -24,6 +24,7 @@ COPY fakeroot /
 RUN apk add --no-cache \
     sudo \
     bash \
+    libnotify \
     procps \
     supervisor \
     xhost \
