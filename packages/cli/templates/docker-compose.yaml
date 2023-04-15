@@ -44,7 +44,7 @@ services:
     build:
       context: ..
       dockerfile: ./.kayak/Dockerfile
-      network: bridge
+      network: host
       args:
         KAYAK_IMAGE_TAG: ${KAYAK_IMAGE_TAG}
     container_name: kayak-application
