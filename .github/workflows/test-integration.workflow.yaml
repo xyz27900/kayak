@@ -128,3 +128,9 @@ jobs:
         env:
           KAYAK_DEBUG: true
           KAYAK_IMAGE_TAG: ${{ inputs.image-tag }}
+
+      - name: "Upload video to storage"
+        uses: actions/upload-artifact@v3
+        with:
+          name: video-${{ matrix.node-version }}
+          path: ./examples/playwright/playwright/video/*.mp4
