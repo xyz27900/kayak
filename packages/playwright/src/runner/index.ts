@@ -1,11 +1,13 @@
 import process from 'process';
-import { coreEnv, getValueWithoutThrowing, kayakEnv, pickRandomDebuggingPort, prepareMetaMask } from '@kayak/core';
+import { coreEnv, getValueWithoutThrowing, kayakEnv, pickRandomDebuggingPort, prepareMetaMask, spawnAsync } from '@kayak/core';
 import { metamask } from '@kayak/metamask';
 import { chromium, test as testBase } from '@playwright/test';
 
 export const test = testBase.extend({
   // eslint-disable-next-line no-empty-pattern
-  context: async ({}, use) => {
+  context: async ({}, use, testInfo) => {
+    await spawnAsync('notify-send', ['-t', '1500', testInfo.title]);
+
     coreEnv.runtime = 'playwright';
     const debuggingPort = await pickRandomDebuggingPort();
     const slowMo = getValueWithoutThrowing(() => kayakEnv.slowMo, 0);
