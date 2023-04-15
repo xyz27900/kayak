@@ -131,6 +131,7 @@ jobs:
 
       - name: "Upload video to storage"
         uses: actions/upload-artifact@v3
+        if: always()
         with:
           name: video-${{ matrix.node-version }}
           path: ./examples/playwright/playwright/video/*.mp4
