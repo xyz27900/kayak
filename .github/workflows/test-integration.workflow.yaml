@@ -80,6 +80,7 @@ jobs:
             packages/cli
             packages/core
             packages/cypress
+            packages/eslint-config
             packages/metamask
             packages/playwright
           run: |

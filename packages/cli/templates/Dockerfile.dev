@@ -4,7 +4,7 @@ FROM node:16-alpine AS dependencies
 WORKDIR /tmp
 COPY package.json package.json
 RUN sed -i 's/workspace:\*/\*/g' package.json \
-    && echo "@kayak:registry=http://host.docker.internal:4873" >> .npmrc \
+    && echo "@kayak:registry=http://127.0.0.1:4873" > .npmrc
 RUN npm install
 
 FROM kayak/chromium:${KAYAK_IMAGE_TAG}
