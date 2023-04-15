@@ -4,6 +4,16 @@ PACKAGES_TO_LINT  = cli core cypress metamask playwright
 PACKAGES_TO_TEST  = cli
 PACKAGES_TO_BUILD = core metamask cypress playwright cli
 
+.PHONY: npmrc
+npmrc:
+	@if [ -z "$(NPM_REGISTRY)" ]; then echo "NPM_REGISTRY is not set"; exit 1; fi
+	@set -e; \
+	for pkg in $(ALL_PACKAGES); do \
+		echo "[NPMRC] $$pkg"; \
+		cd $$pkg && echo "$(NPM_REGISTRY)/:_authToken=$(NPM_AUTH_TOKEN)" > .npmrc
+		cd ..; \
+	done
+
 .PHONY: lint
 lint:
 	@set -e; \
@@ -37,10 +47,7 @@ publish:
 	@set -e; \
 	for pkg in $(ALL_PACKAGES); do \
 		echo "[Publish] $$pkg"; \
-		cd $$pkg; \
-		echo "$(NPM_REGISTRY)/:_authToken=$(NPM_AUTH_TOKEN)" > .npmrc; \
-		pnpm publish --registry $(NPM_REGISTRY) --no-git-checks; \
-		rm .npmrc; \
+		cd $$pkg && pnpm publish --registry $(NPM_REGISTRY) --no-git-checks; \
 		cd ..; \
 	done
 
